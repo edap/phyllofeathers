@@ -1,10 +1,12 @@
 /* eslint-env browser */
 import * as THREE from 'three';
 import Gui from './gui.js';
+import Stats from 'stats.js';
 import CollectionGeometries from './geometries.js';
 import CollectionMaterials from './materials.js';
 
 const gui = new Gui();
+const debug = true;
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -15,6 +17,10 @@ document.body.style.margin =0;
 document.body.appendChild(renderer.domElement);
 camera.position.z = 80;
 this.controls = new OrbitControls(camera, renderer.domElement);
+
+// stats
+const stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 
 
 //scene
@@ -54,6 +60,9 @@ window.addEventListener('resize', function() {
     camera.updateProjectionMatrix();
 });
 
+addStats(debug);
+render();
+
 function populateGroup(selected_geometry, selected_material) {
     for (var i = 0; i< gui.params.num; i++) {
         let coord = {x:i, y:i, z:i};
@@ -67,6 +76,13 @@ function populateGroup(selected_geometry, selected_material) {
     scene.add(group);
 }
 
+function addStats(debug) {
+    if (debug) {
+        document.body.appendChild(stats.domElement);
+    }
+}
+
+
 function resetGroup(){
     for(var index in objects){
         let object = objects[index];
@@ -77,13 +93,15 @@ function resetGroup(){
 }
 
 function render(){
+    stats.begin();
     populateGroup(geometries[gui.params.geometry],materials[gui.params.material]);
     if(gui.params.rotate_flower){
         group.rotateZ( 0.0137);
     }
-	requestAnimationFrame(render);
 	renderer.render(scene, camera);
     resetGroup();
+    stats.end();
+	requestAnimationFrame(render);
 }
 
-render();
+
