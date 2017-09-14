@@ -2,28 +2,61 @@ import DAT from 'dat-gui';
 import {Color, Fog} from 'three';
 
 export default class Gui extends DAT.GUI{
-    constructor(){
+    constructor(regenerateCallbak){
         super(
             {
                 load: JSON,
                 preset: 'Flow'
             }
         );
+
+        this.regenerate = regenerateCallbak;
         this.params = {
             geometry: "sphere",
             material: "standard",
-            num:3
+            angle:137.5,
+            num:47,
+            spread: 0.1,
+            growth: 0.12,
+            petals_from: 40,
+            petals_segment: 10,
+            petals_segment_length: 2,
+            petals_length: 20,
+            petals_phistart: 0.9,
+            petals_philength: 1.8,
+            petals_amplitude: 0.9,
+            petals_freq: 0.2,
+            petals_fromcenter: 5.1,
+            growth_regular: false,
+            angle_open: 36.17438258159361,
+            starting_angle_open: 47
         };
 
 
-        this.add(this.params, "geometry", ["sphere", "box", "lathe"]);
-        this.add(this.params, "num").min(1).max(800).step(1);
+        this.add(this.params, "geometry", ["sphere", "box", "lathe"]).onChange(this.regenerate);
+        this.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
+        this.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
+        this.add(this.params, "angle").min(132.0).max(138.0).step(0.01).onChange(this.regenerate);
+        this.add(this.params, "growth").min(0.04).max(0.25).step(0.01).onChange(this.regenerate);
+        this.add(this.params, "petals_from").min(1).max(320).onChange(this.regenerate);
+        this.add(this.params, "petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
+        this.add(this.params, "petals_philength").min(0.1).max(6.3).onChange(this.regenerate);
+        this.add(this.params, "petals_amplitude").min(0.1).max(10.5).onChange(this.regenerate);
+        this.add(this.params, "petals_freq").min(0.1).max(2.5).onChange(this.regenerate);
+        this.add(this.params, "petals_fromcenter").min(0.1).max(15).onChange(this.regenerate);
+        this.add(this.params, "petals_segment").min(2).max(40).onChange(this.regenerate);
+        this.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
+        this.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
+        this.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
+        this.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
+        this.add(this.params, "growth_regular").onChange(this.regenerate);
         this.add(this.params, "material", ["standard", "wireframe", "phong","lambert"]).onChange(this._updateMaterialFolder());
 
     }
 
     addMaterials(materials){
         this.materials = materials;
+        this._addStandardMaterial(materials['standard']);
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js

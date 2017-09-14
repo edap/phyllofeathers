@@ -4,24 +4,28 @@ import Gui from './gui.js';
 import Stats from 'stats.js';
 import CollectionGeometries from './geometries.js';
 import CollectionMaterials from './materials.js';
+import {loadAllAssets} from './assets.js';
+import Flower from './flower.js';
+import {PointLights} from './pointLights.js';
 
-const gui = new Gui();
 const debug = true;
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true});
 const stats = new Stats();
-const materials = new CollectionMaterials;
-const geometries = new CollectionGeometries;
+const materials = new CollectionMaterials();
+const geometries = new CollectionGeometries();
+let gui;
+let controls;
+let flower;
 
-function init(){
+function init(assets){
+    console.log(assets);
     renderer.setSize(window.innerWidth, window.innerHeight);
-
-    document.body.style.margin =0;
     document.body.appendChild(renderer.domElement);
     camera.position.z = 80;
-    this.controls = new OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
 
     // stats
     stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -29,15 +33,17 @@ function init(){
     //lights
     let ambientLight = new THREE.AmbientLight( 0x000000 );
     scene.add( ambientLight );
+
+    gui = new Gui(regenerate);
     gui.addScene(scene, ambientLight, renderer);
     gui.addMaterials(materials);
+    PointLights().map((light) => {
+        scene.add( light );
+    });
 
-    let light = new THREE.PointLight( 0xffffff, 1, 0 );
-    light.position.set( 0, 200, 0 );
-    scene.add( light );
 
     var axisHelper = new THREE.AxisHelper( 50 );
-    //scene.add( axisHelper );
+    scene.add( axisHelper );
 
     window.addEventListener('resize', function() {
         var WIDTH = window.innerWidth,
@@ -47,8 +53,13 @@ function init(){
         camera.updateProjectionMatrix();
     });
 
-    let object = new THREE.Mesh(geometries["box"], materials["phong"]);
-    scene.add(object);
+    // let obj = new THREE.Mesh(geometries[gui.params.geometry], materials[gui.params.material]);
+    // var geometry = new THREE.BoxGeometry( 100, 100, 100 );
+    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    // var cube = new THREE.Mesh( geometry, material );
+
+    flower = new Flower(gui.params, geometries, materials, assets);
+    scene.add(flower.group);
 
     addStats(debug);
     render();
@@ -61,8 +72,6 @@ function addStats(debug) {
     }
 }
 
-
-
 function render(){
     stats.begin();
     renderer.render(scene, camera);
@@ -70,7 +79,13 @@ function render(){
     requestAnimationFrame(render);
 }
 
+let regenerate = () => {
+    flower.regenerate(gui.params);
+}
 
-init();
-
-
+loadAllAssets().then(
+    (assets) => {
+        init(assets);
+    },
+    (err) => { console.log(`impossible to load the assets: ${err}`); }
+);
