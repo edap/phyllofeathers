@@ -3,13 +3,12 @@ import {phyllotaxisConical} from './phyllotaxis.js';
 //https://medium.com/@bgolus/anti-aliased-alpha-test-the-esoteric-alpha-to-coverage-8b177335ae4f
 
 export default class Flower{
-    constructor(params, geometries, materials, assets) {
+    constructor(params, materials, assets) {
         this.assets = assets;
-        this.geometries = geometries;
         this.materials = materials;
         this.objects = [];
         this.group = new THREE.Group();
-        this.generate(params, geometries, materials);
+        this.generate(params);
     }
 
     get(){
@@ -25,10 +24,12 @@ export default class Flower{
         let PItoDeg = (Math.PI/180.0);
         let angleInRadians = params.angle * PItoDeg;
 
+        let widthSegments = 32;
+        let crownGeometry = new THREE.SphereGeometry(params.crown_size, widthSegments, widthSegments);
         let petalGeom = this.makePetalGeom(params);
         for (var i = 0; i< params.num; i++) {
             let isPetal = (i >= params.petals_from)? true : false;
-            let geometry = isPetal ? petalGeom : this.geometries[params.geometry];
+            let geometry = isPetal ? petalGeom : crownGeometry;
             let object = new THREE.Mesh(geometry, this.materials[params.material]);
 
             let coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
@@ -39,7 +40,7 @@ export default class Flower{
                 object.rotateZ( i* angleInRadians);
                 if (params.growth_regular) {
                     object.rotateY( (90 + params.angle_open ) * -PItoDeg );
-                }else{
+                } else {
                     object.rotateY( (90 + params.angle_open + i * 100/params.num ) * -PItoDeg );
                 }
             }
@@ -58,27 +59,27 @@ export default class Flower{
 
     transformIntoPetal(object, iter, angleInRadians, params){
         object.material.side = THREE.DoubleSide;
-        //object.rotateX(Math.PI/2);
+        //object.rotateY(Math.PI/2);
         let PItoDeg = Math.PI/180.0;
 
         // the scale ratio is a value between 0.001 and 1.
-        // It is 0.0001 for the first leaves, and 1 for the last ones
+        // It is 0.0001 for the first element, and 1 for the last ones
         let ratio = Math.abs(iter/params.petals_from);
         // this is to avaoid a scaleRatio of 0, that would cause a warning while scaling
         // an object for 0
         let scaleRatio = ratio === 0 ? 0.001 : ratio;
+
         object.rotateZ( iter* angleInRadians);
-        
 
         let yrot = (iter/params.angle_open) * params.petals_from;
         //object.rotateY( (yrot ) * -PItoDeg );
         let y_angle = params.angle_open * scaleRatio;
-        console.log((params.starting_angle_open + y_angle + iter * 200/params.num ) * -PItoDeg);
         //object.rotateX( (params.starting_angle_open + y_angle + iter * 200/params.num ) * -PItoDeg );
 
         // as they grow up, they become bigger
         object.scale.set(5 * scaleRatio ,1 ,1);
-        //object.rotateZ(-(Math.PI/2));
+        // la concavita' del petalo e' rivolta verso l'alto
+        object.rotateY((Math.PI/2));
     }
 
     makePetalGeom(params){

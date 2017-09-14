@@ -2,7 +2,6 @@
 import * as THREE from 'three';
 import Gui from './gui.js';
 import Stats from 'stats.js';
-import CollectionGeometries from './geometries.js';
 import CollectionMaterials from './materials.js';
 import {loadAllAssets} from './assets.js';
 import Flower from './flower.js';
@@ -15,7 +14,6 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({antialias:true});
 const stats = new Stats();
 const materials = new CollectionMaterials();
-const geometries = new CollectionGeometries();
 let gui;
 let controls;
 let flower;
@@ -53,12 +51,7 @@ function init(assets){
         camera.updateProjectionMatrix();
     });
 
-    // let obj = new THREE.Mesh(geometries[gui.params.geometry], materials[gui.params.material]);
-    // var geometry = new THREE.BoxGeometry( 100, 100, 100 );
-    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    // var cube = new THREE.Mesh( geometry, material );
-
-    flower = new Flower(gui.params, geometries, materials, assets);
+    flower = new Flower(gui.params, materials, assets);
     scene.add(flower.group);
 
     addStats(debug);

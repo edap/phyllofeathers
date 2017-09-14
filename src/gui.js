@@ -12,29 +12,29 @@ export default class Gui extends DAT.GUI{
 
         this.regenerate = regenerateCallbak;
         this.params = {
-            geometry: "sphere",
             material: "standard",
             angle:137.5,
-            num:47,
+            num:53,
+            crown_size:4,
             spread: 0.1,
             growth: 0.12,
-            petals_from: 40,
+            petals_from: 49,
             petals_segment: 10,
             petals_segment_length: 2,
             petals_length: 20,
-            petals_phistart: 0.9,
-            petals_philength: 1.8,
+            petals_phistart: 1.0,
+            petals_philength: 1.1,
             petals_amplitude: 0.9,
             petals_freq: 0.2,
-            petals_fromcenter: 5.1,
+            petals_fromcenter: 1.6,
             growth_regular: false,
             angle_open: 36.17438258159361,
             starting_angle_open: 47
         };
 
 
-        this.add(this.params, "geometry", ["sphere", "box", "lathe"]).onChange(this.regenerate);
         this.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
+        this.add(this.params, "crown_size").min(1).max(50).step(1).onChange(this.regenerate);
         this.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
         this.add(this.params, "angle").min(132.0).max(138.0).step(0.01).onChange(this.regenerate);
         this.add(this.params, "growth").min(0.04).max(0.25).step(0.01).onChange(this.regenerate);
