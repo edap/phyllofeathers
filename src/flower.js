@@ -46,6 +46,8 @@ export default class Flower{
                     object.rotateY( (90 + params.angle_open + i * 100/params.num ) * -PItoDeg );
                 }
             }
+            object.castShadow = true;
+            object.receiveShadow = true;
             this.objects.push(object);
             this.group.add(object);
         }
