@@ -3,10 +3,12 @@ import {MeshStandardMaterial,MeshBasicMaterial,MeshPhongMaterial,MeshLambertMate
 export default class CollectionMaterials {
     constructor(){
         let materials = {
-            "standard": new MeshStandardMaterial( {color: 0x00ff4a, emissive:0xca3131} ),
-            "wireframe": new MeshBasicMaterial( {color: 0x00ff00, wireframe: true} ),
-            "phong": new MeshPhongMaterial({color: 0x2194CE}),
-            "lambert": new MeshLambertMaterial({color: 0x2194CE})
+            "crown": new MeshStandardMaterial( {color: 0x00ff4a, emissive:0xca3131} ),
+            "petal_one": new MeshStandardMaterial( {color: 0x55bbaa, emissive:0x77ff22} ),
+            "petal_two": new MeshStandardMaterial( {color: 0xFF9922, emissive:0x88bb00} ),
+            "standard": new MeshStandardMaterial( {color: 0xFF9922, emissive:0x88bb00} ),
+            "petal_tree": new MeshStandardMaterial( {color: 0x22FF55, emissive:0x000000} ),
+            "petal_for": new MeshStandardMaterial( {color: 0x0a0aFF, emissive:0xFF0000} )
         };
         return materials;
     }

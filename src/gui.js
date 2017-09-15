@@ -2,7 +2,7 @@ import DAT from 'dat-gui';
 import {RepeatWrapping, NearestFilter, Color, Fog} from 'three';
 
 export default class Gui extends DAT.GUI{
-    constructor(regenerateCallbak){
+    constructor(regenerateCallbak, materials){
         super(
             {
                 load: JSON,
@@ -10,18 +10,24 @@ export default class Gui extends DAT.GUI{
             }
         );
 
+        this.materials = materials;
         this.regenerate = regenerateCallbak;
         this.params = {
-            material: "standard",
+            material: "crown",
             angle:137.5,
             num:53,
             spread: 0.1,
             growth: 0.12,
+            growth_regular: false,
+            angle_open: 36.17438258159361,
+            starting_angle_open: 47,
 
             crown_size:4,
             crown_z: 0.5,
             crown_growth: 0.12,
             crown_spread: 0.12,
+            crown_mat_color: 0xFF0000,
+            crown_mat_emissive: 0x33ee00,
 
             petals_from: 49,
             petals_scale:2.0,
@@ -34,26 +40,23 @@ export default class Gui extends DAT.GUI{
             petals_freq: 0.2,
             petals_xoffset: 1.6,
             petals_yoffset: 1.6,
-            map:"",
+            map:""
 
-            growth_regular: false,
-            angle_open: 36.17438258159361,
-            starting_angle_open: 47
         };
         this.remember(this.params);
 
         let petalFolder = this.addFolder("First Petal");
         let crownFolder = this.addFolder("Crown Folder");
+        let generalFolder = this.addFolder("General");
 
-        this.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
-
-        this.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
-        this.add(this.params, "angle").min(132.0).max(138.0).step(0.01).onChange(this.regenerate);
-        this.add(this.params, "growth").min(0.04).max(0.25).step(0.01).onChange(this.regenerate);
-        this.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
-        this.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
-        this.add(this.params, "growth_regular").onChange(this.regenerate);
-        this.add(this.params, "material", ["standard", "wireframe", "phong","lambert"]).onChange(this._updateMaterialFolder());
+        generalFolder.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
+        generalFolder.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
+        generalFolder.add(this.params, "angle").min(132.0).max(138.0).step(0.01).onChange(this.regenerate);
+        generalFolder.add(this.params, "growth").min(0.04).max(0.25).step(0.01).onChange(this.regenerate);
+        generalFolder.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
+        generalFolder.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
+        generalFolder.add(this.params, "growth_regular").onChange(this.regenerate);
+        generalFolder.add(this.params, "material", ["standard", "wireframe", "phong","lambert"]).onChange(this._updateMaterialFolder());
 
         crownFolder.add(this.params, "crown_size").min(0.1).max(4).step(0.1).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_z").min(-10).max(10.0).step(0.1).onChange(this.regenerate);
@@ -71,13 +74,8 @@ export default class Gui extends DAT.GUI{
         petalFolder.add(this.params, "petals_segment").min(2).max(40).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
-        //mat.add( this.params, 'map', this.textureMapKeys ).onChange( this._updateTexture( this.material, 'map', this.textureMaps ) );
 
 
-    }
-
-    addMaterials(materials){
-        this.materials = materials;
         this._addStandardMaterial(materials['standard']);
     }
 
@@ -116,6 +114,8 @@ export default class Gui extends DAT.GUI{
         this.textureMapKeys = this._getObjectsKeys( this.textureMaps );
         let folder = this.addFolder("Textures");
         folder.add( this.params, 'map', this.textureMapKeys ).onChange( this._updateTexture( this.materials[this.params.material], 'map', this.textureMaps ) );
+
+        this._updateTexture( this.materials[this.params.material], 'map', this.textureMaps );
     }
 
     guiSceneFog ( folder, scene ) {

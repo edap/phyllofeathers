@@ -21,6 +21,8 @@ let flower;
 function init(assets){
     console.log(assets);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    //const gl = renderer.getContext();
+    //gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
     document.body.appendChild(renderer.domElement);
     camera.position.z = 80;
     controls = new OrbitControls(camera, renderer.domElement);
@@ -32,9 +34,8 @@ function init(assets){
     let ambientLight = new THREE.AmbientLight( 0x000000 );
     scene.add( ambientLight );
 
-    gui = new Gui(regenerate);
-    gui.addScene(scene, ambientLight, renderer);
-    gui.addMaterials(materials);
+    gui = new Gui(regenerate, materials);
+    gui.addScene(scene, ambientLight, renderer, materials);
     gui.addTextures(assets.textures);
     PointLights().map((light) => {
         scene.add( light );
