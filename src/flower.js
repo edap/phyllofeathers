@@ -61,27 +61,23 @@ export default class Flower{
 
     transformIntoPetal(object, iter, angleInRadians, params){
         object.material.side = THREE.DoubleSide;
-        //object.rotateY(Math.PI/2);
+        //calculate needed variable
         let PItoDeg = Math.PI/180.0;
-
-        // the scale ratio is a value between 0.001 and 1.
-        // It is 0.0001 for the first element, and 1 for the last ones
+        // the scale ratio is a value that increase as the flower grows. Petals are smaller near the crown
+        // and while they grows the petals rotate from the crown to the outside
         let ratio = Math.abs(iter/params.petals_from);
-        // this is to avaoid a scaleRatio of 0, that would cause a warning while scaling
-        // an object for 0
+        // this is to avaoid a scaleRatio of 0, that would cause a warning while scaling for 0
         let scaleRatio = ratio === 0 ? 0.001 : ratio;
 
+        // Rotations:
         object.rotateZ( iter* angleInRadians);
-
         let yrot = (iter/params.angle_open) * params.petals_from;
-        //object.rotateY( (yrot ) * -PItoDeg );
         let y_angle = params.angle_open * scaleRatio;
         object.rotateX( (params.starting_angle_open + y_angle + iter * 90/params.num ) * -PItoDeg );
 
-        // as they grow up, they become bigger
-        let scaleMag = 2;
-        //object.scale.set(scaleMag * scaleRatio, scaleMag* scaleRatio, scaleMag * scaleRatio);
-        // la concavita' del petalo e' rivolta verso l'alto
+        // Scale:
+        let scaleMag = params.petals_scale * scaleRatio;
+        object.scale.set(scaleMag, scaleMag, scaleMag);
         object.rotateY((Math.PI/2));
     }
 

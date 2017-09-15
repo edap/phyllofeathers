@@ -24,6 +24,7 @@ export default class Gui extends DAT.GUI{
             crown_spread: 0.12,
 
             petals_from: 49,
+            petals_scale:2.0,
             petals_segment: 10,
             petals_segment_length: 2,
             petals_length: 20,
@@ -59,6 +60,7 @@ export default class Gui extends DAT.GUI{
         crownFolder.add(this.params, "crown_spread").min(0.0).max(1.7).step(0.01).onChange(this.regenerate);
 
         petalFolder.add(this.params, "petals_from").min(1).max(320).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_scale").min(0.1).max(1.0).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_philength").min(0.1).max(6.3).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_amplitude").min(0.1).max(10.5).onChange(this.regenerate);
