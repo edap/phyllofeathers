@@ -31,12 +31,14 @@ export default class Flower{
             let isPetal = (i >= params.petals_from)? true : false;
             let geometry = isPetal ? petalGeom : crownGeometry;
             let object = new THREE.Mesh(geometry, this.materials[params.material]);
-
-            let coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
-            object.position.set(coord.x, coord.y, coord.z);
+            let coord;
             if (isPetal) {
+                coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
+                object.position.set(coord.x, coord.y, coord.z);
                 this.transformIntoPetal(object, i, angleInRadians, params);
             } else {
+                coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
+                object.position.set(coord.x, coord.y, coord.z + params.crown_z);
                 object.rotateZ( i* angleInRadians);
                 if (params.growth_regular) {
                     object.rotateY( (90 + params.angle_open ) * -PItoDeg );
@@ -74,10 +76,11 @@ export default class Flower{
         let yrot = (iter/params.angle_open) * params.petals_from;
         //object.rotateY( (yrot ) * -PItoDeg );
         let y_angle = params.angle_open * scaleRatio;
-        //object.rotateX( (params.starting_angle_open + y_angle + iter * 200/params.num ) * -PItoDeg );
+        object.rotateX( (params.starting_angle_open + y_angle + iter * 90/params.num ) * -PItoDeg );
 
         // as they grow up, they become bigger
-        object.scale.set(5 * scaleRatio ,1 ,1);
+        let scaleMag = 2;
+        //object.scale.set(scaleMag * scaleRatio, scaleMag* scaleRatio, scaleMag * scaleRatio);
         // la concavita' del petalo e' rivolta verso l'alto
         object.rotateY((Math.PI/2));
     }
@@ -88,12 +91,13 @@ export default class Flower{
         let philength = params.petals_philength;
         let amp = params.petals_amplitude;
         let freq = params.petals_freq;
-        let distanceFromCenter = params.petals_fromcenter;
+        let xOffset = params.petals_xoffset;
+        let yOffset = params.petals_yoffset;
         let segment = params.petals_segment;
         let segment_length = params.petals_segment_length;
         let length = params.petals_length;
         for ( var i = 0; i < length; i ++ ) {
-	          points.push( new THREE.Vector2( Math.sin( i * freq ) * amp + distanceFromCenter, ( i - distanceFromCenter ) * segment_length ) );
+	          points.push( new THREE.Vector2( Math.cos( i * freq ) * amp + xOffset, ( i - yOffset ) * segment_length ) );
         }
         let geometry = new THREE.LatheGeometry( points, segment ,phistart, philength);
         return geometry;

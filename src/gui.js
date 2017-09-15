@@ -15,9 +15,12 @@ export default class Gui extends DAT.GUI{
             material: "standard",
             angle:137.5,
             num:53,
-            crown_size:4,
             spread: 0.1,
             growth: 0.12,
+
+            crown_size:4,
+            crown_z: 0.5,
+
             petals_from: 49,
             petals_segment: 10,
             petals_segment_length: 2,
@@ -26,31 +29,42 @@ export default class Gui extends DAT.GUI{
             petals_philength: 1.1,
             petals_amplitude: 0.9,
             petals_freq: 0.2,
-            petals_fromcenter: 1.6,
+            petals_xoffset: 1.6,
+            petals_yoffset: 1.6,
+
             growth_regular: false,
             angle_open: 36.17438258159361,
             starting_angle_open: 47
         };
+        this.remember(this.params);
 
+        let petalFolder = this.addFolder("First Petal");
+        let crownFolder = this.addFolder("Crown Folder");
 
         this.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
-        this.add(this.params, "crown_size").min(1).max(50).step(1).onChange(this.regenerate);
+
         this.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
         this.add(this.params, "angle").min(132.0).max(138.0).step(0.01).onChange(this.regenerate);
         this.add(this.params, "growth").min(0.04).max(0.25).step(0.01).onChange(this.regenerate);
-        this.add(this.params, "petals_from").min(1).max(320).onChange(this.regenerate);
-        this.add(this.params, "petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
-        this.add(this.params, "petals_philength").min(0.1).max(6.3).onChange(this.regenerate);
-        this.add(this.params, "petals_amplitude").min(0.1).max(10.5).onChange(this.regenerate);
-        this.add(this.params, "petals_freq").min(0.1).max(2.5).onChange(this.regenerate);
-        this.add(this.params, "petals_fromcenter").min(0.1).max(15).onChange(this.regenerate);
-        this.add(this.params, "petals_segment").min(2).max(40).onChange(this.regenerate);
-        this.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
-        this.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
         this.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
         this.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
         this.add(this.params, "growth_regular").onChange(this.regenerate);
         this.add(this.params, "material", ["standard", "wireframe", "phong","lambert"]).onChange(this._updateMaterialFolder());
+
+        crownFolder.add(this.params, "crown_size").min(1).max(50).step(1).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_z").min(-10).max(10.0).step(0.1).onChange(this.regenerate);
+
+        petalFolder.add(this.params, "petals_from").min(1).max(320).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_philength").min(0.1).max(6.3).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_amplitude").min(0.1).max(10.5).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_freq").min(0.1).max(2.5).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_xoffset").min(0.1).max(15).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_yoffset").min(-7.0).max(25).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_segment").min(2).max(40).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
+
 
     }
 
