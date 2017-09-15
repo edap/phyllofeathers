@@ -29,8 +29,7 @@ export default class Flower{
         let petalGeom = this.makePetalGeom(params);
         for (var i = 0; i< params.num; i++) {
             let isPetal = (i >= params.petals_from)? true : false;
-            let geometry = isPetal ? petalGeom : crownGeometry;
-            let object = new THREE.Mesh(geometry, this.materials[params.material]);
+            let object = this._createObject(i, params, crownGeometry, petalGeom, isPetal);
             let coord;
             if (isPetal) {
                 coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
@@ -51,6 +50,18 @@ export default class Flower{
             this.objects.push(object);
             this.group.add(object);
         }
+    }
+
+    _createObject(i, params, crownGeom, petalGeom, isPetal) {
+        let geometry = isPetal ? petalGeom : crownGeom;
+        let mat;
+        if (i >= params.petals_from) {
+            mat = this.materials["petal_one"];
+        } else {
+            mat = this.materials["crown"];
+        }
+        let object = new THREE.Mesh(geometry, mat);
+        return object;
     }
 
     reset(){

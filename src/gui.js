@@ -84,7 +84,7 @@ export default class Gui extends DAT.GUI{
         petalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
 
 
-        this._addStandardMaterial(materials['crown'], 'crown');
+        //this._addStandardMaterial(materials['crown'], 'crown');
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
