@@ -1,5 +1,5 @@
 import DAT from 'dat-gui';
-import {Color, Fog} from 'three';
+import {RepeatWrapping, NearestFilter, Color, Fog} from 'three';
 
 export default class Gui extends DAT.GUI{
     constructor(regenerateCallbak){
@@ -34,6 +34,7 @@ export default class Gui extends DAT.GUI{
             petals_freq: 0.2,
             petals_xoffset: 1.6,
             petals_yoffset: 1.6,
+            map:"",
 
             growth_regular: false,
             angle_open: 36.17438258159361,
@@ -70,6 +71,7 @@ export default class Gui extends DAT.GUI{
         petalFolder.add(this.params, "petals_segment").min(2).max(40).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
+        //mat.add( this.params, 'map', this.textureMapKeys ).onChange( this._updateTexture( this.material, 'map', this.textureMaps ) );
 
 
     }
@@ -98,6 +100,22 @@ export default class Gui extends DAT.GUI{
 
 	      folder.addColor( data, "ambient light" ).onChange( this._handleColorChange( ambientLight.color ) );
 	      this.guiSceneFog( folder, scene );
+    }
+
+    // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
+    addTextures(tex){
+        for (var i = 0; i< tex.length; i++) {
+            tex[i].wrapS = RepeatWrapping;
+            tex[i].wrapT = RepeatWrapping;
+        }
+        this.textureMaps = {
+            none: null,
+            city1: tex[0],
+            city2: tex[1]
+        };
+        this.textureMapKeys = this._getObjectsKeys( this.textureMaps );
+        let folder = this.addFolder("Textures");
+        folder.add( this.params, 'map', this.textureMapKeys ).onChange( this._updateTexture( this.materials[this.params.material], 'map', this.textureMaps ) );
     }
 
     guiSceneFog ( folder, scene ) {
@@ -202,6 +220,7 @@ export default class Gui extends DAT.GUI{
         folder.add( material, 'wireframeLinewidth', 0, 10 );
         folder.add( material, 'fog' );
     }
+
     _addLambertMaterial(material){
         this._removeFolder("Material");
         let folder = this.addFolder('Material');
@@ -226,5 +245,30 @@ export default class Gui extends DAT.GUI{
             color : material.color.getHex()
         };
         folder.addColor( data, 'color' ).onChange( this._handleColorChange( material.color ) );
+    }
+
+    _updateTexture ( material, materialKey, textures ) {
+	      return ( key ) => {
+            console.log(materialKey);
+		        material[materialKey] = textures[key];
+            //alphaMap
+            material.alphaTest = 0.2;
+            material.alphaMap = textures[key];
+            material.alphaMap.magFilter = NearestFilter;
+            material.alphaMap.wrapT = RepeatWrapping;
+            material.alphaMap.repeat.y = 1;
+            //fine test
+		        material.needsUpdate = true;
+	      };
+    }
+
+    _getObjectsKeys( obj ) {
+	      var keys = [];
+	      for ( var key in obj ) {
+		        if ( obj.hasOwnProperty( key ) ) {
+			          keys.push( key );
+		        }
+	      }
+	      return keys;
     }
 }

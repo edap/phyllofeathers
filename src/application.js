@@ -35,6 +35,7 @@ function init(assets){
     gui = new Gui(regenerate);
     gui.addScene(scene, ambientLight, renderer);
     gui.addMaterials(materials);
+    gui.addTextures(assets.textures);
     PointLights().map((light) => {
         scene.add( light );
     });

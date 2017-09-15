@@ -3,15 +3,17 @@ import {loadTexture} from "./loaders.js";
 
 export function loadAllAssets(){
     let textureFen1 = loadTexture('./textures/fen_rosa_uno.jpg');
+    let textureFen2 = loadTexture('./textures/fen_rosa_uno.jpg');
 
-    return Promise.all([textureFen1,textureFen1]).then(
+    return Promise.all([textureFen1, textureFen2]).then(
         (res) => {
-            let fenicottero = {
-                prima: res[1],
-                seconda: res[2]
-            };
+            let fenicottero = [
+                res[0],
+                res[1]
+            ];
+            // a seconda dell'uccello ceh vuoi implementare passi le sue textures
             let assets = {
-                fenicotter: fenicottero
+                textures: fenicottero
             };
             return assets;
         },
