@@ -7,8 +7,8 @@ export default class CollectionMaterials {
             "petal_one": new MeshStandardMaterial( {color: 0x55bbaa, emissive:0x77ff22} ),
             "petal_two": new MeshStandardMaterial( {color: 0xFF9922, emissive:0x88bb00} ),
             "standard": new MeshStandardMaterial( {color: 0xFF9922, emissive:0x88bb00} ),
-            "petal_tree": new MeshStandardMaterial( {color: 0x22FF55, emissive:0x000000} ),
-            "petal_for": new MeshStandardMaterial( {color: 0x0a0aFF, emissive:0xFF0000} )
+            "petal_three": new MeshStandardMaterial( {color: 0x22FF55, emissive:0x000000} ),
+            "petal_four": new MeshStandardMaterial( {color: 0x0a0aFF, emissive:0xFF0000} )
         };
         return materials;
     }
