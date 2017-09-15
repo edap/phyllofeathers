@@ -37,7 +37,7 @@ export default class Flower{
                 object.position.set(coord.x, coord.y, coord.z);
                 this.transformIntoPetal(object, i, angleInRadians, params);
             } else {
-                coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
+                coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
                 object.position.set(coord.x, coord.y, coord.z + params.crown_z);
                 object.rotateZ( i* angleInRadians);
                 if (params.growth_regular) {

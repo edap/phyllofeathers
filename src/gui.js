@@ -20,6 +20,8 @@ export default class Gui extends DAT.GUI{
 
             crown_size:4,
             crown_z: 0.5,
+            crown_growth: 0.12,
+            crown_spread: 0.12,
 
             petals_from: 49,
             petals_segment: 10,
@@ -51,8 +53,10 @@ export default class Gui extends DAT.GUI{
         this.add(this.params, "growth_regular").onChange(this.regenerate);
         this.add(this.params, "material", ["standard", "wireframe", "phong","lambert"]).onChange(this._updateMaterialFolder());
 
-        crownFolder.add(this.params, "crown_size").min(1).max(50).step(1).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_size").min(0.1).max(4).step(0.1).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_z").min(-10).max(10.0).step(0.1).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_growth").min(0.0).max(0.25).step(0.01).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_spread").min(0.0).max(1.7).step(0.01).onChange(this.regenerate);
 
         petalFolder.add(this.params, "petals_from").min(1).max(320).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
