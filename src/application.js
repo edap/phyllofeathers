@@ -34,9 +34,8 @@ function init(assets){
     let ambientLight = new THREE.AmbientLight( 0x000000 );
     scene.add( ambientLight );
 
-    gui = new Gui(regenerate, materials);
+    gui = new Gui(regenerate, materials, assets.textures);
     gui.addScene(scene, ambientLight, renderer, materials);
-    gui.addTextures(assets.textures);
     PointLights().map((light) => {
         scene.add( light );
     });

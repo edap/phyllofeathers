@@ -2,7 +2,7 @@ import DAT from 'dat-gui';
 import {RepeatWrapping, NearestFilter, Color, Fog} from 'three';
 
 export default class Gui extends DAT.GUI{
-    constructor(regenerateCallbak, materials){
+    constructor(regenerateCallbak, materials, textures){
         super(
             {
                 load: JSON,
@@ -44,12 +44,13 @@ export default class Gui extends DAT.GUI{
             crown_mat_emissive: 0x00FF00,
             crown_mat_roughness: 0.3,
             crown_mat_metalness: 0.2,
+            crown_mat_map: "",
 
             petal_one_mat_color: 0xFF0000,
             petal_one_mat_emissive: 0x00FF00,
             petal_one_mat_roughness: 0.2,
-            petal_one_mat_metalness: 0.8
-
+            petal_one_mat_metalness: 0.8,
+            petal_one_mat_map: ""
         };
         this.remember(this.params);
 
@@ -83,8 +84,7 @@ export default class Gui extends DAT.GUI{
         petalFolder.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
 
-
-        //this._addStandardMaterial(materials['crown'], 'crown');
+        this._addTextures(textures);
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
@@ -109,7 +109,7 @@ export default class Gui extends DAT.GUI{
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
-    addTextures(tex){
+    _addTextures(tex){
         for (var i = 0; i< tex.length; i++) {
             tex[i].wrapS = RepeatWrapping;
             tex[i].wrapT = RepeatWrapping;
@@ -120,10 +120,6 @@ export default class Gui extends DAT.GUI{
             city2: tex[1]
         };
         this.textureMapKeys = this._getObjectsKeys( this.textureMaps );
-        let folder = this.addFolder("Textures");
-        folder.add( this.params, 'map', this.textureMapKeys ).onChange( this._updateTexture( this.materials[this.params.material], 'map', this.textureMaps ) );
-
-        this._updateTexture( this.materials[this.params.material], 'map', this.textureMaps );
     }
 
     guiSceneFog ( folder, scene ) {
@@ -154,13 +150,6 @@ export default class Gui extends DAT.GUI{
 		        color.setHex( value );
         };
     }
-
-    _handleMetalOrRoughChange ( prev ) {
-	      return function ( value ){
-            prev = value;
-        };
-    }
-
 
     _updateMaterialFolder(){
 	      return ( material ) => {
@@ -193,11 +182,13 @@ export default class Gui extends DAT.GUI{
         let emissive_field = material_string + '_mat_emissive';
         let roughness_field = material_string + '_mat_roughness';
         let metalness_field = material_string + '_mat_metalness';
+        let map_field = material_string + '_mat_map';
 
         folder.addColor( this.params, color_field ).onChange( this._handleColorChange( material.color ) );
         folder.addColor( this.params, emissive_field ).onChange( this._handleColorChange( material.emissive ) );
         folder.add( this.params, roughness_field).min(0).max(1.0).step(0.1).onChange( (val) => { material.roughness = val; } );
         folder.add( this.params, metalness_field, 0, 1 ).onChange( (val) => { material.metalness = val; } );
+        folder.add( this.params, map_field, this.textureMapKeys ).onChange( this._updateTexture( material, 'map', this.textureMaps ) );
     }
 
     _updateTexture ( material, materialKey, textures ) {
@@ -205,11 +196,16 @@ export default class Gui extends DAT.GUI{
             console.log(materialKey);
 		        material[materialKey] = textures[key];
             //alphaMap
-            material.alphaTest = 0.2;
-            material.alphaMap = textures[key];
-            material.alphaMap.magFilter = NearestFilter;
-            material.alphaMap.wrapT = RepeatWrapping;
-            material.alphaMap.repeat.y = 1;
+            console.log(key);
+            if(key!= "none"){
+                material.alphaTest = 0.3;
+                material.alphaMap = textures[key];
+                material.alphaMap.magFilter = NearestFilter;
+                material.alphaMap.wrapT = RepeatWrapping;
+                material.alphaMap.repeat.y = 1;
+            }else{
+                material.alphaMap = null;
+            }
             //fine test
 		        material.needsUpdate = true;
 	      };
