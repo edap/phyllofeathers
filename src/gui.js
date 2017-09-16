@@ -45,12 +45,44 @@ export default class Gui extends DAT.GUI{
             crown_mat_roughness: 0.3,
             crown_mat_metalness: 0.2,
             crown_mat_map: "none",
+            crown_mat_alpha: 0.35,
+
 
             petal_one_mat_color: 0xFF0000,
             petal_one_mat_emissive: 0x00FF00,
             petal_one_mat_roughness: 0.2,
             petal_one_mat_metalness: 0.8,
-            petal_one_mat_map: "none"
+            petal_one_mat_map: "none",
+            petal_one_mat_alpha: 0.35,
+
+            petal_two_mat_color: 0xFF0000,
+            petal_two_mat_emissive: 0x00FF00,
+            petal_two_mat_roughness: 0.2,
+            petal_two_mat_metalness: 0.8,
+            petal_two_mat_map: "none",
+            petal_two_mat_alpha: 0.35,
+
+            petal_three_mat_color: 0xFF0000,
+            petal_three_mat_emissive: 0x00FF00,
+            petal_three_mat_roughness: 0.2,
+            petal_three_mat_metalness: 0.8,
+            petal_three_mat_map: "none",
+            petal_three_mat_alpha: 0.35,
+
+            petal_four_mat_color: 0xFF0000,
+            petal_four_mat_emissive: 0x00FF00,
+            petal_four_mat_roughness: 0.2,
+            petal_four_mat_metalness: 0.8,
+            petal_four_mat_map: "none",
+            petal_four_mat_alpha: 0.35,
+
+            petal_five_mat_color: 0xFF0000,
+            petal_five_mat_emissive: 0x00FF00,
+            petal_five_mat_roughness: 0.2,
+            petal_five_mat_metalness: 0.8,
+            petal_five_mat_map: "none",
+            petal_five_mat_alpha: 0.35
+
         };
         this.remember(this.params);
 
@@ -65,7 +97,6 @@ export default class Gui extends DAT.GUI{
         generalFolder.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
         generalFolder.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
         generalFolder.add(this.params, "growth_regular").onChange(this.regenerate);
-        //generalFolder.add(this.params, "material", ["crown", "petal_one", "petal_two", "petal_three", "petal_four"]).onChange(this._updateMaterialFolder());
 
         crownFolder.add(this.params, "crown_size").min(0.1).max(4).step(0.1).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_z").min(-10).max(10.0).step(0.1).onChange(this.regenerate);
@@ -87,6 +118,10 @@ export default class Gui extends DAT.GUI{
         this._addTextures(textures);
         this._addStandardMaterial(materials["crown"], 'crown_mat');
         this._addStandardMaterial(materials["petal_one"], 'petal_one_mat');
+        this._addStandardMaterial(materials["petal_two"], 'petal_two_mat');
+        this._addStandardMaterial(materials["petal_three"], 'petal_three_mat');
+        this._addStandardMaterial(materials["petal_four"], 'petal_four_mat');
+        //this._addStandardMaterial(materials["petal_five"], 'petal_five_mat');
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
@@ -104,16 +139,8 @@ export default class Gui extends DAT.GUI{
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
-    _addTextures(tex){
-        for (var i = 0; i< tex.length; i++) {
-            tex[i].wrapS = RepeatWrapping;
-            tex[i].wrapT = RepeatWrapping;
-        }
-        this.textureMaps = {
-            none: null,
-            city1: tex[0],
-            city2: tex[1]
-        };
+    _addTextures(texMap){
+        this.textureMaps = texMap;
         this.textureMapKeys = this._getObjectsKeys( this.textureMaps );
     }
 
@@ -177,31 +204,36 @@ export default class Gui extends DAT.GUI{
         let emissive_field = material_string + '_emissive';
         let roughness_field = material_string + '_roughness';
         let metalness_field = material_string + '_metalness';
+        let alpha_field = material_string + '_alpha';
         let map_field = material_string + '_map';
 
         folder.addColor( this.params, color_field ).onChange( this._handleColorChange( material.color ) );
         folder.addColor( this.params, emissive_field ).onChange( this._handleColorChange( material.emissive ) );
         folder.add( this.params, roughness_field).min(0).max(1.0).step(0.1).onChange( (val) => { material.roughness = val; } );
-        folder.add( this.params, metalness_field, 0, 1 ).onChange( (val) => { material.metalness = val; } );
+        folder.add( this.params, metalness_field, 0, 1).onChange( (val) => { material.metalness = val; } );
+        //debugger
         folder.add( this.params, map_field, this.textureMapKeys ).onChange( this._updateTexture( material, 'map', this.textureMaps ) );
+        folder.add( this.params, alpha_field, 0, 1).onChange( (val) => {
+            if (material.alphaMap != null) {
+                material.alphaTest = val;
+		            material.needsUpdate = true;
+            }
+        });
     }
 
     _updateTexture ( material, materialKey, textures ) {
+        console.log(textures);
 	      return ( key ) => {
-            console.log(materialKey);
 		        material[materialKey] = textures[key];
-            //alphaMap
-            console.log(key);
-            if(key!= "none"){
+            if( key!= "none") {
                 material.alphaTest = 0.35;
-                material.alphaMap = textures[key];
+                material.alphaMap = textures[key+'_alpha'];
                 material.alphaMap.magFilter = NearestFilter;
                 material.alphaMap.wrapT = RepeatWrapping;
                 material.alphaMap.repeat.y = 1;
-            }else{
+            } else {
                 material.alphaMap = null;
             }
-            //fine test
 		        material.needsUpdate = true;
 	      };
     }

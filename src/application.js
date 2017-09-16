@@ -77,7 +77,7 @@ let regenerate = () => {
     flower.regenerate(gui.params);
 }
 
-loadAllAssets().then(
+loadAllAssets('blue-frontend-parrot').then(
     (assets) => {
         init(assets);
     },
