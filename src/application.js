@@ -31,11 +31,11 @@ function init(assets){
     stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 
     //lights
-    let ambientLight = new THREE.AmbientLight( 0x000000 );
+    let ambientLight = new THREE.AmbientLight( 0xFFFFFF );
     scene.add( ambientLight );
 
     gui = new Gui(regenerate, materials, assets.textures);
-    gui.addScene(scene, ambientLight, renderer, materials);
+    gui.addScene(scene, renderer, materials);
     PointLights().map((light) => {
         scene.add( light );
     });

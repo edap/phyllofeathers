@@ -21,6 +21,8 @@ export default class Gui extends DAT.GUI{
             angle_open: 36.17438258159361,
             starting_angle_open: 47,
 
+            background: 0xFF0000,
+
             crown_size:4,
             crown_z: 0.5,
             crown_growth: 0.12,
@@ -88,23 +90,16 @@ export default class Gui extends DAT.GUI{
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
-    addScene ( scene, ambientLight, renderer ) {
+    addScene ( scene, renderer ) {
 	      let folder = this.addFolder('Scene');
-	      let data = {
-		        background : "#000000",
-		        "ambient light" : ambientLight.color.getHex()
-	      };
-
 	      let color = new Color();
 	      let colorConvert = this._handleColorChange( color );
 
-	      folder.addColor( data, "background" ).onChange( function ( value ) {
+	      folder.addColor( this.params, "background" ).onChange( function ( value ) {
 		        colorConvert( value );
 		        renderer.setClearColor( color.getHex() );
 
 	      } );
-
-	      folder.addColor( data, "ambient light" ).onChange( this._handleColorChange( ambientLight.color ) );
 	      this.guiSceneFog( folder, scene );
     }
 
