@@ -1,5 +1,5 @@
 import DAT from 'dat-gui';
-import {RepeatWrapping, NearestFilter, Color, Fog} from 'three';
+import {RepeatWrapping, NearestFilter, LinearFilter, LinearMipMapLinearFilter, Color, Fog} from 'three';
 
 export default class Gui extends DAT.GUI{
     constructor(regenerateCallbak, materials, textures){
@@ -42,44 +42,38 @@ export default class Gui extends DAT.GUI{
 
             crown_mat_color: 0xFF0000,
             crown_mat_emissive: 0x00FF00,
-            crown_mat_roughness: 0.3,
-            crown_mat_metalness: 0.2,
+            crown_mat_shininess: 0.2,
             crown_mat_map: "none",
             crown_mat_alpha: 0.35,
 
 
             petal_one_mat_color: 0xFF0000,
             petal_one_mat_emissive: 0x00FF00,
-            petal_one_mat_roughness: 0.2,
-            petal_one_mat_metalness: 0.8,
+            petal_one_mat_shininess: 0.8,
             petal_one_mat_map: "none",
             petal_one_mat_alpha: 0.35,
 
             petal_two_mat_color: 0xFF0000,
             petal_two_mat_emissive: 0x00FF00,
-            petal_two_mat_roughness: 0.2,
-            petal_two_mat_metalness: 0.8,
+            petal_two_mat_shininess: 0.8,
             petal_two_mat_map: "none",
             petal_two_mat_alpha: 0.35,
 
             petal_three_mat_color: 0xFF0000,
             petal_three_mat_emissive: 0x00FF00,
-            petal_three_mat_roughness: 0.2,
-            petal_three_mat_metalness: 0.8,
+            petal_three_mat_shininess: 0.8,
             petal_three_mat_map: "none",
             petal_three_mat_alpha: 0.35,
 
             petal_four_mat_color: 0xFF0000,
             petal_four_mat_emissive: 0x00FF00,
-            petal_four_mat_roughness: 0.2,
-            petal_four_mat_metalness: 0.8,
+            petal_four_mat_shininess: 0.8,
             petal_four_mat_map: "none",
             petal_four_mat_alpha: 0.35,
 
             petal_five_mat_color: 0xFF0000,
             petal_five_mat_emissive: 0x00FF00,
-            petal_five_mat_roughness: 0.2,
-            petal_five_mat_metalness: 0.8,
+            petal_five_mat_shininess: 0.8,
             petal_five_mat_map: "none",
             petal_five_mat_alpha: 0.35
 
@@ -202,15 +196,13 @@ export default class Gui extends DAT.GUI{
         var folder = this.addFolder(material_string);
         let color_field = material_string + '_color';
         let emissive_field = material_string + '_emissive';
-        let roughness_field = material_string + '_roughness';
-        let metalness_field = material_string + '_metalness';
+        let shininess_field = material_string + '_shininess';
         let alpha_field = material_string + '_alpha';
         let map_field = material_string + '_map';
 
         folder.addColor( this.params, color_field ).onChange( this._handleColorChange( material.color ) );
         folder.addColor( this.params, emissive_field ).onChange( this._handleColorChange( material.emissive ) );
-        folder.add( this.params, roughness_field).min(0).max(1.0).step(0.1).onChange( (val) => { material.roughness = val; } );
-        folder.add( this.params, metalness_field, 0, 1).onChange( (val) => { material.metalness = val; } );
+        folder.add( this.params, shininess_field, 0, 1).onChange( (val) => { material.shininess = val; } );
         //debugger
         folder.add( this.params, map_field, this.textureMapKeys ).onChange( this._updateTexture( material, 'map', this.textureMaps ) );
         folder.add( this.params, alpha_field, 0, 1).onChange( (val) => {
@@ -226,9 +218,15 @@ export default class Gui extends DAT.GUI{
 	      return ( key ) => {
 		        material[materialKey] = textures[key];
             if( key!= "none") {
-                material.alphaTest = 0.35;
+                material[materialKey].magFilter = LinearFilter;
+                material[materialKey].minFilter = LinearMipMapLinearFilter;
+                material[materialKey].anisotropy = 1;
+                material.alphaTest = 0.50;
                 material.alphaMap = textures[key+'_alpha'];
-                material.alphaMap.magFilter = NearestFilter;
+                material.normalMap = textures[key+'_nrm'];
+                material.specularMap = textures[key+'_spec'];
+                //material.alphaMap.magFilter = LinearFilter;
+                //material.alphaMap.minFilter = LinearMipMapLinearFilter;
                 material.alphaMap.wrapT = RepeatWrapping;
                 material.alphaMap.repeat.y = 1;
             } else {
