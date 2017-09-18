@@ -228,7 +228,8 @@ export default class Gui extends DAT.GUI{
                 //material.alphaMap.magFilter = LinearFilter;
                 //material.alphaMap.minFilter = LinearMipMapLinearFilter;
                 material.alphaMap.wrapT = RepeatWrapping;
-                material.alphaMap.repeat.y = 1;
+                material.alphaMap.wrapS = RepeatWrapping;
+                //material.alphaMap.repeat.y = 1;
             } else {
                 material.alphaMap = null;
             }

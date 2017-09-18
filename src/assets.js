@@ -30,10 +30,16 @@ function loadBlueFrontendParrot(){
     let azulA = loadTexture(folder+"gray_blue_alpha.jpg");
     let azulN = loadTexture(folder+"gray_blue_NRM.jpg");
     let azulS = loadTexture(folder+"gray_blue_SPEC.jpg");
+    let greenlight = loadTexture(folder+"green_light.jpg");
+    let greenlightA = loadTexture(folder+"green_light_alpha.jpg");
+    let greenlightN = loadTexture(folder+"green_light_NRM.jpg");
+    let greenlightS = loadTexture(folder+"green_light_SPEC.jpg");
 
     return Promise.all([greenstraight, greenstraightA, greenstraightN, greenstraightS,
                         red, redA, redN, redS,
-                        azul, azulA, azulN, azulS]).then(
+                        azul, azulA, azulN, azulS,
+                        greenlight, greenlightA, greenlightN, greenlightS,
+                       ]).then(
         (tex) => {
             for (var i = 0; i< tex.length; i++) {
                 tex[i].wrapS = RepeatWrapping;
@@ -52,7 +58,11 @@ function loadBlueFrontendParrot(){
                 grayblue: tex[8],
                 grayblue_alpha: tex[9],
                 grayblue_nrm: tex[10],
-                grayblue_spec: tex[11]
+                grayblue_spec: tex[11],
+                greenlight: tex[12],
+                greenlight_alpha: tex[13],
+                greenlight_nrm: tex[14],
+                greenlight_spec: tex[15]
             };
             let assets = {
                 textures: bird
