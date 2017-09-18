@@ -5,18 +5,21 @@ import Stats from 'stats.js';
 import CollectionMaterials from './materials.js';
 import {loadAllAssets} from './assets.js';
 import Flower from './flower.js';
+import Bg from './background.js';
 import {PointLights} from './pointLights.js';
 
 const debug = true;
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({antialias:true});
+const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
+//renderer.autoClear = false;
 const stats = new Stats();
 const materials = new CollectionMaterials();
 let gui;
 let controls;
 let flower;
+let background;
 
 function init(assets){
     console.log(assets);
@@ -27,6 +30,9 @@ function init(assets){
     camera.position.z = 80;
     controls = new OrbitControls(camera, renderer.domElement);
 
+    //Background
+    background = new Bg(assets.bg);
+
     // stats
     stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 
@@ -35,7 +41,7 @@ function init(assets){
     scene.add( ambientLight );
 
     gui = new Gui(regenerate, materials, assets.textures);
-    gui.addScene(scene, renderer, materials);
+    //gui.addScene(scene, renderer, materials);
     PointLights().map((light) => {
         scene.add( light );
     });
@@ -68,9 +74,12 @@ function addStats(debug) {
 
 function render(){
     stats.begin();
+    requestAnimationFrame(render);
+    renderer.autoClear = false;
+    renderer.clear();
+    renderer.render(background.getScene(), background.getCamera());
     renderer.render(scene, camera);
     stats.end();
-    requestAnimationFrame(render);
 }
 
 let regenerate = () => {

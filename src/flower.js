@@ -27,18 +27,22 @@ export default class Flower{
         let widthSegments = 32;
         let crownGeom = this.makePetalGeom(params, "crown");
         let petalGeom = this.makePetalGeom(params, "petals");
+        let secPetalGeom = this.makePetalGeom(params, "sec_petals");
         for (var i = 0; i< params.num; i++) {
-            let isPetal = (i >= params.petals_from)? true : false;
-            let object = this._createObject(i, params, crownGeom, petalGeom, isPetal);
+            let object = this._createObject(i, params, crownGeom, petalGeom, secPetalGeom);
             let coord;
-            if (isPetal) {
+            if (i <= params.petals_from) {
+                coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
+                object.position.set(coord.x, coord.y, coord.z + params.crown_z);
+                this.disposePetal(object, i, angleInRadians, params, "crown");
+            } else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
                 coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
                 object.position.set(coord.x, coord.y, coord.z);
                 this.disposePetal(object, i, angleInRadians, params, "petals");
             } else {
-                coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
-                object.position.set(coord.x, coord.y, coord.z + params.crown_z);
-                this.disposePetal(object, i, angleInRadians, params, "crown");
+                coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
+                object.position.set(coord.x, coord.y, coord.z);
+                this.disposePetal(object, i, angleInRadians, params, "sec_petals");
             }
             object.castShadow = true;
             object.receiveShadow = true;
@@ -47,13 +51,18 @@ export default class Flower{
         }
     }
 
-    _createObject(i, params, crownGeom, petalGeom, isPetal) {
-        let geometry = isPetal ? petalGeom : crownGeom;
+    _createObject(i, params, crownGeom, petalGeom, secPetalGeom) {
         let mat;
-        if (i >= params.petals_from) {
+        let geometry;
+        if (i <= params.petals_from) {
+            geometry = crownGeom;
+            mat = this.materials["crown"];
+        } else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
+            geometry = petalGeom;
             mat = this.materials["petal_one"];
         } else {
-            mat = this.materials["crown"];
+            geometry = secPetalGeom;
+            mat = this.materials["petal_two"];
         }
         let object = new THREE.Mesh(geometry, mat);
         return object;

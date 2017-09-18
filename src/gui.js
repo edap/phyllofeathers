@@ -20,6 +20,7 @@ export default class Gui extends DAT.GUI{
             growth_regular: false,
             angle_open: 36.17438258159361,
             starting_angle_open: 47,
+            strategy: "none",
 
             background: 0xFF0000,
 
@@ -56,6 +57,17 @@ export default class Gui extends DAT.GUI{
             petals_xoffset: 1.6,
             petals_yoffset: 1.6,
 
+            sec_petals_from: 49,
+            sec_petals_scale:2.0,
+            sec_petals_segment: 10,
+            sec_petals_segment_length: 2,
+            sec_petals_length: 20,
+            sec_petals_phistart: 1.0,
+            sec_petals_philength: 1.1,
+            sec_petals_amplitude: 0.9,
+            sec_petals_freq: 0.2,
+            sec_petals_xoffset: 1.6,
+            sec_petals_yoffset: 1.6,
 
             petal_one_mat_color: 0xFF0000,
             petal_one_mat_emissive: 0x00FF00,
@@ -91,8 +103,9 @@ export default class Gui extends DAT.GUI{
         this.remember(this.params);
 
         let generalFolder = this.addFolder("General");
-        let crownFolder = this.addFolder("Crown Folder");
+        let crownFolder = this.addFolder("Crown");
         let petalFolder = this.addFolder("First Petal");
+        let secPetalFolder = this.addFolder("Second Petal");
 
         generalFolder.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
         generalFolder.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
@@ -101,6 +114,7 @@ export default class Gui extends DAT.GUI{
         generalFolder.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
         generalFolder.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
         generalFolder.add(this.params, "growth_regular").onChange(this.regenerate);
+        generalFolder.add(this.params, "strategy",["none", "normal", "radius"]).onChange(this.regenerate);
 
         crownFolder.add(this.params, "crown_z").min(-20).max(10.0).step(0.1).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_growth").min(0.0).max(0.25).step(0.01).onChange(this.regenerate);
@@ -128,6 +142,19 @@ export default class Gui extends DAT.GUI{
         petalFolder.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
 
+        secPetalFolder.add(this.params, "sec_petals_from").min(1).max(320).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_scale").min(0.1).max(1.0).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_philength").min(0.1).max(6.3).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_amplitude").min(0.1).max(10.5).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_freq").min(0.1).max(2.5).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_xoffset").min(0.1).max(15).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_yoffset").min(-7.0).max(25).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_segment").min(2).max(40).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
+
+
         this._addTextures(textures);
         this._addStandardMaterial(materials["crown"], 'crown_mat');
         this._addStandardMaterial(materials["petal_one"], 'petal_one_mat');
@@ -145,7 +172,7 @@ export default class Gui extends DAT.GUI{
 
 	      folder.addColor( this.params, "background" ).onChange( function ( value ) {
 		        colorConvert( value );
-		        renderer.setClearColor( color.getHex() );
+		        //renderer.setClearColor( color.getHex() );
 
 	      } );
 	      this.guiSceneFog( folder, scene );
