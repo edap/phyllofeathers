@@ -23,10 +23,26 @@ export default class Gui extends DAT.GUI{
 
             background: 0xFF0000,
 
-            crown_size:4,
             crown_z: 0.5,
             crown_growth: 0.12,
             crown_spread: 0.12,
+
+            crown_scale:2.0,
+            crown_segment: 10,
+            crown_segment_length: 2,
+            crown_length: 20,
+            crown_phistart: 1.0,
+            crown_philength: 1.1,
+            crown_amplitude: 0.9,
+            crown_freq: 0.2,
+            crown_xoffset: 1.6,
+            crown_yoffset: 1.6,
+
+            crown_mat_color: 0xFF0000,
+            crown_mat_emissive: 0x00FF00,
+            crown_mat_shininess: 0.2,
+            crown_mat_map: "none",
+            crown_mat_alpha: 0.35,
 
             petals_from: 49,
             petals_scale:2.0,
@@ -39,12 +55,6 @@ export default class Gui extends DAT.GUI{
             petals_freq: 0.2,
             petals_xoffset: 1.6,
             petals_yoffset: 1.6,
-
-            crown_mat_color: 0xFF0000,
-            crown_mat_emissive: 0x00FF00,
-            crown_mat_shininess: 0.2,
-            crown_mat_map: "none",
-            crown_mat_alpha: 0.35,
 
 
             petal_one_mat_color: 0xFF0000,
@@ -80,9 +90,9 @@ export default class Gui extends DAT.GUI{
         };
         this.remember(this.params);
 
-        let petalFolder = this.addFolder("First Petal");
-        let crownFolder = this.addFolder("Crown Folder");
         let generalFolder = this.addFolder("General");
+        let crownFolder = this.addFolder("Crown Folder");
+        let petalFolder = this.addFolder("First Petal");
 
         generalFolder.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
         generalFolder.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
@@ -92,10 +102,19 @@ export default class Gui extends DAT.GUI{
         generalFolder.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
         generalFolder.add(this.params, "growth_regular").onChange(this.regenerate);
 
-        crownFolder.add(this.params, "crown_size").min(0.1).max(4).step(0.1).onChange(this.regenerate);
-        crownFolder.add(this.params, "crown_z").min(-10).max(10.0).step(0.1).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_z").min(-20).max(10.0).step(0.1).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_growth").min(0.0).max(0.25).step(0.01).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_spread").min(0.0).max(1.7).step(0.01).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_scale").min(0.1).max(1.0).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_phistart").min(0.1).max(6.3).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_philength").min(0.1).max(6.3).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_amplitude").min(0.1).max(10.5).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_freq").min(0.1).max(2.5).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_xoffset").min(0.1).max(15).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_yoffset").min(-7.0).max(25).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_segment").min(2).max(40).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
+        crownFolder.add(this.params, "crown_length").min(3).max(30).onChange(this.regenerate);
 
         petalFolder.add(this.params, "petals_from").min(1).max(320).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_scale").min(0.1).max(1.0).onChange(this.regenerate);

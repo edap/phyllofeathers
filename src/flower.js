@@ -25,25 +25,20 @@ export default class Flower{
         let angleInRadians = params.angle * PItoDeg;
 
         let widthSegments = 32;
-        let crownGeometry = new THREE.SphereGeometry(params.crown_size, widthSegments, widthSegments);
-        let petalGeom = this.makePetalGeom(params);
+        let crownGeom = this.makePetalGeom(params, "crown");
+        let petalGeom = this.makePetalGeom(params, "petals");
         for (var i = 0; i< params.num; i++) {
             let isPetal = (i >= params.petals_from)? true : false;
-            let object = this._createObject(i, params, crownGeometry, petalGeom, isPetal);
+            let object = this._createObject(i, params, crownGeom, petalGeom, isPetal);
             let coord;
             if (isPetal) {
                 coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
                 object.position.set(coord.x, coord.y, coord.z);
-                this.transformIntoPetal(object, i, angleInRadians, params);
+                this.disposePetal(object, i, angleInRadians, params, "petals");
             } else {
                 coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
                 object.position.set(coord.x, coord.y, coord.z + params.crown_z);
-                object.rotateZ( i* angleInRadians);
-                if (params.growth_regular) {
-                    object.rotateY( (90 + params.angle_open ) * -PItoDeg );
-                } else {
-                    object.rotateY( (90 + params.angle_open + i * 100/params.num ) * -PItoDeg );
-                }
+                this.disposePetal(object, i, angleInRadians, params, "crown");
             }
             object.castShadow = true;
             object.receiveShadow = true;
@@ -72,7 +67,7 @@ export default class Flower{
         this.objects = [];
     }
 
-    transformIntoPetal(object, iter, angleInRadians, params){
+    disposePetal(object, iter, angleInRadians, params, suffix){
         object.material.side = THREE.DoubleSide;
         //calculate needed variable
         let PItoDeg = Math.PI/180.0;
@@ -89,22 +84,28 @@ export default class Flower{
         object.rotateX( (params.starting_angle_open + y_angle + iter * 90/params.num ) * -PItoDeg );
 
         // Scale:
-        let scaleMag = params.petals_scale * scaleRatio;
+        // do not scale petals in the crown depending on the iteration number
+        let scaleMag;
+        if (suffix != "crown") {
+            scaleMag = params[suffix+"_scale"] * scaleRatio;
+        } else {
+            scaleMag = params[suffix+"_scale"] * 1.0;
+        }
         object.scale.set(scaleMag, scaleMag, scaleMag);
         object.rotateY((Math.PI/2));
     }
 
-    makePetalGeom(params){
+    makePetalGeom(params, suffix){
         let points = [];
-        let phistart = params.petals_phistart;
-        let philength = params.petals_philength;
-        let amp = params.petals_amplitude;
-        let freq = params.petals_freq;
-        let xOffset = params.petals_xoffset;
-        let yOffset = params.petals_yoffset;
-        let segment = params.petals_segment;
-        let segment_length = params.petals_segment_length;
-        let length = params.petals_length;
+        let phistart = params[suffix+"_phistart"];
+        let philength = params[suffix+"_philength"];
+        let amp = params[suffix+"_amplitude"];
+        let freq = params[suffix+"_freq"];
+        let xOffset = params[suffix+"_xoffset"];
+        let yOffset = params[suffix+"_yoffset"];
+        let segment = params[suffix+"_segment"];
+        let segment_length = params[suffix+"_segment_length"];
+        let length = params[suffix+"_length"];
         for ( var i = 0; i < length; i ++ ) {
 	          points.push( new THREE.Vector2( Math.cos( i * freq ) * amp + xOffset, ( i - yOffset ) * segment_length ) );
         }
