@@ -55,39 +55,12 @@ export default class Flower{
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {
-        let geometry;
-        let strategy = params.strategy;
-        //geometry
-        if (i <= params.petals_from) {
-            geometry = crownGeom;
-        } else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
-            geometry = petalGeom;
-        } else {
-            geometry = secPetalGeom;
-        }
-
-        let mat = this._getMaterial(params, i, angleInRadians);
-
-        let object = new THREE.Mesh(geometry, mat);
+        let strategy = this.strategy.get(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom);
+        let object = new THREE.Mesh(strategy.geometry, strategy.mat);
+        object["strategy"] = params.strategy;
         return object;
     }
 
-    _getMaterial(params, i, angle){
-        switch(params.strategy){
-        case "normal":
-            return this.strategy.normalMat(i, angle,params);
-            break;
-        case "radius":
-            return this.strategy.radiusMat(i, angle,params);
-            break;
-        case "angle":
-            return this.strategy.angleMat(i, angle,params);
-            break;
-        default:
-            return this.strategy.normalMat(i, angle,params);
-            break;
-        }
-    }
     reset(){
         for(var index in this.objects){
             let object = this.objects[index];
