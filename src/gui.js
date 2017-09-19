@@ -114,7 +114,7 @@ export default class Gui extends DAT.GUI{
         generalFolder.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
         generalFolder.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
         generalFolder.add(this.params, "growth_regular").onChange(this.regenerate);
-        generalFolder.add(this.params, "strategy",["none", "normal", "radius"]).onChange(this.regenerate);
+        generalFolder.add(this.params, "strategy",["none", "normal", "radius", "angle"]).onChange(this.regenerate);
 
         crownFolder.add(this.params, "crown_z").min(-20).max(10.0).step(0.1).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_growth").min(0.0).max(0.25).step(0.01).onChange(this.regenerate);
@@ -152,7 +152,7 @@ export default class Gui extends DAT.GUI{
         secPetalFolder.add(this.params, "sec_petals_yoffset").min(-7.0).max(25).onChange(this.regenerate);
         secPetalFolder.add(this.params, "sec_petals_segment").min(2).max(40).onChange(this.regenerate);
         secPetalFolder.add(this.params, "sec_petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
-        secPetalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_length").min(3).max(30).onChange(this.regenerate);
 
 
         this._addTextures(textures);
@@ -161,7 +161,6 @@ export default class Gui extends DAT.GUI{
         this._addStandardMaterial(materials["petal_two"], 'petal_two_mat');
         this._addStandardMaterial(materials["petal_three"], 'petal_three_mat');
         this._addStandardMaterial(materials["petal_four"], 'petal_four_mat');
-        //this._addStandardMaterial(materials["petal_five"], 'petal_five_mat');
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js

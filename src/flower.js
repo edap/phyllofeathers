@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {phyllotaxisConical} from './phyllotaxis.js';
+import Strategy from './strategy.js';
 //https://medium.com/@bgolus/anti-aliased-alpha-test-the-esoteric-alpha-to-coverage-8b177335ae4f
 
 export default class Flower{
@@ -8,6 +9,8 @@ export default class Flower{
         this.materials = materials;
         this.objects = [];
         this.group = new THREE.Group();
+        this.strategy = new Strategy(materials);
+
         this.generate(params);
     }
 
@@ -29,7 +32,7 @@ export default class Flower{
         let petalGeom = this.makePetalGeom(params, "petals");
         let secPetalGeom = this.makePetalGeom(params, "sec_petals");
         for (var i = 0; i< params.num; i++) {
-            let object = this._createObject(i, params, crownGeom, petalGeom, secPetalGeom);
+            let object = this._createObject(i, params.angle, params, crownGeom, petalGeom, secPetalGeom);
             let coord;
             if (i <= params.petals_from) {
                 coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
@@ -51,23 +54,40 @@ export default class Flower{
         }
     }
 
-    _createObject(i, params, crownGeom, petalGeom, secPetalGeom) {
-        let mat;
+    _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {
         let geometry;
+        let strategy = params.strategy;
+        //geometry
         if (i <= params.petals_from) {
             geometry = crownGeom;
-            mat = this.materials["crown"];
         } else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
             geometry = petalGeom;
-            mat = this.materials["petal_one"];
         } else {
             geometry = secPetalGeom;
-            mat = this.materials["petal_two"];
         }
+
+        let mat = this._getMaterial(params, i, angleInRadians);
+
         let object = new THREE.Mesh(geometry, mat);
         return object;
     }
 
+    _getMaterial(params, i, angle){
+        switch(params.strategy){
+        case "normal":
+            return this.strategy.normalMat(i, angle,params);
+            break;
+        case "radius":
+            return this.strategy.radiusMat(i, angle,params);
+            break;
+        case "angle":
+            return this.strategy.angleMat(i, angle,params);
+            break;
+        default:
+            return this.strategy.normalMat(i, angle,params);
+            break;
+        }
+    }
     reset(){
         for(var index in this.objects){
             let object = this.objects[index];

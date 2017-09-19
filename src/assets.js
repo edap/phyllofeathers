@@ -26,6 +26,10 @@ function loadBlueFrontendParrot(){
     let redA = loadTexture(folder+"red_alpha.jpg");
     let redN = loadTexture(folder+"red_NRM.jpg");
     let redS = loadTexture(folder+"red_SPEC.jpg");
+    let yellow = loadTexture(folder+"yellow.jpg");
+    let yellowA = loadTexture(folder+"yellow_alpha.jpg");
+    let yellowN = loadTexture(folder+"yellow_NRM.jpg");
+    let yellowS = loadTexture(folder+"yellow_SPEC.jpg");
     let azul = loadTexture(folder+"gray_blue.jpg");
     let azulA = loadTexture(folder+"gray_blue_alpha.jpg");
     let azulN = loadTexture(folder+"gray_blue_NRM.jpg");
@@ -40,6 +44,7 @@ function loadBlueFrontendParrot(){
                         red, redA, redN, redS,
                         azul, azulA, azulN, azulS,
                         greenlight, greenlightA, greenlightN, greenlightS,
+                        yellow, yellowA, yellowN, yellowS,
                         bg
                        ]).then(
         (tex) => {
@@ -64,11 +69,15 @@ function loadBlueFrontendParrot(){
                 greenlight: tex[12],
                 greenlight_alpha: tex[13],
                 greenlight_nrm: tex[14],
-                greenlight_spec: tex[15]
+                greenlight_spec: tex[15],
+                yellow: tex[16],
+                yellow_alpha: tex[17],
+                yellow_nrm: tex[18],
+                yellow_spec: tex[19]
             };
             let assets = {
                 textures: bird,
-                bg: tex[16]
+                bg: tex[20]
             };
             return assets;
         },
