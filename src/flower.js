@@ -18,6 +18,24 @@ export default class Flower{
         return this.group;
     }
 
+    flipAtRandomIntervals(time, frequency, duration){
+        // start with a circular movement, and an animation dictated from a value that goes from 0 to 1
+        
+    }
+
+    flip(time){
+        for(var index in this.objects){
+            let object = this.objects[index];
+            object.rotateOnAxis(new THREE.Vector3(0, 0 ,1), Math.sin(time));
+        }
+    }
+
+    _moveInCircle(time, n_circles = 1){
+        let x = Math.sin(time);
+        let y = Math.cos(time);
+        this.group.position.set(x, y, 0);
+    }
+
     regenerate(params){
         this.reset();
         this.generate(params);
@@ -89,9 +107,9 @@ export default class Flower{
         // do not scale petals in the crown depending on the iteration number
         let scaleMag;
         if (suffix != "crown") {
-            scaleMag = params[suffix+"_scale"] * scaleRatio;
+            scaleMag = params[`${suffix}_scale`] * scaleRatio;
         } else {
-            scaleMag = params[suffix+"_scale"] * 1.0;
+            scaleMag = params[`${suffix}_scale`] * 1.0;
         }
         object.scale.set(scaleMag, scaleMag, scaleMag);
         object.rotateY((Math.PI/2));
@@ -99,15 +117,15 @@ export default class Flower{
 
     makePetalGeom(params, suffix){
         let points = [];
-        let phistart = params[suffix+"_phistart"];
-        let philength = params[suffix+"_philength"];
-        let amp = params[suffix+"_amplitude"];
-        let freq = params[suffix+"_freq"];
-        let xOffset = params[suffix+"_xoffset"];
-        let yOffset = params[suffix+"_yoffset"];
-        let segment = params[suffix+"_segment"];
-        let segment_length = params[suffix+"_segment_length"];
-        let length = params[suffix+"_length"];
+        let phistart = params[`${suffix}_phistart`];
+        let philength = params[`${suffix}_philength`];
+        let amp = params[`${suffix}_amplitude`];
+        let freq = params[`${suffix}_freq`];
+        let xOffset = params[`${suffix}_xoffset`];
+        let yOffset = params[`${suffix}_yoffset`];
+        let segment = params[`${suffix}_segment`];
+        let segment_length = params[`${suffix}_segment_length`];
+        let length = params[`${suffix}_length`];
         for ( var i = 0; i < length; i ++ ) {
 	          points.push( new THREE.Vector2( Math.cos( i * freq ) * amp + xOffset, ( i - yOffset ) * segment_length ) );
         }

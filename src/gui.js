@@ -164,43 +164,9 @@ export default class Gui extends DAT.GUI{
     }
 
     // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
-    addScene ( scene, renderer ) {
-	      let folder = this.addFolder('Scene');
-	      let color = new Color();
-	      let colorConvert = this._handleColorChange( color );
-
-	      folder.addColor( this.params, "background" ).onChange( function ( value ) {
-		        colorConvert( value );
-		        //renderer.setClearColor( color.getHex() );
-
-	      } );
-	      this.guiSceneFog( folder, scene );
-    }
-
-    // credtis to these methods goes to Greg Tatum https://threejs.org/docs/scenes/js/material.js
     _addTextures(texMap){
         this.textureMaps = texMap;
         this.textureMapKeys = this._getObjectsKeys( this.textureMaps );
-    }
-
-    guiSceneFog ( folder, scene ) {
-	      let fogFolder = folder.addFolder('scene.fog');
-	      let fog = new Fog( 0x3f7b9d, 0, 60 );
-	      let data = {
-		        fog : {
-			          "THREE.Fog()" : false,
-			          "scene.fog.color" : fog.color.getHex()
-		        }
-	      };
-
-	      fogFolder.add( data.fog, 'THREE.Fog()' ).onChange( function ( useFog ) {
-		        if ( useFog ) {
-			          scene.fog = fog;
-		        } else {
-			          scene.fog = null;
-		        }
-	      } );
-	      fogFolder.addColor( data.fog, 'scene.fog.color').onChange( this._handleColorChange( fog.color ) );
     }
 
     _handleColorChange ( color ) {
@@ -256,6 +222,7 @@ export default class Gui extends DAT.GUI{
 		            material.needsUpdate = true;
             }
         });
+        this._updateTexture( material, 'map', this.textureMaps );
     }
 
     _updateTexture ( material, materialKey, textures ) {

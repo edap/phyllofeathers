@@ -13,6 +13,7 @@ const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
+const clock = new THREE.Clock();
 //renderer.autoClear = false;
 const stats = new Stats();
 const materials = new CollectionMaterials();
@@ -73,10 +74,12 @@ function addStats(debug) {
 }
 
 function render(){
+    let delta = clock.getDelta();
     stats.begin();
     requestAnimationFrame(render);
     renderer.autoClear = false;
     renderer.clear();
+    //flower.flip(delta);
     renderer.render(background.getScene(), background.getCamera());
     renderer.render(scene, camera);
     stats.end();

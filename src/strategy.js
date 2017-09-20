@@ -79,8 +79,8 @@ export default class Strategy{
         let quartOfSpace = availableSpace / 4.0;
         let radiusNotInCrown = radius - minRadius;
 
-        console.log(radiusNotInCrown);
-        console.log(quartOfSpace * 4);
+        //console.log(radiusNotInCrown);
+        //console.log(quartOfSpace * 4);
 
         switch(radiusNotInCrown){
         case (radius <= quartOfSpace):
