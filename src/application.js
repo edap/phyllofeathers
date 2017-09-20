@@ -79,7 +79,7 @@ function render(){
     requestAnimationFrame(render);
     renderer.autoClear = false;
     renderer.clear();
-    //flower.flip(delta);
+    flower.flip(delta);
     renderer.render(background.getScene(), background.getCamera());
     renderer.render(scene, camera);
     stats.end();

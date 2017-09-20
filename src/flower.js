@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import {phyllotaxisConical} from './phyllotaxis.js';
 import Strategy from './strategy.js';
+import Animator from './animator.js';
+
 //https://medium.com/@bgolus/anti-aliased-alpha-test-the-esoteric-alpha-to-coverage-8b177335ae4f
 
 export default class Flower{
@@ -10,6 +12,7 @@ export default class Flower{
         this.objects = [];
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
+        this.animator = new Animator();
 
         this.generate(params);
     }
@@ -18,23 +21,10 @@ export default class Flower{
         return this.group;
     }
 
-    flipAtRandomIntervals(time, frequency, duration){
-        // start with a circular movement, and an animation dictated from a value that goes from 0 to 1
-        
-    }
-
     flip(time){
-        for(var index in this.objects){
-            let object = this.objects[index];
-            object.rotateOnAxis(new THREE.Vector3(0, 0 ,1), Math.sin(time));
-        }
+        this.animator.flipAtRandomIntervals(time, this.objects);
     }
 
-    _moveInCircle(time, n_circles = 1){
-        let x = Math.sin(time);
-        let y = Math.cos(time);
-        this.group.position.set(x, y, 0);
-    }
 
     regenerate(params){
         this.reset();
