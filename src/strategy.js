@@ -128,7 +128,6 @@ export default class Strategy{
 
     angleMat(i,angle,params){
         let index = (Math.floor(angle*i)%4);
-        console.log(index);
         let key;
         if(i <= params.petals_from) { return this.materials["crown"]; };
         switch(index){

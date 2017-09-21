@@ -63,6 +63,8 @@ export default class Flower{
             this.objects.push(object);
             this.group.add(object);
         }
+
+        this.group.rotateX(-Math.PI/2);
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {

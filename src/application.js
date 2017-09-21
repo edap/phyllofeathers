@@ -49,7 +49,7 @@ function init(assets){
 
 
     var axisHelper = new THREE.AxisHelper( 50 );
-    //scene.add( axisHelper );
+    scene.add( axisHelper );
 
     window.addEventListener('resize', function() {
         var WIDTH = window.innerWidth,
