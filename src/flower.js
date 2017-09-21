@@ -17,14 +17,17 @@ export default class Flower{
         this.generate(params);
     }
 
+    debug(scene){
+        this.animator.addDebugCurve(scene);
+    }
+
     get(){
         return this.group;
     }
 
     flip(time){
-        this.animator.flipAtRandomIntervals(time, this.objects);
+        this.animator.flipAtRandomIntervals(time, this.objects, this.group);
     }
-
 
     regenerate(params){
         this.reset();

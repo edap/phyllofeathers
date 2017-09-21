@@ -60,6 +60,7 @@ function init(assets){
     });
 
     flower = new Flower(gui.params, materials, assets);
+    if (debug) { flower.debug(scene); };
     scene.add(flower.group);
 
     addStats(debug);
