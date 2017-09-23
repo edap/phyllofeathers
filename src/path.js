@@ -1,5 +1,5 @@
 import {Perlin} from './perlin.js';
-import {CatmullRomCurve3, Vector3} from 'three';
+import {CatmullRomCurve3, Vector3, Matrix4} from 'three';
 export function createPath(radius, radius_offset, definition = 0.05){
     //definition: the smaller, the higher the definition of the curve
     let complete_round = Math.PI * 2;
@@ -14,7 +14,10 @@ export function createPath(radius, radius_offset, definition = 0.05){
         let x = r * Math.cos(angle);
         let z = r * Math.sin(angle);
         let v = new Vector3(x,0, z);
-        vertices.push(v);
+
+        let m = new Matrix4().makeTranslation( 0,0,-radius );
+        vertices.push(v.applyMatrix4(m));
+        //vertices.push(v);
         x_offset += 0.1;
     }
     let curve = new CatmullRomCurve3(vertices);

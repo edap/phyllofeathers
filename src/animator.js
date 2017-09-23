@@ -8,13 +8,13 @@ export default class Animator {
     constructor(){
         this.spline = this._createCurve();
         this.speed = 0.0008;
-        this.schedule = {x: 0, y:-1};
-        this.destination = {x:1.0, y:1.0};
+        this.schedule = {x: 0, y:0};
+        this.destination = {x:1.0, y:1};
 
         // Fly animation
         this.timeNextFly = 0;
-        this.flyDurationMill = 9000;
-        this.calmStartSec = 2; // at the beginning do not flip
+        this.flyDurationMill = 3000;
+        this.calmStartSec = 3; // at the beginning do not flip
         this.minIntervalMill = this.flyDurationMill + 500;
         this.maxIntervalMill = this.minIntervalMill + 5000;
     }
@@ -28,29 +28,36 @@ export default class Animator {
         if (time >= this.timeNextFly && time > this.calmStartSec && flying === false) {
             this.schedule = {x:0, y:0};
             let delay = this._getRandomDelay();
+
+            this._flip(objects, {x:0,y:0});// this is because otherwise the rotation
+            // on the z axis goes out of fase, onUpdate is executing when schedule.x is already
+            // bigger than 0
             this.flyAround = new TWEEN.Tween(this.schedule)
                 .to(Object.assign({}, this.destination), this.flyDurationMill)
-                .easing(TWEEN.Easing.Quadratic.Out)
+                //.easing(TWEEN.Easing.Quadratic.Out) this was messing up, a lot, the rotations
                 .onUpdate( (current) =>{
                     this._fly(objects, current, group );
-                }).onComplete( () => {flying = false;} )
+                }).onComplete( (current) => {
+                    flying = false;
+                } )
             .start().delay(delay);
             flying = true;
             this.timeNextFly = time + (this.flyDurationMill + delay) / 1000.0;
         }
     }
 
-    _fly(objects,current, group ){
+    _fly(objects, current, group){
+        //console.log(current.y-0.5);
         this._moveInCircle(current, group);
-        //this._flip(objects, current.x);
         this._flip(objects, current);
     }
 
     _flip(objects, current){
-        let angle = Math.sin(current.y * 12) * 0.04 ;
+        let angle = Math.sin((current.y-0.5) * 0.4);
         console.log(angle);
         for (var index in objects) {
             let object = objects[index];
+            // this is to avaoid a scaleRatio of 0, that would cause a warning while scaling for 0
             object.rotateOnAxis(new Vector3(0, 0 ,1), angle);
         }
     }

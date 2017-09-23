@@ -14,7 +14,7 @@ export default class Gui extends DAT.GUI{
         this.params = {
             material: "crown",
             angle:137.5,
-            num:53,
+            num:10,
             spread: 0.1,
             growth: 0.12,
             growth_regular: false,
