@@ -12,8 +12,8 @@ export default class Flower{
         this.objects = [];
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
-        this.animator = new Animator();
 
+        this.animator = new Animator();
         this.generate(params);
     }
 
@@ -25,8 +25,9 @@ export default class Flower{
         return this.group;
     }
 
-    flip(time){
-        this.animator.flipAtRandomIntervals(time, this.objects, this.group);
+    move(time){
+        //console.log(time);
+        this.animator.move(time, this.objects, this.group);
     }
 
     regenerate(params){
@@ -64,7 +65,8 @@ export default class Flower{
             this.group.add(object);
         }
 
-        this.group.rotateX(-Math.PI/2);
+        // at the end, make the object looking up
+        //this.group.rotateX(-Math.PI/2);
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {

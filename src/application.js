@@ -75,12 +75,12 @@ function addStats(debug) {
 }
 
 function render(){
-    let delta = clock.getDelta();
+    let time = clock.getElapsedTime();
     stats.begin();
     requestAnimationFrame(render);
     renderer.autoClear = false;
     renderer.clear();
-    flower.flip(delta);
+    flower.move(time);
     renderer.render(background.getScene(), background.getCamera());
     renderer.render(scene, camera);
     stats.end();
