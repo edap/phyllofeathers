@@ -13,12 +13,12 @@ export default class Animator {
 
         // Fly animation
         this.timeNextFly = 0;
-        this.flyDurationMill = 3000;
-        this.flipFrequency = 0.8;
-        this.flipAmplitude = 1.0;
+        this.flyDurationMill = 16000;
+        this.flipFrequency = 24;
+        this.flipAmplitude = 0.002;
         this.calmStartSec = 3; // at the beginning do not flip
-        this.minIntervalMill = this.flyDurationMill + 500;
-        this.maxIntervalMill = this.minIntervalMill + 5000;
+        this.minIntervalMill = 500;
+        this.maxIntervalMill = 5000;
     }
 
     _getRandomDelay(){
@@ -36,7 +36,8 @@ export default class Animator {
             // bigger than 0
             this.flyAround = new TWEEN.Tween(this.schedule)
                 .to(Object.assign({}, this.destination), this.flyDurationMill)
-                //.easing(TWEEN.Easing.Quadratic.Out) this was messing up, a lot, the rotations
+                //.easing(TWEEN.Easing.Circular.Out)// this was messing up, a lot, the rotations
+                .easing(TWEEN.Easing.Sinusoidal.InOut)// this was messing up, a lot, the rotations
                 .onUpdate( (current) =>{
                     this._fly(objects, current, group );
                 }).onComplete( (current) => {
@@ -49,12 +50,13 @@ export default class Animator {
     }
 
     _fly(objects, current, group){
-        this._moveInCircle(current, group);
+        //this._moveInCircle(current, group);
         this._flip(objects, current, this.flipFrequency, this.flipAmplitude);
     }
 
     _flip(objects, current, frequency, amplitude){
         let angle = Math.sin((current.y-0.5) * frequency) * amplitude;
+        console.log(angle);
         for (var index in objects) {
             let object = objects[index];
             object.rotateOnAxis(new Vector3(0, 0 ,1), angle);

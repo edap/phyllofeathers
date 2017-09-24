@@ -48,9 +48,6 @@ function init(assets){
     });
 
 
-    var axisHelper = new THREE.AxisHelper( 50 );
-    scene.add( axisHelper );
-
     window.addEventListener('resize', function() {
         var WIDTH = window.innerWidth,
         HEIGHT = window.innerHeight;
@@ -60,18 +57,19 @@ function init(assets){
     });
 
     flower = new Flower(gui.params, materials, assets);
-    if (debug) { flower.debug(scene); };
     scene.add(flower.group);
 
-    addStats(debug);
-    render();
-}
-
-
-function addStats(debug) {
+    //debug
     if (debug) {
         document.body.appendChild(stats.domElement);
-    }
+        flower.debug(scene);
+        var axisHelper = new THREE.AxisHelper( 50 );
+        scene.add( axisHelper );
+    } else {
+        gui.hide();
+    };
+
+    render();
 }
 
 function render(){
