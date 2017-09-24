@@ -5,7 +5,7 @@ import Animator from './animator.js';
 
 //https://medium.com/@bgolus/anti-aliased-alpha-test-the-esoteric-alpha-to-coverage-8b177335ae4f
 
-export default class Flower{
+export default class Flower {
     constructor(params, materials, assets) {
         this.assets = assets;
         this.materials = materials;
@@ -66,7 +66,7 @@ export default class Flower{
         }
 
         // at the end, make the object looking up
-        //this.group.rotateX(-Math.PI/2);
+        this.group.rotateX(-Math.PI/2);
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {

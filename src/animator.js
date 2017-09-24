@@ -14,6 +14,8 @@ export default class Animator {
         // Fly animation
         this.timeNextFly = 0;
         this.flyDurationMill = 3000;
+        this.flipFrequency = 0.8;
+        this.flipAmplitude = 1.0;
         this.calmStartSec = 3; // at the beginning do not flip
         this.minIntervalMill = this.flyDurationMill + 500;
         this.maxIntervalMill = this.minIntervalMill + 5000;
@@ -29,7 +31,7 @@ export default class Animator {
             this.schedule = {x:0, y:0};
             let delay = this._getRandomDelay();
 
-            this._flip(objects, {x:0,y:0});// this is because otherwise the rotation
+            this._flip(objects, {x:0,y:0}, this.flipFrequency, this.flipAmplitude);// this is because otherwise the rotation
             // on the z axis goes out of fase, onUpdate is executing when schedule.x is already
             // bigger than 0
             this.flyAround = new TWEEN.Tween(this.schedule)
@@ -47,17 +49,14 @@ export default class Animator {
     }
 
     _fly(objects, current, group){
-        //console.log(current.y-0.5);
         this._moveInCircle(current, group);
-        this._flip(objects, current);
+        this._flip(objects, current, this.flipFrequency, this.flipAmplitude);
     }
 
-    _flip(objects, current){
-        let angle = Math.sin((current.y-0.5) * 0.4);
-        console.log(angle);
+    _flip(objects, current, frequency, amplitude){
+        let angle = Math.sin((current.y-0.5) * frequency) * amplitude;
         for (var index in objects) {
             let object = objects[index];
-            // this is to avaoid a scaleRatio of 0, that would cause a warning while scaling for 0
             object.rotateOnAxis(new Vector3(0, 0 ,1), angle);
         }
     }
@@ -90,7 +89,7 @@ export default class Animator {
         //curve
         let t = 0;
         const radius = 80;
-        const radius_offset = 30;
+        const radius_offset = 10;
         return createPath(radius, radius_offset);
     }
 

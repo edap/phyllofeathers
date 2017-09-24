@@ -2,11 +2,13 @@ import {Perlin} from './perlin.js';
 import {CatmullRomCurve3, Vector3, Matrix4} from 'three';
 export function createPath(radius, radius_offset, definition = 0.05){
     //definition: the smaller, the higher the definition of the curve
-    let complete_round = Math.PI * 2;
+    //let offset = 0;
+    let offset = Math.PI/2;
+    let complete_round = (Math.PI * 2) + offset;
     let vertices = [];
     let perlin = new Perlin(Math.random());
     let x_offset = 0;
-    for (let angle = 0; angle <= complete_round; angle+= definition){
+    for (let angle = offset; angle <= complete_round; angle+= definition){
         let noise = perlin.noise(x_offset, 0, 0);
         let smoothed_offset = smoothLastPoints(radius_offset, angle, complete_round);
         let offset = map(noise, 0 ,1 , -smoothed_offset, smoothed_offset);
@@ -15,9 +17,10 @@ export function createPath(radius, radius_offset, definition = 0.05){
         let z = r * Math.sin(angle);
         let v = new Vector3(x,0, z);
 
+        // put the curve back in the scene
         let m = new Matrix4().makeTranslation( 0,0,-radius );
         vertices.push(v.applyMatrix4(m));
-        //vertices.push(v);
+        vertices.push(v);
         x_offset += 0.1;
     }
     let curve = new CatmullRomCurve3(vertices);
@@ -28,10 +31,10 @@ export function createPath(radius, radius_offset, definition = 0.05){
 function smoothLastPoints(offset, angle, round){
     // this function is to close the circle in a more uniform way
     let arc_to_smooth =round * 0.92;
-    if(angle >= arc_to_smooth){
+    if (angle >= arc_to_smooth) {
         let smoothed = map(angle,arc_to_smooth, round, offset, 0);
         return smoothed;
-    }else{
+    } else {
         return offset;
     }
 }
