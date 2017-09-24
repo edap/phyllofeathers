@@ -56,7 +56,6 @@ export default class Animator {
 
     _flip(objects, current, frequency, amplitude){
         let angle = Math.sin((current.y-0.5) * frequency) * amplitude;
-        console.log(angle);
         for (var index in objects) {
             let object = objects[index];
             object.rotateOnAxis(new Vector3(0, 0 ,1), angle);

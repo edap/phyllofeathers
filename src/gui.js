@@ -1,262 +1,10 @@
 import DAT from 'dat-gui';
 import {RepeatWrapping, NearestFilter, LinearFilter, LinearMipMapLinearFilter, Color, Fog} from 'three';
 
-let blueFronted = `{
+let json = `{
   "closed": false,
   "preset": "blue-fronted-parrot",
   "remembered": {
-    "undefined": {
-      "0": {
-        "num": 53,
-        "spread": 0.1,
-        "angle": 137.5,
-        "growth": 0.12,
-        "angle_open": 36.17438258159361,
-        "starting_angle_open": 50,
-        "growth_regular": false,
-        "crown_size": 4,
-        "crown_z": 0.5,
-        "crown_growth": 0.12,
-        "crown_spread": 0.12,
-        "petals_from": 49,
-        "petals_scale": 1,
-        "petals_phistart": 1,
-        "petals_philength": 5.6386508940476565,
-        "petals_amplitude": 0.9,
-        "petals_freq": 0.2,
-        "petals_xoffset": 1.6,
-        "petals_yoffset": 1.6,
-        "petals_segment": 10,
-        "petals_segment_length": 2,
-        "petals_length": 20,
-        "crown_mat_color": 16711680,
-        "crown_mat_emissive": 65280,
-        "crown_mat_roughness": 0.30000000000000004,
-        "crown_mat_metalness": 0.2,
-        "crown_mat_map": "none",
-        "petal_one_mat_color": 34815,
-        "petal_one_mat_emissive": 65280,
-        "petal_one_mat_roughness": 0.2,
-        "petal_one_mat_metalness": 0.8,
-        "petal_one_mat_map": "none",
-        "background": 16711680
-      }
-    },
-    "primo": {
-      "0": {
-        "num": 239,
-        "spread": 0.1,
-        "angle": 137.29,
-        "growth": 0.04,
-        "angle_open": 22.05755035463025,
-        "starting_angle_open": 69.16842847075405,
-        "growth_regular": false,
-        "strategy": "normal",
-        "crown_z": 10,
-        "crown_growth": 0,
-        "crown_spread": 1.09,
-        "crown_scale": 0.5059196617336152,
-        "crown_phistart": 2.5616226195767364,
-        "crown_philength": 2.197251585623679,
-        "crown_amplitude": 3.1968800697900877,
-        "crown_freq": 0.4247357293868922,
-        "crown_xoffset": 6.148202959830867,
-        "crown_yoffset": 16.813953488372093,
-        "crown_segment": 40,
-        "crown_segment_length": 1.9785059901338973,
-        "crown_length": 14.568710359408033,
-        "petals_from": 116.10077519379846,
-        "petals_scale": 0.6657761665962659,
-        "petals_phistart": 1,
-        "petals_philength": 1.1,
-        "petals_amplitude": 0.9,
-        "petals_freq": 0.9999480544689143,
-        "petals_xoffset": 11.603012509939676,
-        "petals_yoffset": 21.93950606527489,
-        "petals_segment": 10,
-        "petals_segment_length": 2.420507399577167,
-        "petals_length": 17.30866807610994,
-        "sec_petals_from": 72.93798449612403,
-        "sec_petals_scale": 0.5168877017025119,
-        "sec_petals_phistart": 1.3308113097883683,
-        "sec_petals_philength": 1.057297685390953,
-        "sec_petals_amplitude": 1.3616918802848506,
-        "sec_petals_freq": 0.8306553911205073,
-        "sec_petals_xoffset": 14.884496124031008,
-        "sec_petals_yoffset": 18.618040873854827,
-        "sec_petals_segment": 13.31552333192532,
-        "sec_petals_segment_length": 2.58588592496683,
-        "sec_petals_length": 12.826638682987777,
-        "crown_mat_color": 2582653,
-        "crown_mat_emissive": 5329489,
-        "crown_mat_shininess": 0,
-        "crown_mat_map": "grayblue",
-        "crown_mat_alpha": 0.35,
-        "petal_one_mat_color": 10658466,
-        "petal_one_mat_emissive": "#000000",
-        "petal_one_mat_shininess": 0.8,
-        "petal_one_mat_map": "city2",
-        "petal_one_mat_alpha": 0.35,
-        "petal_two_mat_color": 6381921,
-        "petal_two_mat_emissive": 2434341,
-        "petal_two_mat_shininess": 0.8,
-        "petal_two_mat_map": "red",
-        "petal_two_mat_alpha": 0.35,
-        "petal_three_mat_color": 6195010,
-        "petal_three_mat_emissive": 0,
-        "petal_three_mat_shininess": 0.8,
-        "petal_three_mat_map": "greenlight",
-        "petal_three_mat_alpha": 0.35,
-        "petal_four_mat_color": 9803677,
-        "petal_four_mat_emissive": "#000000",
-        "petal_four_mat_shininess": 0.8,
-        "petal_four_mat_map": "greenblack",
-        "petal_four_mat_alpha": 0.35
-      }
-    },
-    "Default": {
-      "0": {
-        "num": 318,
-        "spread": 0.4,
-        "angle": 136.70000000000002,
-        "growth": 0.04,
-        "angle_open": 0,
-        "starting_angle_open": 100,
-        "growth_regular": false,
-        "strategy": "border",
-        "crown_z": 1.8,
-        "crown_growth": 0.07,
-        "crown_spread": 1.12,
-        "crown_scale": 0.37399577167019027,
-        "crown_phistart": 2.5616226195767364,
-        "crown_philength": 2.197251585623679,
-        "crown_amplitude": 3.1968800697900877,
-        "crown_freq": 0.4247357293868922,
-        "crown_xoffset": 3.796124031007752,
-        "crown_yoffset": 10.293119478030118,
-        "crown_segment": 13.140239605355886,
-        "crown_segment_length": 2.58588592496683,
-        "crown_length": 11.933307893625253,
-        "petals_from": 208.572577612248,
-        "petals_scale": 0.4077028274470921,
-        "petals_phistart": 0.5786488426954766,
-        "petals_philength": 1.1,
-        "petals_amplitude": 0.9,
-        "petals_freq": 0.2,
-        "petals_xoffset": 11.767341260081672,
-        "petals_yoffset": 25,
-        "petals_segment": 10,
-        "petals_segment_length": 2,
-        "petals_length": 18.782177278737947,
-        "sec_petals_from": 60.80904778657993,
-        "sec_petals_scale": 1,
-        "sec_petals_phistart": 1.4675681219870758,
-        "sec_petals_philength": 1.057297685390953,
-        "sec_petals_amplitude": 0.6734963092203866,
-        "sec_petals_freq": 1.4234530212778151,
-        "sec_petals_xoffset": 4.536876253833875,
-        "sec_petals_yoffset": 20.174902036904474,
-        "sec_petals_segment": 28.82198123123039,
-        "sec_petals_segment_length": 1.451024959221103,
-        "crown_mat_color": 9342349,
-        "crown_mat_emissive": 0,
-        "crown_mat_shininess": 0.2,
-        "crown_mat_map": "grayblue",
-        "crown_mat_alpha": 0.35,
-        "petal_one_mat_color": 9013641,
-        "petal_one_mat_emissive": "#050505",
-        "petal_one_mat_shininess": 0.8,
-        "petal_one_mat_map": "yellow",
-        "petal_one_mat_alpha": 0.35,
-        "petal_two_mat_color": 6381921,
-        "petal_two_mat_emissive": 2434341,
-        "petal_two_mat_shininess": 0.8,
-        "petal_two_mat_map": "red",
-        "petal_two_mat_alpha": 0.35,
-        "petal_three_mat_color": 16711680,
-        "petal_three_mat_emissive": 65280,
-        "petal_three_mat_shininess": 0.8,
-        "petal_three_mat_map": "none",
-        "petal_three_mat_alpha": 0.35,
-        "petal_four_mat_color": 16711680,
-        "petal_four_mat_emissive": 65280,
-        "petal_four_mat_shininess": 0.8,
-        "petal_four_mat_map": "none",
-        "petal_four_mat_alpha": 0.35
-      }
-    },
-    "secondo": {
-      "0": {
-        "num": 239,
-        "spread": 0.30000000000000004,
-        "angle": 137.29,
-        "growth": 0.25,
-        "angle_open": 20.292946326259834,
-        "starting_angle_open": 50,
-        "growth_regular": false,
-        "strategy": "radius",
-        "crown_z": 10,
-        "crown_growth": 0.03,
-        "crown_spread": 1.07,
-        "crown_scale": 1,
-        "crown_phistart": 2.5616226195767364,
-        "crown_philength": 2.197251585623679,
-        "crown_amplitude": 3.1968800697900877,
-        "crown_freq": 0.4247357293868922,
-        "crown_xoffset": 3.796124031007752,
-        "crown_yoffset": 10.293119478030118,
-        "crown_segment": 13.140239605355886,
-        "crown_segment_length": 2.58588592496683,
-        "crown_length": 11.933307893625253,
-        "petals_from": 62.14728682170542,
-        "petals_scale": 0.6657761665962659,
-        "petals_phistart": 1,
-        "petals_philength": 1.1,
-        "petals_amplitude": 1.132293356596696,
-        "petals_freq": 0.9999480544689143,
-        "petals_xoffset": 7.828259337561662,
-        "petals_yoffset": 17.704456397185883,
-        "petals_segment": 10,
-        "petals_segment_length": 2,
-        "petals_length": 8.062207806387644,
-        "sec_petals_from": 110.06355772846929,
-        "sec_petals_scale": 0.5168877017025119,
-        "sec_petals_phistart": 1.6727033402851372,
-        "sec_petals_philength": 1.057297685390953,
-        "sec_petals_amplitude": 2.328047921071177,
-        "sec_petals_freq": 0.5764430876600135,
-        "sec_petals_xoffset": 8.97375250766775,
-        "sec_petals_yoffset": 14.175248340445044,
-        "sec_petals_segment": 13.31552333192532,
-        "sec_petals_segment_length": 2.3697219314914535,
-        "sec_petals_length": 9.253315525537676,
-        "crown_mat_color": 8882055,
-        "crown_mat_emissive": "#181818",
-        "crown_mat_shininess": 0,
-        "crown_mat_map": "grayblue",
-        "crown_mat_alpha": 0.35,
-        "petal_one_mat_color": 5066061,
-        "petal_one_mat_emissive": "#434f87",
-        "petal_one_mat_shininess": 0.8,
-        "petal_one_mat_map": "red",
-        "petal_one_mat_alpha": 0.8933307893625253,
-        "petal_two_mat_color": 12463148,
-        "petal_two_mat_emissive": 26880,
-        "petal_two_mat_shininess": 0.8,
-        "petal_two_mat_map": "yellow",
-        "petal_two_mat_alpha": 0.4742373326245505,
-        "petal_three_mat_color": 12927398,
-        "petal_three_mat_emissive": 2593575,
-        "petal_three_mat_shininess": 0.8,
-        "petal_three_mat_map": "greenblack",
-        "petal_three_mat_alpha": 0.35,
-        "petal_four_mat_color": "#0b0041",
-        "petal_four_mat_emissive": "#434343",
-        "petal_four_mat_shininess": 0.8,
-        "petal_four_mat_map": "grayblue",
-        "petal_four_mat_alpha": 0.35
-      }
-    },
     "blue-fronted-parrot": {
       "0": {
         "num": 239,
@@ -302,28 +50,28 @@ let blueFronted = `{
         "sec_petals_segment": 13.31552333192532,
         "sec_petals_segment_length": 2.641508104298802,
         "sec_petals_length": 14.873150105708245,
-        "crown_mat_color": 8882055,
+        "crown_mat_color": "#878787",
         "crown_mat_emissive": "#181818",
         "crown_mat_shininess": 0,
         "crown_mat_map": "grayblue",
         "crown_mat_alpha": 0.35,
-        "petal_one_mat_color": "#7a7a7a",
+        "petal_one_mat_color": "#b6a2a2",
         "petal_one_mat_emissive": "#090909",
         "petal_one_mat_shininess": 0.8,
         "petal_one_mat_map": "red",
         "petal_one_mat_alpha": 0.8933307893625253,
-        "petal_two_mat_color": 3958285,
-        "petal_two_mat_emissive": 2631720,
+        "petal_two_mat_color": "#3c660d",
+        "petal_two_mat_emissive": "#282828",
         "petal_two_mat_shininess": 0.8,
         "petal_two_mat_map": "greenlight",
         "petal_two_mat_alpha": 0.4742373326245505,
-        "petal_three_mat_color": 7368816,
-        "petal_three_mat_emissive": 1118481,
+        "petal_three_mat_color": "#707070",
+        "petal_three_mat_emissive": "#111111",
         "petal_three_mat_shininess": 0.8,
         "petal_three_mat_map": "greenblack",
         "petal_three_mat_alpha": 0.35,
-        "petal_four_mat_color": 7704101,
-        "petal_four_mat_emissive": 3421236,
+        "petal_four_mat_color": "#758e25",
+        "petal_four_mat_emissive": "#343434",
         "petal_four_mat_shininess": 0.8,
         "petal_four_mat_map": "yellow",
         "petal_four_mat_alpha": 0.35
@@ -383,7 +131,7 @@ export default class Gui extends DAT.GUI{
     constructor(regenerateCallbak, materials, textures){
         super(
             {
-                load: JSON.parse(blueFronted)
+                load: JSON.parse(json)
                 //load: JSON
             }
         );
@@ -543,6 +291,30 @@ export default class Gui extends DAT.GUI{
         this._addStandardMaterial(materials["petal_two"], 'petal_two_mat');
         this._addStandardMaterial(materials["petal_three"], 'petal_three_mat');
         this._addStandardMaterial(materials["petal_four"], 'petal_four_mat');
+
+        this.addTexturesToMaterial(materials, 'blue-fronted-parrot',json, textures);
+    }
+
+    addTexturesToMaterial(materials, bird, json, textures){
+        let preset = JSON.parse(json)["remembered"][bird][0];
+        for (var mat in materials) {
+            let par = this._getMatParameter(preset, mat);
+            materials[mat].color = new Color().setHex( par.color );
+            materials[mat].emissive = new Color().setHex( par.emissive );
+            materials[mat].shininess = par.shininess;
+            this._setTexture(par.map, materials[mat], "map", textures);
+        }
+    }
+
+    _getMatParameter(json, mat_string){
+        let emissive = json[`${mat_string}_mat_emissive`];
+        let color = json[`${mat_string}_mat_color`];
+        return {
+            emissive: (typeof emissive === "string") ? emissive.replace('#', '0x') : emissive,
+            color: (typeof color === "string") ? color.replace('#', '0x') : color,
+            shininess:json[`${mat_string}_mat_shininess`],
+            map:json[`${mat_string}_mat_map`]
+        };
     }
 
     hide(){
@@ -608,31 +380,32 @@ export default class Gui extends DAT.GUI{
 		            material.needsUpdate = true;
             }
         });
-        this._updateTexture( material, 'map', this.textureMaps );
     }
 
     _updateTexture ( material, materialKey, textures ) {
         console.log(textures);
 	      return ( key ) => {
-		        material[materialKey] = textures[key];
-            if( key!= "none") {
-                material[materialKey].magFilter = LinearFilter;
-                material[materialKey].minFilter = LinearMipMapLinearFilter;
-                material[materialKey].anisotropy = 1;
-                material.alphaTest = 0.50;
-                material.alphaMap = textures[key+'_alpha'];
-                material.normalMap = textures[key+'_nrm'];
-                material.specularMap = textures[key+'_spec'];
-                //material.alphaMap.magFilter = LinearFilter;
-                //material.alphaMap.minFilter = LinearMipMapLinearFilter;
-                material.alphaMap.wrapT = RepeatWrapping;
-                material.alphaMap.wrapS = RepeatWrapping;
-                //material.alphaMap.repeat.y = 1;
-            } else {
-                material.alphaMap = null;
-            }
-		        material.needsUpdate = true;
+            this._setTexture(key, material, materialKey, textures);
 	      };
+    }
+
+    _setTexture(key, material, materialKey, textures){
+		    material[materialKey] = textures[key];
+        if( key!= "none") {
+            material[materialKey].magFilter = LinearFilter;
+            material[materialKey].minFilter = LinearMipMapLinearFilter;
+            material[materialKey].anisotropy = 1;
+            material.alphaTest = 0.50;
+            material.alphaMap = textures[key+'_alpha'];
+            material.normalMap = textures[key+'_nrm'];
+            material.specularMap = textures[key+'_spec'];
+            material.alphaMap.wrapT = RepeatWrapping;
+            material.alphaMap.wrapS = RepeatWrapping;
+            //material.alphaMap.repeat.y = 1;
+        } else {
+            material.alphaMap = null;
+        }
+		    material.needsUpdate = true;
     }
 
     _getObjectsKeys( obj ) {

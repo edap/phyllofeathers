@@ -12,8 +12,6 @@ export default class CollectionMaterials {
             "petal_three": new MeshPhongMaterial( {color: 0x22FF55, emissive:0x000000,
                                                    opacity: 1, transparent: true} ),
             "petal_four": new MeshPhongMaterial( {color: 0x0a0aFF, emissive:0xFF0000,
-                                                  opacity: 1, transparent: true} ),
-            "petal_five": new MeshPhongMaterial( {color: 0x0a0aFF, emissive:0xFF0000,
                                                   opacity: 1, transparent: true} )
         };
         return materials;
