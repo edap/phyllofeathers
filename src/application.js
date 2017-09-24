@@ -8,7 +8,7 @@ import Flower from './flower.js';
 import Bg from './background.js';
 import {PointLights} from './pointLights.js';
 
-const debug = false;
+const debug = true;
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);

@@ -51,7 +51,7 @@ export default class Animator {
 
     _fly(objects, current, group){
         //this._moveInCircle(current, group);
-        this._flip(objects, current, this.flipFrequency, this.flipAmplitude);
+        //this._flip(objects, current, this.flipFrequency, this.flipAmplitude);
     }
 
     _flip(objects, current, frequency, amplitude){
