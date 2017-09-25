@@ -8,7 +8,7 @@ import Flower from './flower.js';
 import Bg from './background.js';
 import {PointLights} from './pointLights.js';
 
-const debug = true;
+const debug = false;
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -43,7 +43,7 @@ function init(assets){
 
     gui = new Gui(regenerate, materials, assets.textures);
     //gui.addScene(scene, renderer, materials);
-    PointLights().map((light) => {
+    PointLights(200).map((light) => {
         scene.add( light );
     });
 
