@@ -15,7 +15,7 @@ export default class Animator {
         this.timeNextFly = 0;
         this.flyDurationMill = 16000;
         this.flipFrequency = 24;
-        this.flipAmplitude = 0.002;
+        this.flipAmplitude = 0.0005;
         this.calmStartSec = 3; // at the beginning do not flip
         this.minIntervalMill = 500;
         this.maxIntervalMill = 5000;
@@ -51,7 +51,7 @@ export default class Animator {
 
     _fly(objects, current, group){
         //this._moveInCircle(current, group);
-        //this._flip(objects, current, this.flipFrequency, this.flipAmplitude);
+        this._flip(objects, current, this.flipFrequency, this.flipAmplitude);
     }
 
     _flip(objects, current, frequency, amplitude){
