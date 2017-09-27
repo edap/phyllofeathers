@@ -14,7 +14,7 @@ export default class Animator {
         // Fly animation
         this.timeNextFly = 0;
         this.flyDurationMill = 16000;
-        this.flipFrequency = 24;
+        this.flipFrequency = 44;
         this.flipAmplitude = 0.0035;
         this.calmStartSec = 5; // at the beginning do not flip
         this.minIntervalMill = 5000;
