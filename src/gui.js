@@ -50,7 +50,7 @@ let json = `{
         "sec_petals_segment": 13.31552333192532,
         "sec_petals_segment_length": 2.641508104298802,
         "sec_petals_length": 14.873150105708245,
-        "crown_mat_color": "#007791",
+        "crown_mat_color": "#08516f",
         "crown_mat_emissive": "#000000",
         "crown_mat_shininess": 0,
         "crown_mat_map": "grayblue",
@@ -128,17 +128,15 @@ let json = `{
 }`;
 
 export default class Gui extends DAT.GUI{
-    constructor(regenerateCallbak, materials, textures){
-        super(
-            {
-                load: JSON.parse(json)
-                //load: JSON
-            }
-        );
-
-        //console.log(JSON.parse(blueFronted));
-
-
+    constructor(regenerateCallbak, materials, textures, max_anisotropy, parrot_type, debug = false){
+        let config;
+        if (debug) {
+            config = {load:JSON};
+        } else {
+            config = {load: JSON.parse(json)};
+        }
+        super(config);
+        this.maxAnis = max_anisotropy;
         this.materials = materials;
         this.regenerate = regenerateCallbak;
         this.params = {
@@ -292,10 +290,12 @@ export default class Gui extends DAT.GUI{
         this._addStandardMaterial(materials["petal_three"], 'petal_three_mat');
         this._addStandardMaterial(materials["petal_four"], 'petal_four_mat');
 
-        this.addTexturesToMaterial(materials, 'blue-fronted-parrot',json, textures);
+        if (!debug) {
+            this._addTexturesToMaterial(materials, parrot_type, json, textures);
+        }
     }
 
-    addTexturesToMaterial(materials, bird, json, textures){
+    _addTexturesToMaterial(materials, bird, json, textures){
         let preset = JSON.parse(json)["remembered"][bird][0];
         for (var mat in materials) {
             let par = this._getMatParameter(preset, mat);
@@ -394,7 +394,7 @@ export default class Gui extends DAT.GUI{
         if( key!= "none") {
             material[materialKey].magFilter = LinearFilter;
             material[materialKey].minFilter = LinearMipMapLinearFilter;
-            material[materialKey].anisotropy = 1;
+            material[materialKey].anisotropy = this.maxAnis;
             material.alphaTest = 0.50;
             material.alphaMap = textures[key+'_alpha'];
             material.normalMap = textures[key+'_nrm'];

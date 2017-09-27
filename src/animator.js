@@ -15,10 +15,10 @@ export default class Animator {
         this.timeNextFly = 0;
         this.flyDurationMill = 16000;
         this.flipFrequency = 24;
-        this.flipAmplitude = 0.0005;
-        this.calmStartSec = 3; // at the beginning do not flip
-        this.minIntervalMill = 500;
-        this.maxIntervalMill = 5000;
+        this.flipAmplitude = 0.0035;
+        this.calmStartSec = 5; // at the beginning do not flip
+        this.minIntervalMill = 5000;
+        this.maxIntervalMill = 15000;
     }
 
     _getRandomDelay(){

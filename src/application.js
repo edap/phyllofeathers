@@ -1,4 +1,7 @@
 /* eslint-env browser */
+const ParrotType = 'blue-fronted-parrot';
+const debug = false;
+
 import * as THREE from 'three';
 import Gui from './gui.js';
 import Stats from 'stats.js';
@@ -8,13 +11,13 @@ import Flower from './flower.js';
 import Bg from './background.js';
 import {PointLights} from './pointLights.js';
 
-const debug = false;
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
+const maxAnisotropy = renderer.getMaxAnisotropy();
 const clock = new THREE.Clock();
-//renderer.autoClear = false;
+
 const stats = new Stats();
 const materials = new CollectionMaterials();
 let gui;
@@ -29,7 +32,10 @@ function init(assets){
     //gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
     document.body.appendChild(renderer.domElement);
     camera.position.z = 80;
+    camera.position.y = 80;
     controls = new OrbitControls(camera, renderer.domElement);
+    controls.minDistance = 40;
+    controls.maxDistance = 90;
 
     //Background
     background = new Bg(assets.bg);
@@ -41,7 +47,7 @@ function init(assets){
     let ambientLight = new THREE.AmbientLight( 0xFFFFFF );
     scene.add( ambientLight );
 
-    gui = new Gui(regenerate, materials, assets.textures);
+    gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
     //gui.addScene(scene, renderer, materials);
     PointLights(200).map((light) => {
         scene.add( light );
@@ -89,7 +95,7 @@ let regenerate = () => {
     flower.regenerate(gui.params);
 }
 
-loadAllAssets('blue-frontend-parrot').then(
+loadAllAssets(ParrotType).then(
     (assets) => {
         init(assets);
     },

@@ -7,7 +7,7 @@ import {loadTexture} from "./loaders.js";
 
 export function loadAllAssets(bird){
     switch(bird){
-        case 'blue-frontend-parrot':
+    case 'blue-fronted-parrot':
             return loadBlueFrontendParrot();
             break;
         default:
@@ -34,6 +34,10 @@ function loadBlueFrontendParrot(){
     let azulA = loadTexture(folder+"blue_soft_alpha.jpg");
     let azulN = loadTexture(folder+"blue_soft_NRM.jpg");
     let azulS = loadTexture(folder+"blue_soft_SPEC.jpg");
+    // let azul = loadTexture(folder+"gray_blue.jpg");
+    // let azulA = loadTexture(folder+"gray_blue_alpha.jpg");
+    // let azulN = loadTexture(folder+"gray_blue_NRM.jpg");
+    // let azulS = loadTexture(folder+"gray_blue_SPEC.jpg");
     let greenlight = loadTexture(folder+"green_light.jpg");
     let greenlightA = loadTexture(folder+"green_light_alpha.jpg");
     let greenlightN = loadTexture(folder+"green_light_NRM.jpg");
