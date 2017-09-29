@@ -1,6 +1,6 @@
 /* eslint-env browser */
 const ParrotType = 'blue-fronted-parrot';
-const debug = false;
+const debug = true;
 
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -15,7 +15,7 @@ const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
-const maxAnisotropy = renderer.getMaxAnisotropy();
+const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 const clock = new THREE.Clock();
 
 const stats = new Stats();
@@ -35,7 +35,7 @@ function init(assets){
     camera.position.y = 80;
     controls = new OrbitControls(camera, renderer.domElement);
     controls.minDistance = 40;
-    controls.maxDistance = 90;
+    //controls.maxDistance = 90;
 
     //Background
     background = new Bg(assets.bg);
