@@ -25,6 +25,10 @@ export default class Flower {
         return this.group;
     }
 
+    setPosition(x,y,z){
+        this.group.setPosition(x,y,z);
+    }
+
     move(time){
         //console.log(time);
         this.animator.move(time, this.objects, this.group);

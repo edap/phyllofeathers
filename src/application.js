@@ -1,6 +1,6 @@
 /* eslint-env browser */
 const ParrotType = 'blue-fronted-parrot';
-const debug = true;
+const debug = false;
 
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -8,13 +8,15 @@ import Stats from 'stats.js';
 import CollectionMaterials from './materials.js';
 import {loadAllAssets} from './assets.js';
 import Flower from './flower.js';
-import Bg from './background.js';
 import {PointLights} from './pointLights.js';
+import { EffectComposer, GodRaysPass, KernelSize, RenderPass } from "postprocessing";
 
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
+
+renderer.setSize(window.innerWidth, window.innerHeight);
 const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 const clock = new THREE.Clock();
 
@@ -23,22 +25,55 @@ const materials = new CollectionMaterials();
 let gui;
 let controls;
 let flower;
-let background;
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+
 
 function init(assets){
-    console.log(assets);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    //const gl = renderer.getContext();
-    //gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+    //sun
+    const sunMaterial = new THREE.PointsMaterial({
+        map: assets.sun,
+		    size: 100,
+		    sizeAttenuation: true,
+		    color: 0xffddaa,
+		    alphaTest: 0,
+		    transparent: true,
+		    fog: false
+    });
+
+    const sunGeometry = new THREE.BufferGeometry();
+    sunGeometry.addAttribute("position", new THREE.BufferAttribute(new Float32Array(3), 3));
+    const sun = new THREE.Points(sunGeometry, sunMaterial);
+    sun.frustumCulled = false;
+    sun.position.set(0, -1, 0);
+    scene.add(sun);
+
+
+    //const pass = new GlitchPass();
+    const pass = new GodRaysPass(scene, camera, sun, {
+		    resolutionScale: 0.4,
+		    kernelSize: KernelSize.VERY_SMALL,
+		    intensity: 1.0,
+		    density: 0.96,
+		    decay: 0.85,
+		    weight: 0.4,
+		    exposure: 0.6,
+		    samples: 60,
+		    clampMax: 1.0
+    });
+    pass.renderToScreen = true;
+    composer.addPass(pass);
+    //end sun
+
+
     document.body.appendChild(renderer.domElement);
-    camera.position.z = 80;
-    camera.position.y = 80;
+    camera.position.z = 60;
+    camera.position.y = 95;
     controls = new OrbitControls(camera, renderer.domElement);
     controls.minDistance = 40;
-    //controls.maxDistance = 90;
-
-    //Background
-    background = new Bg(assets.bg);
+    controls.maxDistance = 85;
+    scene.background = assets.bg;
 
     // stats
     stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -48,8 +83,7 @@ function init(assets){
     scene.add( ambientLight );
 
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
-    //gui.addScene(scene, renderer, materials);
-    PointLights(200).map((light) => {
+    PointLights(200, 0.2).map((light) => {
         scene.add( light );
     });
 
@@ -82,11 +116,9 @@ function render(){
     let time = clock.getElapsedTime();
     stats.begin();
     requestAnimationFrame(render);
-    renderer.autoClear = false;
-    renderer.clear();
     flower.move(time);
-    renderer.render(background.getScene(), background.getCamera());
-    renderer.render(scene, camera);
+    //renderer.render(scene, camera);
+    composer.render(clock.getDelta());
     stats.end();
 }
 
