@@ -7,6 +7,7 @@ import Animator from './animator.js';
 
 export default class Flower {
     constructor(params, materials, assets) {
+        this.yPos = 200;
         this.assets = assets;
         this.materials = materials;
         this.objects = [];
@@ -71,6 +72,7 @@ export default class Flower {
 
         // at the end, make the object looking up
         this.group.rotateX(-Math.PI/2);
+        //this.group.position.set(0, 100, 0);
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {

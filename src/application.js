@@ -9,7 +9,7 @@ import CollectionMaterials from './materials.js';
 import {loadAllAssets} from './assets.js';
 import Flower from './flower.js';
 import {PointLights} from './pointLights.js';
-import { EffectComposer, GodRaysPass, KernelSize, RenderPass } from "postprocessing";
+import { EffectComposer, KernelSize, RenderPass, BloomPass} from "postprocessing";
 
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
@@ -29,50 +29,20 @@ let flower;
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
 
-
 function init(assets){
-    //sun
-    const sunMaterial = new THREE.PointsMaterial({
-        map: assets.sun,
-		    size: 100,
-		    sizeAttenuation: true,
-		    color: 0xffddaa,
-		    alphaTest: 0,
-		    transparent: true,
-		    fog: false
-    });
-
-    const sunGeometry = new THREE.BufferGeometry();
-    sunGeometry.addAttribute("position", new THREE.BufferAttribute(new Float32Array(3), 3));
-    const sun = new THREE.Points(sunGeometry, sunMaterial);
-    sun.frustumCulled = false;
-    sun.position.set(0, -1, 0);
-    scene.add(sun);
-
-
-    //const pass = new GlitchPass();
-    const pass = new GodRaysPass(scene, camera, sun, {
-		    resolutionScale: 0.4,
-		    kernelSize: KernelSize.VERY_SMALL,
-		    intensity: 1.0,
-		    density: 0.96,
-		    decay: 0.85,
-		    weight: 0.4,
-		    exposure: 0.6,
-		    samples: 60,
-		    clampMax: 1.0
-    });
+    const pass = new BloomPass({
+			  resolutionScale: 0.3,
+			  intensity: 2.0,
+        kernelSize: KernelSize.LARGE,
+			  distinction: 3.0
+		});
     pass.renderToScreen = true;
     composer.addPass(pass);
-    //end sun
-
+    //end bloom
 
     document.body.appendChild(renderer.domElement);
     camera.position.z = 60;
-    camera.position.y = 95;
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.minDistance = 40;
-    controls.maxDistance = 85;
+    camera.position.y = 25;
     scene.background = assets.bg;
 
     // stats
@@ -83,7 +53,8 @@ function init(assets){
     scene.add( ambientLight );
 
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
-    PointLights(200, 0.2).map((light) => {
+    if(!debug) { gui.hide(); };
+    PointLights(200, 0.4).map((light) => {
         scene.add( light );
     });
 
@@ -105,10 +76,13 @@ function init(assets){
         flower.debug(scene);
         var axisHelper = new THREE.AxisHelper( 50 );
         scene.add( axisHelper );
-    } else {
-        gui.hide();
-    };
+    }
 
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.minPolarAngle = Math.PI/3.5; // radians
+    controls.maxPolarAngle = Math.PI/1.55; // radians
+    controls.minDistance = 40;
+    controls.maxDistance = 85;
     render();
 }
 
