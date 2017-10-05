@@ -76,51 +76,125 @@ let json = `{
         "petal_four_mat_map": "yellow",
         "petal_four_mat_alpha": 0.35
       }
+    },
+    "fischers-lovebird": {
+      "0": {
+        "num": 370,
+        "spread": 0.5,
+        "angle": 136.04,
+        "growth": 0.04,
+        "angle_open": 6.314305849189569,
+        "starting_angle_open": 50,
+        "growth_regular": false,
+        "strategy": "angle",
+        "crown_z": 5,
+        "crown_growth": 0.21,
+        "crown_spread": 0,
+        "crown_scale": 0.6784355179704017,
+        "crown_phistart": 0.5194503171247358,
+        "crown_philength": 1.0787174066243834,
+        "crown_amplitude": 1.507188160676533,
+        "crown_freq": 0.2623678646934461,
+        "crown_xoffset": 3.9641296687808314,
+        "crown_yoffset": 10.31923890063425,
+        "crown_segment": 22.99506694855532,
+        "crown_segment_length": 1.42600422832981,
+        "crown_length": 10.915433403805498,
+        "petals_from": 78.39994419439756,
+        "petals_scale": 0.1,
+        "petals_phistart": 0.9205408731922455,
+        "petals_philength": 1.8094601524838447,
+        "petals_amplitude": 0.788195571064464,
+        "petals_freq": 0.1,
+        "petals_xoffset": 5.522848754685848,
+        "petals_yoffset": 18.410298008534053,
+        "petals_segment": 19.182831726256968,
+        "petals_segment_length": 1.8833529461718561,
+        "petals_length": 13.422192542562794,
+        "sec_petals_from": 212.09075689381154,
+        "sec_petals_scale": 0.4672582134045937,
+        "sec_petals_phistart": 0.7837840609935378,
+        "sec_petals_philength": 1.3308113097883683,
+        "sec_petals_amplitude": 0.6734963092203866,
+        "sec_petals_freq": 0.2,
+        "sec_petals_xoffset": 1.6,
+        "sec_petals_yoffset": 6.410990615615194,
+        "sec_petals_segment": 8.286401851069623,
+        "sec_petals_segment_length": 2,
+        "sec_petals_length": 5.977769297875084,
+        "crown_mat_color": 16769693,
+        "crown_mat_emissive": 0,
+        "crown_mat_shininess": 0.2,
+        "crown_mat_map": "redlight",
+        "crown_mat_alpha": 0.35,
+        "petal_one_mat_color": 9336438,
+        "petal_one_mat_emissive": "#000000",
+        "petal_one_mat_shininess": 0.8,
+        "petal_one_mat_map": "red",
+        "petal_one_mat_alpha": 0.35,
+        "petal_two_mat_color": 13157820,
+        "petal_two_mat_emissive": 0,
+        "petal_two_mat_shininess": 0.8,
+        "petal_two_mat_map": "yellow",
+        "petal_two_mat_alpha": 0.35,
+        "petal_three_mat_color": 8774627,
+        "petal_three_mat_emissive": 0,
+        "petal_three_mat_shininess": 0.8,
+        "petal_three_mat_map": "greenblack",
+        "petal_three_mat_alpha": 0.35,
+        "petal_four_mat_color": 3636996,
+        "petal_four_mat_emissive": 2631720,
+        "petal_four_mat_shininess": 0.8,
+        "petal_four_mat_map": "grayblue",
+        "petal_four_mat_alpha": 0.35
+      }
     }
   },
+  "preset": "blue-fronted-parrot",
+  "closed": false,
   "folders": {
     "General": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": true,
       "folders": {}
     },
     "Crown": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": true,
       "folders": {}
     },
     "First Petal": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": true,
       "folders": {}
     },
     "Second Petal": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": true,
       "folders": {}
     },
     "crown_mat": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": true,
       "folders": {}
     },
     "petal_one_mat": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": false,
       "folders": {}
     },
     "petal_two_mat": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": true,
       "folders": {}
     },
     "petal_three_mat": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": false,
       "folders": {}
     },
     "petal_four_mat": {
-      "preset": "Default",
+      "preset": "blue-fronted-parrot",
       "closed": true,
       "folders": {}
     }
@@ -133,8 +207,12 @@ export default class Gui extends DAT.GUI{
         if (debug) {
             config = {load:JSON};
         } else {
-            config = {load: JSON.parse(json)};
+            let loadedJson = JSON.parse(json);
+            loadedJson.preset = parrot_type;
+            config = {load: loadedJson};
         }
+        console.log(config);
+
         super(config);
         this.maxAnis = max_anisotropy;
         this.materials = materials;
@@ -142,7 +220,7 @@ export default class Gui extends DAT.GUI{
         this.params = {
             material: "crown",
             angle:137.5,
-            num:10,
+            num:370,
             spread: 0.1,
             growth: 0.12,
             growth_regular: false,

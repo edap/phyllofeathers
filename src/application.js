@@ -1,5 +1,6 @@
 /* eslint-env browser */
-const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'blue-fronted-parrot';
+const ParrotType = 'fischers-lovebird';
 const debug = false;
 
 import * as THREE from 'three';
@@ -53,7 +54,6 @@ function init(assets){
     scene.add( ambientLight );
 
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
-    if(!debug) { gui.hide(); };
     PointLights(200, 0.4).map((light) => {
         scene.add( light );
     });
@@ -78,11 +78,15 @@ function init(assets){
         scene.add( axisHelper );
     }
 
+    if(!debug) { gui.hide(); };
+
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.minPolarAngle = Math.PI/3.5; // radians
-    controls.maxPolarAngle = Math.PI/1.55; // radians
-    controls.minDistance = 40;
-    controls.maxDistance = 85;
+    if(!debug){
+        controls.minPolarAngle = Math.PI/6.5; // radians
+        controls.maxPolarAngle = Math.PI/1.1; // radians
+        controls.minDistance = 30;
+        controls.maxDistance = 44;
+    }
     render();
 }
 
@@ -95,7 +99,6 @@ function render(){
     composer.render(clock.getDelta());
     stats.end();
 }
-
 
 let regenerate = () => {
     flower.regenerate(gui.params);

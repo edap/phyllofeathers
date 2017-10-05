@@ -19,16 +19,13 @@ export default class Flower {
     }
 
     debug(scene){
-        this.animator.addDebugCurve(scene);
+        //this.animator.addDebugCurve(scene);
     }
 
     get(){
         return this.group;
     }
 
-    setPosition(x,y,z){
-        this.group.setPosition(x,y,z);
-    }
 
     move(time){
         //console.log(time);
@@ -71,8 +68,8 @@ export default class Flower {
         }
 
         // at the end, make the object looking up
+        // UNCOMMENTED JUST FOR SKETCH PURPOSTE
         this.group.rotateX(-Math.PI/2);
-        //this.group.position.set(0, 100, 0);
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {
