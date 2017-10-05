@@ -36,8 +36,8 @@ export default class Animator {
             // bigger than 0
             this.flyAround = new TWEEN.Tween(this.schedule)
                 .to(Object.assign({}, this.destination), this.flyDurationMill)
-                //.easing(TWEEN.Easing.Circular.Out)// this was messing up, a lot, the rotations
-                .easing(TWEEN.Easing.Sinusoidal.InOut)// this was messing up, a lot, the rotations
+                .easing(TWEEN.Easing.Cubic.InOut)// this was messing up, a lot, the rotations
+                //.easing(TWEEN.Easing.Sinusoidal.InOut)// this was messing up, a lot, the rotations
                 .onUpdate( (current) =>{
                     this._fly(objects, current, group );
                 }).onComplete( (current) => {
