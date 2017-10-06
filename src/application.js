@@ -1,6 +1,6 @@
 /* eslint-env browser */
-//const ParrotType = 'blue-fronted-parrot';
-const ParrotType = 'fischers-lovebird';
+const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'fischers-lovebird';
 const debug = false;
 
 import * as THREE from 'three';
@@ -84,8 +84,8 @@ function init(assets){
     if(!debug){
         controls.minPolarAngle = Math.PI/6.5; // radians
         controls.maxPolarAngle = Math.PI/1.1; // radians
-        controls.minDistance = 30;
-        controls.maxDistance = 44;
+        controls.minDistance = 50;
+        controls.maxDistance = 90;
     }
     render();
 }
@@ -104,8 +104,16 @@ let regenerate = () => {
     flower.regenerate(gui.params);
 }
 
+function removeSpinner(){
+    let elem = document.getElementsByClassName("loading")[0];
+    if (elem) {
+        elem.parentNode.removeChild(elem);
+    };
+}
+
 loadAllAssets(ParrotType).then(
     (assets) => {
+        removeSpinner();
         init(assets);
     },
     (err) => { console.log(`impossible to load the assets: ${err}`); }

@@ -36,7 +36,7 @@ module.exports = {
     target: 'web',
     devtool: 'source-map',
     entry: {
-        //"bundle": "./src/application.js",
+        "bundle": "./src/application.js",
         "bundle.min": "./src/application.js"
     },
 
