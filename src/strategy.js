@@ -79,26 +79,20 @@ export default class Strategy{
         let quartOfSpace = availableSpace / 4.0;
         let radiusNotInCrown = radius - minRadius;
 
-        //console.log(radiusNotInCrown);
-        //console.log(quartOfSpace * 4);
-
-        switch(radiusNotInCrown){
-        case (radius <= quartOfSpace):
-            return this.materials["petal_one"];
-            break;
-        case (radius > quartOfSpace && radius <= quartOfSpace * 2):
-            return this.materials["petal_two"];
-            break;
-        case (radius > quartOfSpace *2 && radius <= quartOfSpace * 3):
-            return this.materials["petal_three"];
-            break;
-        case (radius > quartOfSpace *3 && radius <= quartOfSpace * 4):
-            return this.materials["petal_four"];
-            break;
-        default:
-            return this.materials["petal_one"];
-            break;
+        let mat;
+        if (radiusNotInCrown <= quartOfSpace){
+            mat = "petal_one";
+        } else if ((radiusNotInCrown > quartOfSpace) && (radiusNotInCrown <= (quartOfSpace * 2))){
+            console.log("NO");
+            mat = "petal_two";
+        } else if (radiusNotInCrown > (quartOfSpace *2) && radiusNotInCrown <= (quartOfSpace * 3)){
+            mat = "petal_three";
+        } else if (radiusNotInCrown > (quartOfSpace *3) && radiusNotInCrown <= availableSpace){
+            mat = "petal_four";
+        } else {
+            mat = "petal_one";
         }
+        return this.materials[mat];
     }
 
     contourMat(i,angle,params){

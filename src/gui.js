@@ -15,10 +15,6 @@ let json = `{
         "starting_angle_open": 88.3368569415081,
         "growth_regular": false,
         "strategy": "normal",
-        "crown_z": 10,
-        "crown_growth": 0.12,
-        "crown_spread": 1.05,
-        "crown_scale": 0.5565912923408463,
         "crown_phistart": 2.5616226195767364,
         "crown_philength": 2.197251585623679,
         "crown_amplitude": 3.1968800697900877,
@@ -87,10 +83,6 @@ let json = `{
         "starting_angle_open": 50,
         "growth_regular": false,
         "strategy": "angle",
-        "crown_z": 5,
-        "crown_growth": 0.21,
-        "crown_spread": 0,
-        "crown_scale": 0.6784355179704017,
         "crown_phistart": 0.5194503171247358,
         "crown_philength": 1.0787174066243834,
         "crown_amplitude": 1.507188160676533,
@@ -219,22 +211,17 @@ export default class Gui extends DAT.GUI{
         this.regenerate = regenerateCallbak;
         this.params = {
             material: "crown",
-            angle:137.5,
-            num:370,
+            angle:128,
+            //angle:131.75,
+            num:1,
             spread: 0.1,
-            growth: 0.12,
+            growth: 0.13,
             growth_regular: false,
             angle_open: 36.17438258159361,
             starting_angle_open: 47,
-            strategy: "none",
+            strategy: "radius",
 
             background: 0xFF0000,
-
-            crown_z: 0.5,
-            crown_growth: 0.12,
-            crown_spread: 0.12,
-
-            crown_scale:2.0,
             crown_segment: 10,
             crown_segment_length: 2,
             crown_length: 20,
@@ -251,8 +238,8 @@ export default class Gui extends DAT.GUI{
             crown_mat_map: "none",
             crown_mat_alpha: 0.35,
 
-            petals_from: 49,
-            petals_scale:2.0,
+            petals_from: 10,
+            petals_scale:0.6,
             petals_segment: 10,
             petals_segment_length: 2,
             petals_length: 20,
@@ -263,8 +250,8 @@ export default class Gui extends DAT.GUI{
             petals_xoffset: 1.6,
             petals_yoffset: 1.6,
 
-            sec_petals_from: 49,
-            sec_petals_scale:2.0,
+            sec_petals_from: 25,
+            sec_petals_scale:1.0,
             sec_petals_segment: 10,
             sec_petals_segment_length: 2,
             sec_petals_length: 20,
@@ -313,19 +300,15 @@ export default class Gui extends DAT.GUI{
         let petalFolder = this.addFolder("First Petal");
         let secPetalFolder = this.addFolder("Second Petal");
 
-        generalFolder.add(this.params, "num").min(1).max(800).step(1).onChange(this.regenerate);
-        generalFolder.add(this.params, "spread").min(0).max(0.7).step(0.1).onChange(this.regenerate);
-        generalFolder.add(this.params, "angle").min(132.0).max(138.0).step(0.01).onChange(this.regenerate);
+        generalFolder.add(this.params, "num").min(1).max(2000).step(1).onChange(this.regenerate);
+        generalFolder.add(this.params, "spread").min(0).max(13.7).step(0.1).onChange(this.regenerate);
+        generalFolder.add(this.params, "angle").min(128.0).max(138.0).step(0.01).onChange(this.regenerate);
         generalFolder.add(this.params, "growth").min(0.04).max(0.25).step(0.01).onChange(this.regenerate);
         generalFolder.add(this.params, "angle_open").min(0).max(80).onChange(this.regenerate);
         generalFolder.add(this.params, "starting_angle_open").min(50).max(100).onChange(this.regenerate);
         generalFolder.add(this.params, "growth_regular").onChange(this.regenerate);
-        generalFolder.add(this.params, "strategy",["none", "normal", "radius", "angle"]).onChange(this.regenerate);
+        generalFolder.add(this.params, "strategy",["none", "normal", "radius", "angle", "contour"]).onChange(this.regenerate);
 
-        crownFolder.add(this.params, "crown_z").min(-20).max(10.0).step(0.1).onChange(this.regenerate);
-        crownFolder.add(this.params, "crown_growth").min(0.0).max(0.25).step(0.01).onChange(this.regenerate);
-        crownFolder.add(this.params, "crown_spread").min(0.0).max(1.7).step(0.01).onChange(this.regenerate);
-        crownFolder.add(this.params, "crown_scale").min(0.1).max(1.0).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_phistart").min(0.1).max(6.3).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_philength").min(0.1).max(6.3).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_amplitude").min(0.1).max(10.5).onChange(this.regenerate);
@@ -336,7 +319,7 @@ export default class Gui extends DAT.GUI{
         crownFolder.add(this.params, "crown_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
         crownFolder.add(this.params, "crown_length").min(3).max(30).onChange(this.regenerate);
 
-        petalFolder.add(this.params, "petals_from").min(1).max(320).onChange(this.regenerate);
+        petalFolder.add(this.params, "petals_from").min(1).max(2000).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_scale").min(0.1).max(1.0).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_philength").min(0.1).max(6.3).onChange(this.regenerate);
@@ -348,7 +331,7 @@ export default class Gui extends DAT.GUI{
         petalFolder.add(this.params, "petals_segment_length").min(0.1).max(5.0).onChange(this.regenerate);
         petalFolder.add(this.params, "petals_length").min(3).max(30).onChange(this.regenerate);
 
-        secPetalFolder.add(this.params, "sec_petals_from").min(1).max(320).onChange(this.regenerate);
+        secPetalFolder.add(this.params, "sec_petals_from").min(1).max(2000).onChange(this.regenerate);
         secPetalFolder.add(this.params, "sec_petals_scale").min(0.1).max(1.0).onChange(this.regenerate);
         secPetalFolder.add(this.params, "sec_petals_phistart").min(0.1).max(6.3).onChange(this.regenerate);
         secPetalFolder.add(this.params, "sec_petals_philength").min(0.1).max(6.3).onChange(this.regenerate);

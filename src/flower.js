@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {phyllotaxisConical} from './phyllotaxis.js';
+import {phyllotaxisWrong, phyllotaxisConical} from './phyllotaxis.js';
 import Strategy from './strategy.js';
 import Animator from './animator.js';
 
@@ -32,6 +32,10 @@ export default class Flower {
         this.animator.move(time, this.objects, this.group);
     }
 
+    rotate(time){
+        this.animator.rotateTween(time, this.group);
+    }
+
     regenerate(params){
         this.reset();
         this.generate(params);
@@ -48,17 +52,17 @@ export default class Flower {
         for (var i = 0; i< params.num; i++) {
             let object = this._createObject(i, params.angle, params, crownGeom, petalGeom, secPetalGeom);
             let coord;
+
+            coord = phyllotaxisWrong(i, angleInRadians, params.spread, params.growth);
+            object.position.set(coord.x, coord.y, coord.z);
+
             if (i <= params.petals_from) {
-                coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
-                object.position.set(coord.x, coord.y, coord.z + params.crown_z);
                 this.disposePetal(object, i, angleInRadians, params, "crown");
-            } else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
-                coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
-                object.position.set(coord.x, coord.y, coord.z);
+            }
+            else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
                 this.disposePetal(object, i, angleInRadians, params, "petals");
-            } else {
-                coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
-                object.position.set(coord.x, coord.y, coord.z);
+            }
+            else {
                 this.disposePetal(object, i, angleInRadians, params, "sec_petals");
             }
             object.castShadow = true;
@@ -69,7 +73,7 @@ export default class Flower {
 
         // at the end, make the object looking up
         // UNCOMMENTED JUST FOR SKETCH PURPOSTE
-        this.group.rotateX(-Math.PI/2);
+        //this.group.rotateX(-Math.PI/2);
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {
@@ -101,7 +105,8 @@ export default class Flower {
         object.rotateZ( iter* angleInRadians);
         let yrot = (iter/params.angle_open) * params.petals_from;
         let y_angle = params.angle_open * scaleRatio;
-        object.rotateX( (params.starting_angle_open + y_angle + iter * 90/params.num ) * -PItoDeg );
+        //object.rotateZ( (params.starting_angle_open + y_angle + iter * 90/params.num ) * PItoDeg );
+        object.rotateX(Math.PI/2);
 
         // Scale:
         // do not scale petals in the crown depending on the iteration number
@@ -111,8 +116,8 @@ export default class Flower {
         } else {
             scaleMag = params[`${suffix}_scale`] * 1.0;
         }
-        object.scale.set(scaleMag, scaleMag, scaleMag);
-        object.rotateY((Math.PI/2));
+        //object.scale.set(scaleMag, scaleMag, scaleMag);
+        object.rotateX((Math.PI/2));
     }
 
     makePetalGeom(params, suffix){
@@ -131,5 +136,6 @@ export default class Flower {
         }
         let geometry = new THREE.LatheGeometry( points, segment ,phistart, philength);
         return geometry;
+        //return new THREE.BoxGeometry(1.1,1.1,1.1);
     }
 }

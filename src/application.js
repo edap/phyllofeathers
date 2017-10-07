@@ -1,7 +1,7 @@
 /* eslint-env browser */
 const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'fischers-lovebird';
-const debug = false;
+const debug = true;
 
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -14,7 +14,7 @@ import { EffectComposer, KernelSize, RenderPass, BloomPass} from "postprocessing
 
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
 
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -34,9 +34,9 @@ function init(assets){
     const pass = new BloomPass({
 			  resolutionScale: 0.3,
 			  intensity: 2.0,
-        kernelSize: KernelSize.LARGE,
+              kernelSize: KernelSize.LARGE,
 			  distinction: 3.0
-		});
+    });
     pass.renderToScreen = true;
     composer.addPass(pass);
     //end bloom
@@ -44,10 +44,10 @@ function init(assets){
     document.body.appendChild(renderer.domElement);
     camera.position.z = 60;
     camera.position.y = 25;
-    scene.background = assets.bg;
+    //scene.background = assets.bg;
 
     // stats
-    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 
     //lights
     let ambientLight = new THREE.AmbientLight( 0xFFFFFF );
@@ -94,9 +94,11 @@ function render(){
     let time = clock.getElapsedTime();
     stats.begin();
     requestAnimationFrame(render);
-    flower.move(time);
-    //renderer.render(scene, camera);
-    composer.render(clock.getDelta());
+    //flower.move(time);
+    flower.rotate(time);
+    //flower.group.rotateZ(0.004);
+    renderer.render(scene, camera);
+    //composer.render(clock.getDelta());
     stats.end();
 }
 
