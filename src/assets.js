@@ -8,15 +8,58 @@ import {loadTexture} from "./loaders.js";
 export function loadAllAssets(bird){
     switch(bird){
     case 'blue-fronted-parrot':
-            return loadBlueFrontendParrot();
-            break;
-    case 'fischers-lovebird':
-            return loadFischersLovebird();
+        return loadBlueFrontendParrot();
         break;
-        default:
-            return loadBlueFrontendParrot();
-            break;
+    case 'fischers-lovebird':
+        return loadFischersLovebird();
+        break;
+    case 'budgeridgar':
+        return loadBird('budgeridgar');
+        break;
+    default:
+        return loadBlueFrontendParrot();
+        break;
     }
+}
+
+function loadBird(birdName){
+    let promises = [];
+    let folder = "./textures/"+birdName+"/";
+    let picNames = ['first', 'second', 'third', 'fourth', 'fifth'];
+    let bg = "bg";
+    picNames.forEach( (name) => {
+        promises.push(loadTexture(`${folder}${name}.jpg`));
+        promises.push(loadTexture(`${folder}${name}_alpha.jpg`));
+        promises.push(loadTexture(`${folder}${name}_NRM.jpg`));
+        promises.push(loadTexture(`${folder}${name}_SPEC.jpg`));
+    });
+    promises.push(loadTexture(`${folder}${bg}.jpg`));
+    return Promise.all(promises).then(
+        (tex) => {
+            for (var i = 0; i< tex.length; i++) {
+                tex[i].wrapS = RepeatWrapping;
+                tex[i].wrapT = RepeatWrapping;
+            };
+            let bird = {};
+            let texIndex = 0;
+            picNames.forEach( (name) => {
+                bird[name] = tex[texIndex];
+                bird[`${name}_alpha`] = tex[texIndex+1];
+                bird[`${name}_NRM`] = tex[texIndex+2];
+                bird[`${name}_SPEC`] = tex[texIndex+3];
+                texIndex += 4;
+            });
+            let assets = {
+                textures: bird,
+                bg: tex[20]
+            };
+            return assets;
+        },
+        (err) => {
+            console.error(err);
+            return err;
+        }
+    );
 }
 
 function loadFischersLovebird(){
