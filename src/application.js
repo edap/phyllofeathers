@@ -1,5 +1,9 @@
 /* eslint-env browser */
-const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'budgeridgar';
+const ParrotType = 'eastern-rosella';
+//const ParrotType = 'ring-necked-parakeet';
+
 //const ParrotType = 'fischers-lovebird';
 const debug = true;
 

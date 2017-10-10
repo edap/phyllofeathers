@@ -16,6 +16,12 @@ export function loadAllAssets(bird){
     case 'budgeridgar':
         return loadBird('budgeridgar');
         break;
+    case 'eastern-rosella':
+        return loadBird('eastern-rosella');
+        break;
+    case 'ring-necked-parakeet':
+        return loadBird('ring-necked-parakeet');
+        break;
     default:
         return loadBlueFrontendParrot();
         break;
