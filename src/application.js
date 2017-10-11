@@ -1,7 +1,7 @@
 /* eslint-env browser */
-//const ParrotType = 'blue-fronted-parrot';
+const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'budgeridgar';
-const ParrotType = 'eastern-rosella';
+//const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 
 //const ParrotType = 'fischers-lovebird';
@@ -48,7 +48,7 @@ function init(assets){
     document.body.appendChild(renderer.domElement);
     camera.position.z = 60;
     camera.position.y = 25;
-    //scene.background = assets.bg;
+    scene.background = assets.bg;
 
     // stats
     //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -86,10 +86,10 @@ function init(assets){
 
     controls = new OrbitControls(camera, renderer.domElement);
     if(!debug){
-        controls.minPolarAngle = Math.PI/6.5; // radians
-        controls.maxPolarAngle = Math.PI/1.1; // radians
-        controls.minDistance = 50;
-        controls.maxDistance = 90;
+        //controls.minPolarAngle = Math.PI/6.5; // radians
+        //controls.maxPolarAngle = Math.PI/1.1; // radians
+        //controls.minDistance = 50;
+        //controls.maxDistance = 90;
     }
     render();
 }
@@ -99,10 +99,9 @@ function render(){
     stats.begin();
     requestAnimationFrame(render);
     //flower.move(time);
-    flower.rotate(time);
-    //flower.group.rotateZ(0.004);
-    renderer.render(scene, camera);
-    //composer.render(clock.getDelta());
+    //flower.rotate(time);
+    //renderer.render(scene, camera);
+    composer.render(clock.getDelta());
     stats.end();
 }
 
