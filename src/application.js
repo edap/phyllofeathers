@@ -5,7 +5,7 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'ring-necked-parakeet';
 
 //const ParrotType = 'fischers-lovebird';
-const debug = true;
+const debug = false;
 
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -48,7 +48,7 @@ function init(assets){
     document.body.appendChild(renderer.domElement);
     camera.position.z = 60;
     camera.position.y = 25;
-    scene.background = assets.bg;
+    //scene.background = assets.bg;
 
     // stats
     //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
