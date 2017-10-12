@@ -1,17 +1,17 @@
 /* eslint-env browser */
-const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'budgeridgar';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 
-//const ParrotType = 'fischers-lovebird';
+const ParrotType = 'fischers-lovebird';
 const debug = false;
 
 import * as THREE from 'three';
 import Gui from './gui.js';
 import Stats from 'stats.js';
 import CollectionMaterials from './materials.js';
-import {loadAllAssets} from './assets.js';
+import {loadBird} from './assets.js';
 import Flower from './flower.js';
 import {PointLights} from './pointLights.js';
 import { EffectComposer, KernelSize, RenderPass, BloomPass} from "postprocessing";
@@ -116,7 +116,7 @@ function removeSpinner(){
     };
 }
 
-loadAllAssets(ParrotType).then(
+loadBird(ParrotType).then(
     (assets) => {
         removeSpinner();
         init(assets);
