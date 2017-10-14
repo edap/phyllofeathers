@@ -26,8 +26,10 @@
     "@tweenjs/tween.js": "^17.1.1",
     "dat-gui": "^0.5.0",
     "es6-promise": "^4.1.1",
-    "ify-loader": "^1.1.0",
+    "glslify": "^6.1.0",
+    "glslify-loader": "^1.0.2",
     "postprocessing": "^3.0.0",
+    "raw-loader": "^0.5.1",
     "stats.js": "^0.17.0",
     "three-orbit-controls": "^82.1.0",
     "whatwg-fetch": "^2.0.3"

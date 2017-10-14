@@ -33,22 +33,22 @@ let plane;
 let bufferObject;
 let finalMaterial;
 let quad;
-// //let glsl = require('glslify');
-// let fragShader = glsl`
-// 		uniform vec2 res;//The width and height of our screen
-// 		uniform sampler2D bufferTexture;//Our input texture
-// 		uniform sampler2D videoTexture;
-// 		uniform float time;
-// 		void main() {
-// 			vec2 st = gl_FragCoord.xy / res;
-// 			vec2 uv = st;
-// 			uv *= 0.998;
-// 			vec4 sum = texture2D(bufferTexture, uv);
-// 			vec4 src = texture2D(videoTexture, uv);
-// 			sum.rgb = mix(sum.rbg, src.rgb, 0.01);
-// 			gl_FragColor = sum;
-// }
-// `;
+let glsl = require('glslify');
+let fragShader = glsl`
+		uniform vec2 res;//The width and height of our screen
+		uniform sampler2D bufferTexture;//Our input texture
+		uniform sampler2D videoTexture;
+		uniform float time;
+		void main() {
+			vec2 st = gl_FragCoord.xy / res;
+			vec2 uv = st;
+			uv *= 0.998;
+			vec4 sum = texture2D(bufferTexture, uv);
+			vec4 src = texture2D(videoTexture, uv);
+			sum.rgb = mix(sum.rbg, src.rgb, 0.01);
+			gl_FragColor = sum;
+}
+`;
 // //
 const clock = new THREE.Clock();
 

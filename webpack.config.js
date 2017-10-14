@@ -56,7 +56,26 @@ module.exports = {
                         presets: ["env"]
                     }
                 }
+            },
+            {
+                test: /\.(glsl|frag|vert)$/,
+                use: {
+                    loader: "raw",
+                    options: {
+                        ignore: '/node_modules/'
+                    }
+                }
+            },
+            {
+                test: /\.(glsl|frag|vert)$/,
+                use: {
+                    loader: 'glslify',
+                    options: {
+                        ignore: '/node_modules/'
+                    }
+                }
             }
+
         ]
     },
     performance: {
