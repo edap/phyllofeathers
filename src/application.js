@@ -5,7 +5,7 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'ring-necked-parakeet';
 
 //const ParrotType = 'fischers-lovebird';
-const debug = false;
+const debug = true;
 
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -23,6 +23,33 @@ const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+
+//BufferScene
+let bufferScene;
+let textureA;
+let textureB;
+let bufferMaterial;
+let plane;
+let bufferObject;
+let finalMaterial;
+let quad;
+// //let glsl = require('glslify');
+// let fragShader = glsl`
+// 		uniform vec2 res;//The width and height of our screen
+// 		uniform sampler2D bufferTexture;//Our input texture
+// 		uniform sampler2D videoTexture;
+// 		uniform float time;
+// 		void main() {
+// 			vec2 st = gl_FragCoord.xy / res;
+// 			vec2 uv = st;
+// 			uv *= 0.998;
+// 			vec4 sum = texture2D(bufferTexture, uv);
+// 			vec4 src = texture2D(videoTexture, uv);
+// 			sum.rgb = mix(sum.rbg, src.rgb, 0.01);
+// 			gl_FragColor = sum;
+// }
+// `;
+// //
 const clock = new THREE.Clock();
 
 const stats = new Stats();
@@ -91,6 +118,7 @@ function init(assets){
         //controls.minDistance = 50;
         //controls.maxDistance = 90;
     }
+    //buffer_texture_setup();
     render();
 }
 
@@ -100,9 +128,34 @@ function render(){
     requestAnimationFrame(render);
     //flower.move(time);
     //flower.rotate(time);
-    //renderer.render(scene, camera);
-    composer.render(clock.getDelta());
+    renderer.render(scene, camera);
+    // do not care about the composer
+    //composer.render(clock.getDelta());
     stats.end();
+}
+
+function buffer_texture_setup(){
+    //Create buffer scene
+    bufferScene = new THREE.Scene();
+    //Create 2 buffer textures
+    textureA = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
+    textureB = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
+    //Pass textureA to shader
+    bufferMaterial = new THREE.ShaderMaterial( {
+        uniforms: {
+            bufferTexture: { type: "t", value: textureA },
+            res : {type: 'v2',value:new THREE.Vector2(window.innerWidth,window.innerHeight)}//Keeps the resolution
+        },
+        fragmentShader: fragShader
+    } );
+    plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
+    bufferObject = new THREE.Mesh( plane, bufferMaterial );
+    bufferScene.add(bufferObject);
+
+    //Draw textureB to screen
+    finalMaterial =  new THREE.MeshBasicMaterial({map: textureB});
+    quad = new THREE.Mesh( plane, finalMaterial );
+    scene.add(quad);
 }
 
 let regenerate = () => {
