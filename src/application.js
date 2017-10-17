@@ -37,15 +37,13 @@ let glsl = require('glslify');
 let fragShader = glsl`
 		uniform vec2 res;//The width and height of our screen
 		uniform sampler2D bufferTexture;//Our input texture
-		uniform sampler2D videoTexture;
+    uniform sampler2D oldTexture;
 		uniform float time;
 		void main() {
 			vec2 st = gl_FragCoord.xy / res;
 			vec2 uv = st;
 			uv *= 0.998;
 			vec4 sum = texture2D(bufferTexture, uv);
-			vec4 src = texture2D(videoTexture, uv);
-			sum.rgb = mix(sum.rbg, src.rgb, 0.01);
 			gl_FragColor = sum;
 }
 `;
@@ -98,8 +96,10 @@ function init(assets){
         camera.updateProjectionMatrix();
     });
 
+    buffer_texture_setup();
     flower = new Flower(gui.params, materials, assets);
-    scene.add(flower.group);
+    bufferScene.add(flower.group);
+    //scene.add(flower.group);
 
     //debug
     if (debug) {
@@ -118,7 +118,6 @@ function init(assets){
         //controls.minDistance = 50;
         //controls.maxDistance = 90;
     }
-    //buffer_texture_setup();
     render();
 }
 
@@ -126,8 +125,17 @@ function render(){
     let time = clock.getElapsedTime();
     stats.begin();
     requestAnimationFrame(render);
+
+    // draw to texture B
+    renderer.render(bufferScene, camera, textureB, true);
     //flower.move(time);
     //flower.rotate(time);
+    var t = textureA;
+    textureA = textureB;
+    textureB = t;
+    quad.material.map = textureB.texture;
+    bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
+    bufferMaterial.uniforms.oldTexture.value = textureB.texture;
     renderer.render(scene, camera);
     // do not care about the composer
     //composer.render(clock.getDelta());
@@ -143,7 +151,8 @@ function buffer_texture_setup(){
     //Pass textureA to shader
     bufferMaterial = new THREE.ShaderMaterial( {
         uniforms: {
-            bufferTexture: { type: "t", value: textureA },
+            bufferTexture: { type: "t", value: textureA.texture },
+            oldTexture: {type: "t", value: textureB.texture },
             res : {type: 'v2',value:new THREE.Vector2(window.innerWidth,window.innerHeight)}//Keeps the resolution
         },
         fragmentShader: fragShader
@@ -153,7 +162,7 @@ function buffer_texture_setup(){
     bufferScene.add(bufferObject);
 
     //Draw textureB to screen
-    finalMaterial =  new THREE.MeshBasicMaterial({map: textureB});
+    finalMaterial =  new THREE.MeshBasicMaterial({map: textureB.texture});
     quad = new THREE.Mesh( plane, finalMaterial );
     scene.add(quad);
 }
