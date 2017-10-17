@@ -14,8 +14,6 @@ import CollectionMaterials from './materials.js';
 import {loadAllAssets} from './assets.js';
 import Flower from './flower.js';
 import {PointLights} from './pointLights.js';
-import { EffectComposer, KernelSize, RenderPass, BloomPass} from "postprocessing";
-
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -29,7 +27,6 @@ let bufferScene;
 let textureA;
 let textureB;
 let bufferMaterial;
-let plane;
 let bufferObject;
 let finalMaterial;
 let quad;
@@ -56,20 +53,8 @@ let gui;
 let controls;
 let flower;
 
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene,camera));
 
 function init(assets){
-    const pass = new BloomPass({
-			  resolutionScale: 0.3,
-			  intensity: 2.0,
-              kernelSize: KernelSize.LARGE,
-			  distinction: 3.0
-    });
-    pass.renderToScreen = true;
-    composer.addPass(pass);
-    //end bloom
-
     document.body.appendChild(renderer.domElement);
     camera.position.z = 60;
     camera.position.y = 25;
@@ -96,7 +81,7 @@ function init(assets){
         camera.updateProjectionMatrix();
     });
 
-    buffer_texture_setup();
+    buffer_texture_setup(ambientLight);
     flower = new Flower(gui.params, materials, assets);
     bufferScene.add(flower.group);
     //scene.add(flower.group);
@@ -127,7 +112,6 @@ function render(){
     requestAnimationFrame(render);
 
     // draw to texture B
-    renderer.render(bufferScene, camera, textureB, true);
     //flower.move(time);
     //flower.rotate(time);
     var t = textureA;
@@ -136,13 +120,15 @@ function render(){
     quad.material.map = textureB.texture;
     bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
     bufferMaterial.uniforms.oldTexture.value = textureB.texture;
+
+    renderer.render(bufferScene, camera, textureB, true);
     renderer.render(scene, camera);
     // do not care about the composer
     //composer.render(clock.getDelta());
     stats.end();
 }
 
-function buffer_texture_setup(){
+function buffer_texture_setup(light){
     //Create buffer scene
     bufferScene = new THREE.Scene();
     //Create 2 buffer textures
@@ -157,8 +143,9 @@ function buffer_texture_setup(){
         },
         fragmentShader: fragShader
     } );
-    plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
+    var plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
     bufferObject = new THREE.Mesh( plane, bufferMaterial );
+    bufferScene.add(light);
     bufferScene.add(bufferObject);
 
     //Draw textureB to screen
