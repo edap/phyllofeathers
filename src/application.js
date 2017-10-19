@@ -1,11 +1,10 @@
 /* eslint-env browser */
-const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'budgeridgar';
-//const ParrotType = 'eastern-rosella';
+const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
-
 //const ParrotType = 'fischers-lovebird';
-const debug = true;
+const debug = false;
 
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -27,6 +26,7 @@ let bufferScene;
 let textureA;
 let textureB;
 let bufferMaterial;
+let plane;
 let bufferObject;
 let finalMaterial;
 let quad;
@@ -34,12 +34,11 @@ let glsl = require('glslify');
 let fragShader = glsl`
 		uniform vec2 res;//The width and height of our screen
 		uniform sampler2D bufferTexture;//Our input texture
-    uniform sampler2D oldTexture;
 		uniform float time;
 		void main() {
 			vec2 st = gl_FragCoord.xy / res;
 			vec2 uv = st;
-			uv *= 0.998;
+			//uv *= 0.998;
 			vec4 sum = texture2D(bufferTexture, uv);
 			gl_FragColor = sum;
 }
@@ -82,9 +81,11 @@ function init(assets){
     });
 
     buffer_texture_setup(ambientLight);
-    flower = new Flower(gui.params, materials, assets);
-    bufferScene.add(flower.group);
-    //scene.add(flower.group);
+    // flower = new Flower(gui.params, materials, assets);
+    // bufferScene.add(flower.group);
+
+    flower = createFeather();
+    bufferScene.add(flower);
 
     //debug
     if (debug) {
@@ -113,13 +114,16 @@ function render(){
 
     // draw to texture B
     //flower.move(time);
+
     //flower.rotate(time);
+    flower.rotation.y += .01;
+    flower.rotation.x += .01;
+
     var t = textureA;
     textureA = textureB;
     textureB = t;
     quad.material.map = textureB.texture;
     bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
-    bufferMaterial.uniforms.oldTexture.value = textureB.texture;
 
     renderer.render(bufferScene, camera, textureB, true);
     renderer.render(scene, camera);
@@ -178,3 +182,39 @@ loadAllAssets(ParrotType).then(
     },
     (err) => { console.log(`impossible to load the assets: ${err}`); }
 );
+
+
+function createFeather() {
+  var points = [];
+  for ( var i = 0; i < 10; i ++ ) {
+      points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 4 ) );
+  }
+  var geometry = new THREE.LatheGeometry( points,15,1,1.1 );
+  
+  //Create a Texture Loader object
+  var loader = new THREE.TextureLoader();
+  loader.setCrossOrigin('Anonymous');
+  var texture = loader.load("https://dl.dropboxusercontent.com/s/s7lf6fmxzb5pa06/red.jpg?dl=1");
+  var alphaMap = loader.load("https://dl.dropboxusercontent.com/s/bhxnkjvuch4tlur/red_alpha.jpg?dl=1");
+  var specMap = loader.load("https://dl.dropboxusercontent.com/s/mzvgaeu7xmtkjb0/red_SPEC.jpg?dl=1");
+  var normMap = loader.load("https://dl.dropboxusercontent.com/s/d6qjqd8u8ic5xeg/red_NRM.jpg?dl=1");
+  //alphaMap.wrapT = THREE.RepeatWrapping;
+  //alphaMap.wrapS = THREE.RepeatWrapping;
+
+  var material = new THREE.MeshPhongMaterial({
+    map: texture,
+    alphaTest:0.50,
+    alphaMap:alphaMap,
+    normalMap:normMap,
+    specularMap:specMap,
+    color: 0xffffff, emissive:0x000000,
+    opacity: 1, transparent: true,
+    side: THREE.DoubleSide
+  });
+  material.map.magFilter = THREE.LinearFilter;
+  material.map.minFilter = THREE.LinearMipMapLinearFilter;
+  material.map.anisotropy = maxAnisotropy;
+  var f = new THREE.Mesh(geometry, material);
+  f.rotation.z = Math.PI / 4;
+  return f;
+};
