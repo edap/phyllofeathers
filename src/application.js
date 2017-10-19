@@ -129,16 +129,22 @@ function render(){
 }
 
 function buffer_texture_setup(light){
+    let small = true;
     //Create buffer scene
     bufferScene = new THREE.Scene();
     //Create 2 buffer textures
-    textureA = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
-    textureB = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
+
+    if(small){
+        textureA = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
+        textureB = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
+    }else{
+        textureA = new THREE.WebGLRenderTarget( 4096,4096, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
+        textureB = new THREE.WebGLRenderTarget( 4096,4096, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
+    }
     //Pass textureA to shader
     bufferMaterial = new THREE.ShaderMaterial( {
         uniforms: {
             bufferTexture: { type: "t", value: textureA.texture },
-            oldTexture: {type: "t", value: textureB.texture },
             res : {type: 'v2',value:new THREE.Vector2(window.innerWidth,window.innerHeight)}//Keeps the resolution
         },
         fragmentShader: fragShader
