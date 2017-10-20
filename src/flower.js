@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import {phyllotaxisWrong, phyllotaxisConical} from './phyllotaxis.js';
 import Strategy from './strategy.js';
-import Animator from './animator.js';
 
 //https://medium.com/@bgolus/anti-aliased-alpha-test-the-esoteric-alpha-to-coverage-8b177335ae4f
 
@@ -13,13 +12,7 @@ export default class Flower {
         this.objects = [];
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
-
-        this.animator = new Animator();
         this.generate(params);
-    }
-
-    debug(scene){
-        //this.animator.addDebugCurve(scene);
     }
 
     get(){
@@ -27,14 +20,14 @@ export default class Flower {
     }
 
 
-    move(time){
-        //console.log(time);
-        this.animator.move(time, this.objects, this.group);
-    }
+    // move(time){
+    //     //console.log(time);
+    //     this.animator.move(time, this.objects, this.group);
+    // }
 
-    rotate(time){
-        this.animator.rotateTween(time, this.group);
-    }
+    // rotate(time){
+    //     this.animator.rotateTween(time, this.group);
+    // }
 
     regenerate(params){
         this.reset();

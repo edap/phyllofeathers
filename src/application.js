@@ -6,6 +6,7 @@ const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
 
+import Animator from './animator.js';
 import * as THREE from 'three';
 import Gui from './gui.js';
 import Stats from 'stats.js';
@@ -19,6 +20,7 @@ const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
 const targetSize = 4096;
+const animator = new Animator();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -113,7 +115,8 @@ function render(){
     requestAnimationFrame(render);
 
     //flower.move(time);
-    flower.rotate(time);
+    //flower.rotate(time);
+    animator.rotateTween(time, flower.group);
 
     if (trailsOn) {
         var t = textureA;
