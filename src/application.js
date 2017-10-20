@@ -1,7 +1,7 @@
 /* eslint-env browser */
-//const ParrotType = 'blue-fronted-parrot';
+const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'budgeridgar';
-const ParrotType = 'eastern-rosella';
+//const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
@@ -17,11 +17,13 @@ const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
+const targetSize = 4096;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 
 //BufferScene
+let trailsOn = true;
 let bufferScene;
 let textureA;
 let textureB;
@@ -34,11 +36,11 @@ let glsl = require('glslify');
 let fragShader = glsl`
 		uniform vec2 res;//The width and height of our screen
 		uniform sampler2D bufferTexture;//Our input texture
-		uniform float time;
+		//uniform float time;
 		void main() {
 			vec2 st = gl_FragCoord.xy / res;
 			vec2 uv = st;
-			//uv *= 0.998;
+			uv *= 0.998;
 			vec4 sum = texture2D(bufferTexture, uv);
 			gl_FragColor = sum;
 }
@@ -81,11 +83,8 @@ function init(assets){
     });
 
     buffer_texture_setup(ambientLight);
-    // flower = new Flower(gui.params, materials, assets);
-    // bufferScene.add(flower.group);
-
-    flower = createFeather();
-    bufferScene.add(flower);
+    flower = new Flower(gui.params, materials, assets);
+    bufferScene.add(flower.group);
 
     //debug
     if (debug) {
@@ -112,12 +111,8 @@ function render(){
     stats.begin();
     requestAnimationFrame(render);
 
-    // draw to texture B
     //flower.move(time);
-
-    //flower.rotate(time);
-    flower.rotation.y += .01;
-    flower.rotation.x += .01;
+    flower.rotate(time);
 
     var t = textureA;
     textureA = textureB;
@@ -125,31 +120,24 @@ function render(){
     quad.material.map = textureB.texture;
     bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
 
+    // draw to texture B
     renderer.render(bufferScene, camera, textureB, true);
     renderer.render(scene, camera);
-    // do not care about the composer
-    //composer.render(clock.getDelta());
+    quad.rotation.y += 0.01;
     stats.end();
 }
 
 function buffer_texture_setup(light){
-    let small = true;
     //Create buffer scene
     bufferScene = new THREE.Scene();
     //Create 2 buffer textures
-
-    if(small){
-        textureA = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
-        textureB = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
-    }else{
-        textureA = new THREE.WebGLRenderTarget( 4096,4096, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
-        textureB = new THREE.WebGLRenderTarget( 4096,4096, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
-    }
+    textureA = new THREE.WebGLRenderTarget( targetSize, targetSize, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
+    textureB = new THREE.WebGLRenderTarget(targetSize, targetSize, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
     //Pass textureA to shader
     bufferMaterial = new THREE.ShaderMaterial( {
         uniforms: {
             bufferTexture: { type: "t", value: textureA.texture },
-            res : {type: 'v2',value:new THREE.Vector2(window.innerWidth,window.innerHeight)}//Keeps the resolution
+            res : {type: 'v2',value:new THREE.Vector2(targetSize, targetSize)}//Keeps the resolution
         },
         fragmentShader: fragShader
     } );
@@ -160,6 +148,7 @@ function buffer_texture_setup(light){
 
     //Draw textureB to screen
     finalMaterial =  new THREE.MeshBasicMaterial({map: textureB.texture});
+    finalMaterial.side = THREE.DoubleSide; //just in case you are rotating the plane
     quad = new THREE.Mesh( plane, finalMaterial );
     scene.add(quad);
 }
@@ -182,39 +171,3 @@ loadAllAssets(ParrotType).then(
     },
     (err) => { console.log(`impossible to load the assets: ${err}`); }
 );
-
-
-function createFeather() {
-  var points = [];
-  for ( var i = 0; i < 10; i ++ ) {
-      points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 4 ) );
-  }
-  var geometry = new THREE.LatheGeometry( points,15,1,1.1 );
-  
-  //Create a Texture Loader object
-  var loader = new THREE.TextureLoader();
-  loader.setCrossOrigin('Anonymous');
-  var texture = loader.load("https://dl.dropboxusercontent.com/s/s7lf6fmxzb5pa06/red.jpg?dl=1");
-  var alphaMap = loader.load("https://dl.dropboxusercontent.com/s/bhxnkjvuch4tlur/red_alpha.jpg?dl=1");
-  var specMap = loader.load("https://dl.dropboxusercontent.com/s/mzvgaeu7xmtkjb0/red_SPEC.jpg?dl=1");
-  var normMap = loader.load("https://dl.dropboxusercontent.com/s/d6qjqd8u8ic5xeg/red_NRM.jpg?dl=1");
-  //alphaMap.wrapT = THREE.RepeatWrapping;
-  //alphaMap.wrapS = THREE.RepeatWrapping;
-
-  var material = new THREE.MeshPhongMaterial({
-    map: texture,
-    alphaTest:0.50,
-    alphaMap:alphaMap,
-    normalMap:normMap,
-    specularMap:specMap,
-    color: 0xffffff, emissive:0x000000,
-    opacity: 1, transparent: true,
-    side: THREE.DoubleSide
-  });
-  material.map.magFilter = THREE.LinearFilter;
-  material.map.minFilter = THREE.LinearMipMapLinearFilter;
-  material.map.anisotropy = maxAnisotropy;
-  var f = new THREE.Mesh(geometry, material);
-  f.rotation.z = Math.PI / 4;
-  return f;
-};
