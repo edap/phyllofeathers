@@ -27,6 +27,7 @@ export default class Animator {
         return Math.random() * (this.maxIntervalMill -this.minIntervalMill) + this.minIntervalMill;
     }
 
+
     rotateTween(time, group){
         TWEEN.update();
         if (time >= this.timeNextFly && time > this.calmStartSec && flying === false) {

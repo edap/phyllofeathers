@@ -1,8 +1,8 @@
 /* eslint-env browser */
-const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'budgeridgar';
 //const ParrotType = 'eastern-rosella';
-//const ParrotType = 'ring-necked-parakeet';
+const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
 
@@ -13,6 +13,7 @@ import CollectionMaterials from './materials.js';
 import {loadAllAssets} from './assets.js';
 import Flower from './flower.js';
 import {PointLights} from './pointLights.js';
+import {removeEntityByName} from './utils.js';
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -45,9 +46,7 @@ let fragShader = glsl`
 			gl_FragColor = sum;
 }
 `;
-// //
 const clock = new THREE.Clock();
-
 const stats = new Stats();
 const materials = new CollectionMaterials();
 let gui;
@@ -69,7 +68,7 @@ function init(assets){
     scene.add( ambientLight );
 
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
-    PointLights(200, 0.4).map((light) => {
+    PointLights(200, 1.0).map((light) => {
         scene.add( light );
     });
 
@@ -84,6 +83,7 @@ function init(assets){
 
     buffer_texture_setup(ambientLight);
     flower = new Flower(gui.params, materials, assets);
+    flower.group.name = 'flower';
     bufferScene.add(flower.group);
 
     //debug
@@ -97,7 +97,8 @@ function init(assets){
     if(!debug) { gui.hide(); };
 
     controls = new OrbitControls(camera, renderer.domElement);
-    if(!debug){
+    document.body.addEventListener("keypress", maybeSpacebarPressed);
+    if (!debug) {
         //controls.minPolarAngle = Math.PI/6.5; // radians
         //controls.maxPolarAngle = Math.PI/1.1; // radians
         //controls.minDistance = 50;
@@ -114,17 +115,36 @@ function render(){
     //flower.move(time);
     flower.rotate(time);
 
-    var t = textureA;
-    textureA = textureB;
-    textureB = t;
-    quad.material.map = textureB.texture;
-    bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
-
-    // draw to texture B
-    renderer.render(bufferScene, camera, textureB, true);
+    if (trailsOn) {
+        var t = textureA;
+        textureA = textureB;
+        textureB = t;
+        quad.material.map = textureB.texture;
+        bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
+        // draw to texture B
+        renderer.render(bufferScene, camera, textureB, true);
+    }
     renderer.render(scene, camera);
-    quad.rotation.y += 0.01;
     stats.end();
+}
+
+function maybeSpacebarPressed(e){
+    if (e.keyCode === 0 || e.keyCode === 32) {
+        e.preventDefault();
+        toggleTrails();
+    }
+}
+
+function toggleTrails(){
+    if (trailsOn === true) {
+        removeEntityByName('flower', bufferScene);
+        scene.add(flower.group);
+        trailsOn = false;
+    } else {
+        removeEntityByName('flower', scene);
+        bufferScene.add(flower.group);
+        trailsOn = true;
+    }
 }
 
 function buffer_texture_setup(light){
