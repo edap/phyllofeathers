@@ -64,15 +64,8 @@ function init(assets){
 
     // stats
     //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-
-    //lights
-    let ambientLight = new THREE.AmbientLight( 0xFFFFFF );
-    scene.add( ambientLight );
-
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
-    PointLights(200, 1.0).map((light) => {
-        scene.add( light );
-    });
+
 
 
     window.addEventListener('resize', function() {
@@ -83,7 +76,18 @@ function init(assets){
         camera.updateProjectionMatrix();
     });
 
+    //ambient lights
+    let ambientLight = new THREE.AmbientLight( 0xFFFFFF );
+    scene.add( ambientLight );
     buffer_texture_setup(ambientLight);
+
+    PointLights(1000, 1.0).map((light) => {
+        scene.add( light );
+    });
+    PointLights(900, 0.8).map((light) => {
+        bufferScene.add( light );
+    });
+
     flower = new Flower(gui.params, materials, assets);
     flower.group.name = 'flower';
     bufferScene.add(flower.group);
@@ -96,6 +100,9 @@ function init(assets){
         scene.add( axisHelper );
     }
 
+    var axisHelper = new THREE.AxisHelper( 50 );
+    scene.add( axisHelper );
+
     if(!debug) { gui.hide(); };
 
     controls = new OrbitControls(camera, renderer.domElement);
@@ -106,6 +113,7 @@ function init(assets){
         //controls.minDistance = 50;
         //controls.maxDistance = 90;
     }
+    animator.init(flower.group, quad);
     render();
 }
 
@@ -113,16 +121,15 @@ function render(){
     let time = clock.getElapsedTime();
     stats.begin();
     requestAnimationFrame(render);
-
-    //flower.move(time);
-    //flower.rotate(time);
-    animator.rotateTween(time, flower.group);
+    animator.update();
+    //animator.carousel(time, flower.group);
 
     if (trailsOn) {
         var t = textureA;
         textureA = textureB;
         textureB = t;
         quad.material.map = textureB.texture;
+        //quad.rotateY(0.005);
         bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
         // draw to texture B
         renderer.render(bufferScene, camera, textureB, true);
@@ -141,11 +148,13 @@ function maybeSpacebarPressed(e){
 function toggleTrails(){
     if (trailsOn === true) {
         removeEntityByName('flower', bufferScene);
+        //removeEntityByName('quad', scene);
         scene.add(flower.group);
         trailsOn = false;
     } else {
         removeEntityByName('flower', scene);
         bufferScene.add(flower.group);
+        //scene.add(quad);
         trailsOn = true;
     }
 }
@@ -170,9 +179,12 @@ function buffer_texture_setup(light){
     bufferScene.add(bufferObject);
 
     //Draw textureB to screen
+    //finalMaterial =  new THREE.MeshBasicMaterial({map: textureB.texture, color:0XFF0000});
     finalMaterial =  new THREE.MeshBasicMaterial({map: textureB.texture});
     finalMaterial.side = THREE.DoubleSide; //just in case you are rotating the plane
     quad = new THREE.Mesh( plane, finalMaterial );
+    quad.name = 'quad';
+    quad.rotateY(Math.PI/2);
     scene.add(quad);
 }
 

@@ -19,16 +19,6 @@ export default class Flower {
         return this.group;
     }
 
-
-    // move(time){
-    //     //console.log(time);
-    //     this.animator.move(time, this.objects, this.group);
-    // }
-
-    // rotate(time){
-    //     this.animator.rotateTween(time, this.group);
-    // }
-
     regenerate(params){
         this.reset();
         this.generate(params);
@@ -47,6 +37,7 @@ export default class Flower {
             let coord;
 
             coord = phyllotaxisWrong(i, angleInRadians, params.spread, params.growth);
+            //coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
             object.position.set(coord.x, coord.y, coord.z);
 
             if (i <= params.petals_from) {

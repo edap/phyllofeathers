@@ -26,10 +26,27 @@ export default class Animator {
         return Math.random() * (this.maxIntervalMill -this.minIntervalMill) + this.minIntervalMill;
     }
 
-
-    rotateTween(time, group){
+    update(){
         TWEEN.update();
+    }
+
+    //Init and carousel are not compatible. o una o l'altra
+    init(flowerGroup, plane){
+        this.firstFlip = new TWEEN.Tween(this.schedule)
+            .to(Object.assign({}, this.destination), this.flyDurationMill)
+            .onUpdate( (current) =>{
+                flowerGroup.rotateZ( current.y * this.rotationScale);
+            })
+            .start().delay(1000);
+    }
+
+    fadeOut(time, object){
+        
+    }
+
+    carousel(time, group){
         if (time >= this.timeNextFly && time > this.calmStartSec && flying === false) {
+            console.log("called");
             this.schedule = {x:0, y:1};
             let delay = this._getRandomDelay();
             this.flyAround = new TWEEN.Tween(this.schedule)
@@ -50,7 +67,6 @@ export default class Animator {
     }
 
     move(time, objects, group){
-        TWEEN.update();
         if (time >= this.timeNextFly && time > this.calmStartSec && flying === false) {
             this.schedule = {x:0, y:0};
             let delay = this._getRandomDelay();
