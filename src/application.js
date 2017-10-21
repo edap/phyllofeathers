@@ -122,7 +122,6 @@ function render(){
     stats.begin();
     requestAnimationFrame(render);
     animator.update();
-    //animator.carousel(time, flower.group);
 
     if (trailsOn) {
         var t = textureA;
