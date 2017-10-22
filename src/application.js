@@ -34,7 +34,7 @@ let bufferMaterial;
 let plane;
 let bufferObject;
 let finalMaterial;
-let slideDirection;
+let slideDirection = new THREE.Vector2(1.0, 1.0);
 let quad;
 let glsl = require('glslify');
 let fragShader = glsl`
@@ -55,13 +55,11 @@ let gui;
 let controls;
 let flower;
 
-
 function init(assets){
     document.body.appendChild(renderer.domElement);
-    camera.position.z = 60;
-    camera.position.y = 25;
+    camera.position.z = 500;
+    camera.position.y = 105;
     //scene.background = assets.bg;
-
     // stats
     //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
@@ -74,15 +72,17 @@ function init(assets){
         camera.updateProjectionMatrix();
     });
 
-    //ambient lights
-    let ambientLight = new THREE.AmbientLight( 0xFFFFFF );
-    scene.add( ambientLight );
-    buffer_texture_setup(ambientLight);
+    buffer_texture_setup();
+    // ambient lights. TODO, use them or not?
+    //let ambientLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    //let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    //scene.add( ambientLight2 );
+    //bufferScene.add(ambientLight);
 
-    PointLights(1000, 1.0).map((light) => {
+    PointLights(600, 1.0).map((light) => {
         scene.add( light );
     });
-    PointLights(900, 0.8).map((light) => {
+    PointLights(600, 1.0).map((light) => {
         bufferScene.add( light );
     });
 
@@ -158,7 +158,7 @@ function toggleTrails(){
     }
 }
 
-function buffer_texture_setup(light){
+function buffer_texture_setup(){
     //Create buffer scene
     bufferScene = new THREE.Scene();
     //Create 2 buffer textures
@@ -176,7 +176,6 @@ function buffer_texture_setup(light){
     } );
     var plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
     bufferObject = new THREE.Mesh( plane, bufferMaterial );
-    bufferScene.add(light);
     bufferScene.add(bufferObject);
 
     //Draw textureB to screen
