@@ -1,5 +1,6 @@
 import {Vector3, Geometry, Line, LineBasicMaterial } from 'three';
 import {createPath} from './path.js';
+import * as THREE from 'three';
 
 const TWEEN = require('@tweenjs/tween.js');
 let flying = false;
@@ -12,11 +13,13 @@ export default class Animator {
         TWEEN.update();
     }
 
-    //Init and carousel are not compatible. o una o l'altra
     init(flowerGroup, plane, slideDirection){
         let flip = this._rotateObj(flowerGroup, {z: Math.PI/2}, 15000,TWEEN.Easing.Elastic.Out, 1000);
-        let turnTable = this._rotateObj(plane, {x: Math.PI/2}, 3000,TWEEN.Easing.Elastic.Out, 1000);
+        let turnTable = this._rotateObj(plane, {x: Math.PI/2}, 3000,TWEEN.Easing.Sinusoidal.Out, 1000);
+        let slide = this._moveVec(slideDirection,
+                                  new THREE.Vector2(-0.1, -0.1), 1000, TWEEN.Easing.Quintic.Out, 1000);
         flip.chain(turnTable);
+        turnTable.chain(slide);
         flip.start();
     }
 
@@ -25,16 +28,29 @@ export default class Animator {
         // https://medium.com/@lachlantweedie/animation-in-three-js-using-tween-js-with-examples-c598a19b1263
     }
 
-    _moveObj(object, destination, duration, easyType, delayMs){
+    _moveObj(object, stepVector, duration, easyType, delayMs){
     }
 
+    _moveVec(vec, stepVector, duration, easyType, delayMs){
+        let destination = new THREE.Vector2().addVectors ( vec, stepVector );
+        let moveVec = new TWEEN.Tween(vec)
+            .to(Object.assign({},destination), duration)
+            .easing(easyType)
+            .delay(delayMs)
+            .onUpdate( (current) =>{
+                console.log(vec);
+            });
+        return moveVec;
+    }
+
+    // http://tweenjs.github.io/tween.js/examples/03_graphs.html
     //.easing(TWEEN.Easing.Cubic.InOut)
     //.easing(TWEEN.Easing.Elastic.Out)
     //.easing(TWEEN.Easing.Quartic.InOut)
     //.easing(TWEEN.Easing.Sinusoidal.InOut)
     _rotateObj(object, destination, duration,easyType,delayMs){
         let rotation = new TWEEN.Tween(object.rotation)
-            .to(Object.assign(destination), duration)
+            .to(Object.assign({},destination), duration)
             .easing(easyType)
             .delay(delayMs)
             .onUpdate( (current) =>{
