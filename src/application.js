@@ -14,7 +14,7 @@ import CollectionMaterials from './materials.js';
 import {loadBird} from './assets.js';
 import Flower from './flower.js';
 import {PointLights} from './pointLights.js';
-import {removeEntityByName} from './utils.js';
+import {removeEntityByName, limitControls} from './utils.js';
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -105,13 +105,10 @@ function init(assets){
     if(!debug) { gui.hide(); };
 
     controls = new OrbitControls(camera, renderer.domElement);
+    limitControls(controls);
+
     document.body.addEventListener("keypress", maybeSpacebarPressed);
-    if (!debug) {
-        //controls.minPolarAngle = Math.PI/6.5; // radians
-        //controls.maxPolarAngle = Math.PI/1.1; // radians
-        //controls.minDistance = 50;
-        //controls.maxDistance = 90;
-    }
+
     animator.init(flower.group, quad, slideDirection);
     render();
 }
