@@ -176,7 +176,7 @@ function buffer_texture_setup(){
 
     //Draw textureB to screen
     //finalMaterial =  new THREE.MeshBasicMaterial({map: textureB.texture, color:0XFF0000});
-    finalMaterial =  new THREE.MeshBasicMaterial({map: textureB.texture});
+    finalMaterial =  new THREE.MeshBasicMaterial({map: textureB.texture, transparent:true});
     finalMaterial.side = THREE.DoubleSide; //just in case you are rotating the plane
     quad = new THREE.Mesh( plane, finalMaterial );
     quad.name = 'quad';
