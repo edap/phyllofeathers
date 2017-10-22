@@ -3,6 +3,7 @@ import {createPath} from './path.js';
 import * as THREE from 'three';
 
 const TWEEN = require('@tweenjs/tween.js');
+const SPEED = 0.2;
 let flying = false;
 
 export default class Animator {
@@ -14,10 +15,22 @@ export default class Animator {
     }
 
     init(flowerGroup, plane, slideDirection){
-        let flip = this._rotateObj(flowerGroup, {z: Math.PI/2}, 15000,TWEEN.Easing.Elastic.Out, 1000);
-        let turnTable = this._rotateObj(plane, {x: Math.PI/2}, 3000,TWEEN.Easing.Sinusoidal.Out, 1000);
+        console.error(SPEED);
+        let flip = this._rotateObj(flowerGroup,
+                                   {z: Math.PI/2},
+                                   15000*SPEED,
+                                   TWEEN.Easing.Elastic.Out,
+                                   1000*SPEED);
+        let turnTable = this._rotateObj(plane,
+                                        {x: Math.PI/2},
+                                        3000*SPEED,
+                                        TWEEN.Easing.Sinusoidal.Out,
+                                        1000*SPEED);
         let slide = this._moveVec(slideDirection,
-                                  new THREE.Vector2(-0.1, -0.1), 1000, TWEEN.Easing.Quintic.Out, 1000);
+                                  new THREE.Vector2(0.00, -0.001),
+                                  1000*SPEED,
+                                  TWEEN.Easing.Linear.None,
+                                  1000*SPEED);
         flip.chain(turnTable);
         turnTable.chain(slide);
         flip.start();
@@ -37,9 +50,9 @@ export default class Animator {
             .to(Object.assign({},destination), duration)
             .easing(easyType)
             .delay(delayMs)
-            .onUpdate( (current) =>{
-                console.log(vec);
-            });
+            // .onUpdate( (current) =>{
+            //     console.log(vec);
+            // });
         return moveVec;
     }
 
@@ -53,9 +66,9 @@ export default class Animator {
             .to(Object.assign({},destination), duration)
             .easing(easyType)
             .delay(delayMs)
-            .onUpdate( (current) =>{
-                //console.log(object.rotation);
-            });
+            //.onUpdate( (current) =>{
+            //console.log(object.rotation);
+            //});
         return rotation;
     }
 
