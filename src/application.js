@@ -34,18 +34,18 @@ let bufferMaterial;
 let plane;
 let bufferObject;
 let finalMaterial;
+let slideDirection;
 let quad;
 let glsl = require('glslify');
 let fragShader = glsl`
 		uniform vec2 res;//The width and height of our screen
+		uniform vec2 slideDirection;// in which direction the texture will slide
 		uniform sampler2D bufferTexture;//Our input texture
-		//uniform float time;
 		void main() {
 			vec2 st = gl_FragCoord.xy / res;
 			vec2 uv = st;
-			uv *= 0.998;
-			vec4 sum = texture2D(bufferTexture, uv);
-			gl_FragColor = sum;
+			uv *= slideDirection;
+			gl_FragColor = texture2D(bufferTexture, uv);
 }
 `;
 const clock = new THREE.Clock();
@@ -65,8 +65,6 @@ function init(assets){
     // stats
     //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
-
-
 
     window.addEventListener('resize', function() {
         var WIDTH = window.innerWidth,
@@ -90,6 +88,7 @@ function init(assets){
 
     flower = new Flower(gui.params, materials, assets);
     flower.group.name = 'flower';
+    flower.group.rotateY(Math.PI/2);
     bufferScene.add(flower.group);
 
     //debug
@@ -113,7 +112,7 @@ function init(assets){
         //controls.minDistance = 50;
         //controls.maxDistance = 90;
     }
-    animator.init(flower.group, quad);
+    animator.init(flower.group, quad, slideDirection);
     render();
 }
 
@@ -130,6 +129,7 @@ function render(){
         quad.material.map = textureB.texture;
         //quad.rotateY(0.005);
         bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
+        bufferMaterial.uniforms.slideDirection.value = slideDirection;
         // draw to texture B
         renderer.render(bufferScene, camera, textureB, true);
     }
@@ -165,9 +165,11 @@ function buffer_texture_setup(light){
     textureA = new THREE.WebGLRenderTarget( targetSize, targetSize, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
     textureB = new THREE.WebGLRenderTarget(targetSize, targetSize, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
     //Pass textureA to shader
+    slideDirection = new THREE.Vector2(1.0,1.0);
     bufferMaterial = new THREE.ShaderMaterial( {
         uniforms: {
             bufferTexture: { type: "t", value: textureA.texture },
+            slideDirection: {type: 'v2', value: slideDirection},
             res : {type: 'v2',value:new THREE.Vector2(targetSize, targetSize)}//Keeps the resolution
         },
         fragmentShader: fragShader
@@ -183,7 +185,7 @@ function buffer_texture_setup(light){
     finalMaterial.side = THREE.DoubleSide; //just in case you are rotating the plane
     quad = new THREE.Mesh( plane, finalMaterial );
     quad.name = 'quad';
-    quad.rotateY(Math.PI/2);
+    //quad.rotateY(Math.PI/2);
     scene.add(quad);
 }
 
