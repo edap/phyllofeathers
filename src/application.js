@@ -206,4 +206,6 @@ loadBird(ParrotType).then(
         init(assets);
     },
     (err) => { console.log(`impossible to load the assets: ${err}`); }
-);
+).catch((error) => {
+    console.error(error.stack);
+});
