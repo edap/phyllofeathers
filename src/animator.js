@@ -6,78 +6,44 @@ let flying = false;
 
 export default class Animator {
     constructor(){
-        this.spline = this._createCurve();
-        this.speed = 0.0008;
-        this.schedule = {x: 0, y:1};
-        this.destination = {x:1.0, y:0};
-
-        // Fly animation
-        this.timeNextFly = 0;
-        this.flyDurationMill = 16000;
-        this.flipFrequency = 44;
-        this.flipAmplitude = 0.0035;
-        this.calmStartSec = 5; // at the beginning do not flip
-        this.minIntervalMill = 5000;
-        this.maxIntervalMill = 15000;
-
-        this.rotationScale = 0.04;
     }
 
-    _getRandomDelay(){
-        return Math.random() * (this.maxIntervalMill -this.minIntervalMill) + this.minIntervalMill;
-    }
-
-    rotateTween(time, group){
+    update(){
         TWEEN.update();
-        if (time >= this.timeNextFly && time > this.calmStartSec && flying === false) {
-            this.schedule = {x:0, y:1};
-            let delay = this._getRandomDelay();
-            this.flyAround = new TWEEN.Tween(this.schedule)
-                .to(Object.assign({}, this.destination), this.flyDurationMill)
-                //.easing(TWEEN.Easing.Cubic.InOut)// this was messing up, a lot, the rotations
-                .easing(TWEEN.Easing.Elastic.Out)
-                //.easing(TWEEN.Easing.Quartic.InOut)
-                //.easing(TWEEN.Easing.Sinusoidal.InOut)// this was messing up, a lot, the rotations
-                .onUpdate( (current) =>{
-                    group.rotateZ( current.y * this.rotationScale);
-                }).onComplete( (current) => {
-                    flying = false;
-                } )
-            .start().delay(delay);
-            flying = true;
-            this.timeNextFly = time + (this.flyDurationMill + delay) / 1000.0;
-        }
     }
 
-    move(time, objects, group){
-        TWEEN.update();
-        if (time >= this.timeNextFly && time > this.calmStartSec && flying === false) {
-            this.schedule = {x:0, y:0};
-            let delay = this._getRandomDelay();
-
-            this._flip(objects, {x:0,y:0}, this.flipFrequency, this.flipAmplitude);// this is because otherwise the rotation
-            // on the z axis goes out of fase, onUpdate is executing when schedule.x is already
-            // bigger than 0
-            this.flyAround = new TWEEN.Tween(this.schedule)
-                .to(Object.assign({}, this.destination), this.flyDurationMill)
-                //.easing(TWEEN.Easing.Cubic.InOut)// this was messing up, a lot, the rotations
-                .easing(TWEEN.Easing.Sinusoidal.InOut)// this was messing up, a lot, the rotations
-                .onUpdate( (current) =>{
-                    this._fly(objects, current, group );
-                }).onComplete( (current) => {
-                    flying = false;
-                } )
-            .start().delay(delay);
-            flying = true;
-            this.timeNextFly = time + (this.flyDurationMill + delay) / 1000.0;
-        }
+    //Init and carousel are not compatible. o una o l'altra
+    init(flowerGroup, plane, slideDirection){
+        let flip = this._rotateObj(flowerGroup, {z: Math.PI/2}, 15000,TWEEN.Easing.Elastic.Out, 1000);
+        let turnTable = this._rotateObj(plane, {x: Math.PI/2}, 3000,TWEEN.Easing.Elastic.Out, 1000);
+        flip.chain(turnTable);
+        flip.start();
     }
 
-    _fly(objects, current, group){
-        //this._moveInCircle(current, group);
-        this._flip(objects, current, this.flipFrequency, this.flipAmplitude);
+    _fadeOutObj(object){
+        //https://marmelab.com/blog/2017/06/15/animate-you-world-with-threejs-and-tweenjs.html
+        // https://medium.com/@lachlantweedie/animation-in-three-js-using-tween-js-with-examples-c598a19b1263
     }
 
+    _moveObj(object, destination, duration, easyType, delayMs){
+    }
+
+    //.easing(TWEEN.Easing.Cubic.InOut)
+    //.easing(TWEEN.Easing.Elastic.Out)
+    //.easing(TWEEN.Easing.Quartic.InOut)
+    //.easing(TWEEN.Easing.Sinusoidal.InOut)
+    _rotateObj(object, destination, duration,easyType,delayMs){
+        let rotation = new TWEEN.Tween(object.rotation)
+            .to(Object.assign(destination), duration)
+            .easing(easyType)
+            .delay(delayMs)
+            .onUpdate( (current) =>{
+                //console.log(object.rotation);
+            });
+        return rotation;
+    }
+
+    // not used yet
     _flip(objects, current, frequency, amplitude){
         let angle = Math.sin((current.y-0.5) * frequency) * amplitude;
         for (var index in objects) {
@@ -85,39 +51,4 @@ export default class Animator {
             object.rotateOnAxis(new Vector3(0, 0 ,1), angle);
         }
     }
-
-    _moveInCircle(currFrame, group, n_circles = 1){
-        let currPos = this.spline.getPointAt(currFrame.x);
-        group.position.set(currPos.x, 0, currPos.z);
-
-        //orientate to next point on curve direction
-        let next = currFrame.x + this.speed * 20;
-        let lookAtPoint = (next > 1) ? 0 : next;
-        let look = this.spline.getPointAt(lookAtPoint);
-        group.lookAt(look);
-
-        //but keep the crown looking up
-        group.rotateX(-Math.PI/2);
-    }
-
-    addDebugCurve(scene){
-        let curve_density = 200;
-        let geometry = new Geometry();
-        geometry.vertices = this.spline.getPoints( curve_density );
-        let material = new LineBasicMaterial( { color : 0xff0000 } );
-        // Create the final object to add to the scene
-        let curveObject = new Line( geometry, material );
-        scene.add(curveObject);
-    };
-
-    _createCurve(){
-        //curve
-        let t = 0;
-        const radius = 80;
-        const radius_offset = 10;
-        return createPath(radius, radius_offset);
-    }
-
-    // random interval. trig the animation.
-    // the animation is not in loop, it is one animation triggered ad
 }
