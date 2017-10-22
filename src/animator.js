@@ -7,9 +7,6 @@ const SPEED = 0.2;
 let flying = false;
 
 export default class Animator {
-    constructor(){
-    }
-
     update(){
         TWEEN.update();
     }
@@ -28,15 +25,15 @@ export default class Animator {
                                         1000*SPEED);
         let slide = this._moveVec(slideDirection,
                                   new THREE.Vector2(0.00, -0.001),
-                                  1000*SPEED,
-                                  TWEEN.Easing.Linear.None,
-                                  1000*SPEED);
+                                  {duration: 1000*SPEED});
         flip.chain(turnTable);
         turnTable.chain(slide);
         flip.start();
     }
 
-    _fadeOutObj(object){
+    _fadeObj(object, direction, duration, easyType, delayMs){
+        var current = { percentage : direction == "in" ? 1 : 0 };
+
         //https://marmelab.com/blog/2017/06/15/animate-you-world-with-threejs-and-tweenjs.html
         // https://medium.com/@lachlantweedie/animation-in-three-js-using-tween-js-with-examples-c598a19b1263
     }
@@ -44,15 +41,18 @@ export default class Animator {
     _moveObj(object, stepVector, duration, easyType, delayMs){
     }
 
-    _moveVec(vec, stepVector, duration, easyType, delayMs){
+    _moveVec(vec, stepVector, options){
+    //_moveVec(vec, stepVector, duration, easyType, delayMs){
+        options = options || {};
+        let easing = options.easing || TWEEN.Easing.Quadratic.In;
+        let duration = options.duration || 2000 * SPEED;
+        let delay = options.delay || 1000 * SPEED;
+
         let destination = new THREE.Vector2().addVectors ( vec, stepVector );
         let moveVec = new TWEEN.Tween(vec)
             .to(Object.assign({},destination), duration)
-            .easing(easyType)
-            .delay(delayMs)
-            // .onUpdate( (current) =>{
-            //     console.log(vec);
-            // });
+            .easing(easing)
+            .delay(delay);
         return moveVec;
     }
 
@@ -65,10 +65,10 @@ export default class Animator {
         let rotation = new TWEEN.Tween(object.rotation)
             .to(Object.assign({},destination), duration)
             .easing(easyType)
-            .delay(delayMs)
             //.onUpdate( (current) =>{
             //console.log(object.rotation);
             //});
+            .delay(delayMs);
         return rotation;
     }
 
