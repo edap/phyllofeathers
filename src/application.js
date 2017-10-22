@@ -97,18 +97,17 @@ function init(assets){
         flower.debug(scene);
         var axisHelper = new THREE.AxisHelper( 50 );
         scene.add( axisHelper );
+    }else{
+        gui.hide();
     }
-
     var axisHelper = new THREE.AxisHelper( 50 );
     scene.add( axisHelper );
 
-    if(!debug) { gui.hide(); };
 
     controls = new OrbitControls(camera, renderer.domElement);
     limitControls(controls);
 
     document.body.addEventListener("keypress", maybeSpacebarPressed);
-
     animator.init(flower.group, quad, slideDirection);
     render();
 }
