@@ -12,9 +12,6 @@ export default class Animator {
     }
 
     init(flowerGroup, plane, slideDirection){
-        console.error(SPEED);
-        console.error(flowerGroup);
-        console.error(plane);
         let flip = this._rotateObj(flowerGroup,
                                    {z: Math.PI/2},
                                    {duration: 15000*SPEED,
@@ -76,7 +73,12 @@ export default class Animator {
         let moveVec = new TWEEN.Tween(vec)
             .to(Object.assign({},destination), duration)
             .easing(easing)
-            .delay(delay);
+            .delay(delay)
+            .onComplete(function(){
+                if(options.callback){
+                    options.callback();
+                }
+            });
         return moveVec;
     }
 
@@ -94,7 +96,12 @@ export default class Animator {
         let rotation = new TWEEN.Tween(object.rotation)
             .to(Object.assign({}, destination), duration)
             .easing(easing)
-            .delay(delay);
+            .onComplete(function(){
+                if(options.callback){
+                    options.callback();
+                }
+            })
+           .delay(delay);
         return rotation;
     }
 
