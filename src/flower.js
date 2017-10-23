@@ -6,7 +6,6 @@ import Strategy from './strategy.js';
 
 export default class Flower {
     constructor(params, materials, assets) {
-        this.yPos = 200;
         this.assets = assets;
         this.materials = materials;
         this.objects = [];
