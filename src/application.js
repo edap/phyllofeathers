@@ -154,6 +154,22 @@ function toggleTrails(){
     }
 }
 
+let removePlane = () => {
+    removeEntityByName('quad', scene);
+};
+
+let removeFlower = () => {
+    removeEntityByName('flower', scene);
+};
+
+let addPlane = () => {
+    scene.add(quad);
+};
+
+let addFlower = () => {
+    scene.add(flower.group);
+};
+
 function buffer_texture_setup(){
     //Create buffer scene
     bufferScene = new THREE.Scene();
