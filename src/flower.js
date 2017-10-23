@@ -11,19 +11,25 @@ export default class Flower {
         this.objects = [];
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
-        this.generate(params);
+        this._params = params;
+        this.generate(params); // TODO, allo stato iniziale, ci dovrebbe essere solo una piuma
     }
 
     get(){
         return this.group;
     }
 
-    regenerate(params){
-        this.reset();
-        this.generate(params);
+    getParams(){
+        return this._params;
     }
 
-    generate(params){
+    regenerate(params, number){
+        this.reset();
+        this.generate(params, number);
+    }
+
+    generate(params, num){
+        let tot_petals = num !== undefined ? num : params.num;
         let PItoDeg = (Math.PI/180.0);
         let angleInRadians = params.angle * PItoDeg;
 
@@ -31,7 +37,7 @@ export default class Flower {
         let crownGeom = this.makePetalGeom(params, "crown");
         let petalGeom = this.makePetalGeom(params, "petals");
         let secPetalGeom = this.makePetalGeom(params, "sec_petals");
-        for (var i = 0; i< params.num; i++) {
+        for (var i = 0; i< tot_petals; i++) {
             let object = this._createObject(i, params.angle, params, crownGeom, petalGeom, secPetalGeom);
             let coord;
 
@@ -71,10 +77,11 @@ export default class Flower {
             let object = this.objects[index];
             object.geometry.dispose();
             object.material.dispose();
-            object.material.map.dispose();
+            //object.material.map.dispose();
 			      this.group.remove( object );
         }
         this.objects = [];
+        // TODO probabilmente dovrebbe anche togliersi dalla scena
     }
 
     positionPetal(object, iter, angleInRadians, params, suffix){

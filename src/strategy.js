@@ -83,7 +83,6 @@ export default class Strategy{
         if (radiusNotInCrown <= quartOfSpace){
             mat = "petal_one";
         } else if ((radiusNotInCrown > quartOfSpace) && (radiusNotInCrown <= (quartOfSpace * 2))){
-            console.log("NO");
             mat = "petal_two";
         } else if (radiusNotInCrown > (quartOfSpace *2) && radiusNotInCrown <= (quartOfSpace * 3)){
             mat = "petal_three";

@@ -4,7 +4,7 @@ const ParrotType = 'budgeridgar';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = false;
+const debug = true;
 
 import Animator from './animator.js';
 import * as THREE from 'three';
@@ -94,7 +94,6 @@ function init(assets){
     //debug
     if (debug) {
         document.body.appendChild(stats.domElement);
-        flower.debug(scene);
         var axisHelper = new THREE.AxisHelper( 50 );
         scene.add( axisHelper );
     }else{
@@ -108,7 +107,7 @@ function init(assets){
     limitControls(controls);
 
     document.body.addEventListener("keypress", maybeSpacebarPressed);
-    animator.init(flower.group, quad, slideDirection);
+    animator.init(flower, quad, slideDirection);
     render();
 }
 
