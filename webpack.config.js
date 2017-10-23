@@ -58,6 +58,9 @@ module.exports = {
                 }
             },
             {
+                test:/\.json$/, loader: 'json-loader'
+            },
+            {
                 test: /\.(glsl|frag|vert)$/,
                 use: {
                     loader: "raw",
