@@ -12,6 +12,9 @@ export default class Animator {
     }
 
     init(flowerGroup, plane, slideDirection){
+        // let grow from 1 to 100
+        // grow from 100 to 1
+        // change phyllotaxis type
         let flip = this._rotateObj(flowerGroup,
                                    {z: Math.PI/2},
                                    {duration: 15000*SPEED,
