@@ -40,13 +40,13 @@ export default class Flower {
             object.position.set(coord.x, coord.y, coord.z);
 
             if (i <= params.petals_from) {
-                this.disposePetal(object, i, angleInRadians, params, "crown");
+                this.positionPetal(object, i, angleInRadians, params, "crown");
             }
             else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
-                this.disposePetal(object, i, angleInRadians, params, "petals");
+                this.positionPetal(object, i, angleInRadians, params, "petals");
             }
             else {
-                this.disposePetal(object, i, angleInRadians, params, "sec_petals");
+                this.positionPetal(object, i, angleInRadians, params, "sec_petals");
             }
             object.castShadow = true;
             object.receiveShadow = true;
@@ -69,12 +69,15 @@ export default class Flower {
     reset(){
         for(var index in this.objects){
             let object = this.objects[index];
+            object.geometry.dispose();
+            object.material.dispose();
+            object.material.map.dispose();
 			      this.group.remove( object );
         }
         this.objects = [];
     }
 
-    disposePetal(object, iter, angleInRadians, params, suffix){
+    positionPetal(object, iter, angleInRadians, params, suffix){
         object.material.side = THREE.DoubleSide;
         //calculate needed variable
         let PItoDeg = Math.PI/180.0;
