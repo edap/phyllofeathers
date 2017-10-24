@@ -12,6 +12,11 @@ export default class Flower {
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
         this._params = params;
+        if (params.hasOwnProperty("crown_z") && params.hasOwnProperty("crown_z")) {
+            this.phyllotaxisWrong = false;
+        } else {
+            this.phyllotaxisWrong = true;
+        }
         this.generate(params, 1);
     }
 
@@ -23,12 +28,23 @@ export default class Flower {
         return this._params;
     }
 
+    setParams(params){
+        this._params = params;
+        if (params.hasOwnProperty("crown_z") && params.hasOwnProperty("crown_z")) {
+            this.phyllotaxisWrong = false;
+        } else {
+            this.phyllotaxisWrong = true;
+        }
+    }
+
+
     regenerate(params, number){
         this.reset();
         this.generate(params, number);
     }
 
     generate(params, num){
+        let wrongPhyllo = this.phyllotaxisWrong;
         let tot_petals = num !== undefined ? num : params.num;
         let PItoDeg = (Math.PI/180.0);
         let angleInRadians = params.angle * PItoDeg;
@@ -39,20 +55,10 @@ export default class Flower {
         let secPetalGeom = this.makePetalGeom(params, "sec_petals");
         for (var i = 0; i< tot_petals; i++) {
             let object = this._createObject(i, params.angle, params, crownGeom, petalGeom, secPetalGeom);
-            let coord;
-
-            coord = phyllotaxisWrong(i, angleInRadians, params.spread, params.growth);
-            //coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
-            object.position.set(coord.x, coord.y, coord.z);
-
-            if (i <= params.petals_from) {
-                this.positionPetal(object, i, angleInRadians, params, "crown");
-            }
-            else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
-                this.positionPetal(object, i, angleInRadians, params, "petals");
-            }
-            else {
-                this.positionPetal(object, i, angleInRadians, params, "sec_petals");
+            if (wrongPhyllo) {
+                this._positionPetalsWrongPhyllotaxis(i, params, object, angleInRadians);
+            } else {
+                this._positionPetalsPhyllotaxis(i, params, object, angleInRadians);
             }
             object.castShadow = true;
             object.receiveShadow = true;
@@ -63,6 +69,39 @@ export default class Flower {
         // at the end, make the object looking up
         // UNCOMMENTED JUST FOR SKETCH PURPOSTE
         //this.group.rotateX(-Math.PI/2);
+    }
+
+    // petals can belong to the crown, be the petals shortly after or be the last petals
+
+    _positionPetalsPhyllotaxis(i, params, object, angleInRadians) {
+        let coord;
+        if (i <= params.petals_from) {
+            coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
+            object.position.set(coord.x, coord.y, coord.z + params.crown_z);
+            this.positionPetal(object, i, angleInRadians, params, "crown", false);
+        } else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
+            coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
+            object.position.set(coord.x, coord.y, coord.z);
+            this.positionPetal(object, i, angleInRadians, params, "petals", false);
+        } else {
+            coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
+            object.position.set(coord.x, coord.y, coord.z);
+            this.positionPetal(object, i, angleInRadians, params, "sec_petals", false);
+        }
+    }
+
+    _positionPetalsWrongPhyllotaxis(i, params, object, angleInRadians) {
+        let coord = phyllotaxisWrong(i, angleInRadians, params.spread, params.growth);
+        object.position.set(coord.x, coord.y, coord.z);
+        if (i <= params.petals_from) {
+            this.positionPetal(object, i, angleInRadians, params, "crown", true);
+        }
+        else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
+            this.positionPetal(object, i, angleInRadians, params, "petals", true);
+        }
+        else {
+            this.positionPetal(object, i, angleInRadians, params, "sec_petals", true);
+        }
     }
 
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {
@@ -77,29 +116,14 @@ export default class Flower {
     reset(){
         for (var i = this.group.children.length - 1; i >= 0; i--) {
             this._disposeTextures(this.group.children[i].material);
-            //this.group.children[i].material.map.dispose();
             this.group.children[i].geometry.dispose();
             this.group.children[i].material.dispose();
             this.group.remove(this.group.children[i]);
         }
-        console.log(this.objects.length);
-        // for(var index in this.objects){
-        //     let object = this.objects[index];
-        //     object.geometry.dispose();
-        //     //object.material.alphaMap.dispose();
-        //     //object.material.map.dispose();
-        //     //object.material.normalMap.dispose();
-        //     //object.material.specularMap.dispose();
-        //     object.material.dispose();
-        //     //object.material.map.dispose();
-			  //     this.group.remove( object );
-        //     this.scene.remove(object);
-        // }
         this.objects = [];
-        // TODO probabilmente dovrebbe anche togliersi dalla scena
     }
 
-    positionPetal(object, iter, angleInRadians, params, suffix){
+    positionPetal(object, iter, angleInRadians, params, suffix, wrongPhyllo = true){
         object.material.side = THREE.DoubleSide;
         //calculate needed variable
         let PItoDeg = Math.PI/180.0;
@@ -113,8 +137,11 @@ export default class Flower {
         object.rotateZ( iter* angleInRadians);
         let yrot = (iter/params.angle_open) * params.petals_from;
         let y_angle = params.angle_open * scaleRatio;
-        //object.rotateZ( (params.starting_angle_open + y_angle + iter * 90/params.num ) * PItoDeg );
-        object.rotateX(Math.PI/2);
+        if (!wrongPhyllo) {
+            object.rotateZ( (params.starting_angle_open + y_angle + iter * 90/params.num ) * PItoDeg );
+        } else {
+            object.rotateX(Math.PI/2);
+        }
 
         // Scale:
         // do not scale petals in the crown depending on the iteration number
@@ -124,8 +151,13 @@ export default class Flower {
         } else {
             scaleMag = params[`${suffix}_scale`] * 1.0;
         }
-        //object.scale.set(scaleMag, scaleMag, scaleMag);
-        object.rotateX((Math.PI/2));
+
+        if (!wrongPhyllo) {
+            object.scale.set(scaleMag, scaleMag, scaleMag);
+            object.rotateY((Math.PI/2));
+        } else {
+            object.rotateX((Math.PI/2));
+        }
     }
 
     makePetalGeom(params, suffix){
