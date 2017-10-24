@@ -15,6 +15,7 @@ export default class Animator {
         // let grow from 1 to 100
         // grow from 100 to 1
         // change phyllotaxis type
+        let petalsFactor = {x:0};
         let flip = this._rotateObj(flower.group,
                                    {z: Math.PI/2},
                                    {duration: 15000*SPEED,
@@ -27,8 +28,8 @@ export default class Animator {
                                   new THREE.Vector2(0.00, -0.001),
                                   {duration: 1000*SPEED});
         let fadePlaneOut = this._fadeObj(plane,'out', {delay: 100000*SPEED});
-        let dec = this._decreaseFlower(flower, {duration:9000});
-        let inc = this._growFlower(flower, {duration:9000});
+        let dec = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000});
+        let inc = this._incOrDecFlower(flower, petalsFactor, {x:1}, {duration:2000});
         // flip.chain(turnTable);
         // turnTable.chain(slide);
         // slide.chain(fadePlaneOut);
@@ -36,24 +37,23 @@ export default class Animator {
         // flip.start();
 
         // TODO, testing memory allocation with grow and shrink
-        dec.chain(inc);
         inc.chain(dec);
-        dec.start();
+        dec.chain(inc);
+        inc.start();
     }
 
-    _growFlower(flower, options){
+    _incOrDecFlower(flower, from, dest, options){
         options = options || {};
         let easing = options.easing || TWEEN.Easing.Quadratic.In;
         let duration = options.duration || 2000 * SPEED;
         let delay = options.delay || 1000 * SPEED;
 
         let destination = {x: 1};
-        let grow = new TWEEN.Tween({x:0})
-            .to(destination, duration)
+        let grow = new TWEEN.Tween(from)
+            .to(dest, duration)
             .easing(easing)
             .delay(delay)
             .onUpdate((current) => {
-                console.log(Math.ceil(current.x * flower.getParams().num));
                 flower.regenerate(flower.getParams(), Math.ceil(current.x * flower.getParams().num));
             })
             .onComplete(function(){
@@ -64,29 +64,6 @@ export default class Animator {
         return grow;
     }
 
-    _decreaseFlower(flower, options){
-        options = options || {};
-        let easing = options.easing || TWEEN.Easing.Quadratic.In;
-        let duration = options.duration || 2000 * SPEED;
-        let delay = options.delay || 1000 * SPEED;
-
-        let destination = {x: 0};
-        let origin = {x:flower.getParams().num};
-        let dec = new TWEEN.Tween(origin)
-            .to(destination, duration)
-            .easing(easing)
-            .delay(delay)
-            .onUpdate((current) => {
-                console.log(Math.ceil(current.x * flower.getParams().num));
-                flower.regenerate(flower.getParams(), Math.floor(current.x * flower.getParams().num));
-            })
-            .onComplete(function(){
-                if(options.callback){
-                    options.callback();
-                }
-            });
-        return dec;
-    }
 
     _fadeObj(object, direction, options){
         options = options || {};

@@ -12,7 +12,7 @@ export default class Flower {
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
         this._params = params;
-        this.generate(params); // TODO, allo stato iniziale, ci dovrebbe essere solo una piuma
+        this.generate(params, 1);
     }
 
     get(){
@@ -57,7 +57,7 @@ export default class Flower {
             object.castShadow = true;
             object.receiveShadow = true;
             this.objects.push(object);
-            this.group.add(object);
+            this.group.add(this.objects[i]);
         }
 
         // at the end, make the object looking up
@@ -68,18 +68,51 @@ export default class Flower {
     _createObject(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom) {
         let strategy = this.strategy.get(i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom);
         let object = new THREE.Mesh(strategy.geometry, strategy.mat);
+        strategy.geometry.dispose();
+        strategy.mat.dispose();
         object["strategy"] = params.strategy;
         return object;
     }
 
-    reset(){
-        for(var index in this.objects){
-            let object = this.objects[index];
-            object.geometry.dispose();
-            object.material.dispose();
-            //object.material.map.dispose();
-			      this.group.remove( object );
+    _disposeTextures(material){
+        if(material.map !== undefined){
+            material.map.dispose();
         }
+
+        if(material.alphaMap !== undefined){
+            material.alphaMap.dispose();
+        }
+
+        if(material.normalMap !== undefined){
+            material.normalMap.dispose();
+        }
+
+        if(material.specularMap !== undefined){
+            material.specularMap.dispose();
+        }
+    }
+
+    reset(){
+        for (var i = this.group.children.length - 1; i >= 0; i--) {
+            this._disposeTextures(this.group.children[i].material);
+            //this.group.children[i].material.map.dispose();
+            this.group.children[i].geometry.dispose();
+            this.group.children[i].material.dispose();
+            this.group.remove(this.group.children[i]);
+        }
+        console.log(this.objects.length);
+        // for(var index in this.objects){
+        //     let object = this.objects[index];
+        //     object.geometry.dispose();
+        //     //object.material.alphaMap.dispose();
+        //     //object.material.map.dispose();
+        //     //object.material.normalMap.dispose();
+        //     //object.material.specularMap.dispose();
+        //     object.material.dispose();
+        //     //object.material.map.dispose();
+			  //     this.group.remove( object );
+        //     this.scene.remove(object);
+        // }
         this.objects = [];
         // TODO probabilmente dovrebbe anche togliersi dalla scena
     }
@@ -127,7 +160,7 @@ export default class Flower {
         for ( var i = 0; i < length; i ++ ) {
 	          points.push( new THREE.Vector2( Math.cos( i * freq ) * amp + xOffset, ( i - yOffset ) * segment_length ) );
         }
-        let geometry = new THREE.LatheGeometry( points, segment ,phistart, philength);
+        let geometry = new THREE.LatheBufferGeometry( points, segment ,phistart, philength);
         return geometry;
         //return new THREE.BoxGeometry(1.1,1.1,1.1);
     }

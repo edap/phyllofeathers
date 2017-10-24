@@ -22,7 +22,7 @@ export default class Gui extends DAT.GUI{
             material: "crown",
             angle:128,
             //angle:131.75,
-            num:1,
+            num:800,
             spread: 0.1,
             growth: 0.13,
             growth_regular: false,

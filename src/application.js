@@ -1,10 +1,10 @@
 /* eslint-env browser */
-//const ParrotType = 'blue-fronted-parrot';
-const ParrotType = 'budgeridgar';
+const ParrotType = 'blue-fronted-parrot';
+//const ParrotType = 'budgeridgar';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = true;
+const debug = false;
 
 import Animator from './animator.js';
 import * as THREE from 'three';
@@ -152,22 +152,6 @@ function toggleTrails(){
         trailsOn = true;
     }
 }
-
-let removePlane = () => {
-    removeEntityByName('quad', scene);
-};
-
-let removeFlower = () => {
-    removeEntityByName('flower', scene);
-};
-
-let addPlane = () => {
-    scene.add(quad);
-};
-
-let addFlower = () => {
-    scene.add(flower.group);
-};
 
 function buffer_texture_setup(){
     //Create buffer scene
