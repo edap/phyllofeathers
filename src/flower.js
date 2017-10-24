@@ -74,24 +74,6 @@ export default class Flower {
         return object;
     }
 
-    _disposeTextures(material){
-        if(material.map !== undefined){
-            material.map.dispose();
-        }
-
-        if(material.alphaMap !== undefined){
-            material.alphaMap.dispose();
-        }
-
-        if(material.normalMap !== undefined){
-            material.normalMap.dispose();
-        }
-
-        if(material.specularMap !== undefined){
-            material.specularMap.dispose();
-        }
-    }
-
     reset(){
         for (var i = this.group.children.length - 1; i >= 0; i--) {
             this._disposeTextures(this.group.children[i].material);
@@ -162,6 +144,23 @@ export default class Flower {
         }
         let geometry = new THREE.LatheBufferGeometry( points, segment ,phistart, philength);
         return geometry;
-        //return new THREE.BoxGeometry(1.1,1.1,1.1);
+    }
+
+    _disposeTextures(material){
+        if(material.map !== undefined){
+            material.map.dispose();
+        }
+
+        if(material.alphaMap !== undefined){
+            material.alphaMap.dispose();
+        }
+
+        if(material.normalMap !== undefined){
+            material.normalMap.dispose();
+        }
+
+        if(material.specularMap !== undefined){
+            material.specularMap.dispose();
+        }
     }
 }
