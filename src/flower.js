@@ -1,14 +1,13 @@
 import * as THREE from 'three';
 import {phyllotaxisWrong, phyllotaxisConical} from './phyllotaxis.js';
 import Strategy from './strategy.js';
-import {getWrongPhylloParamsForBird} from './store.js';
-
-//https://medium.com/@bgolus/anti-aliased-alpha-test-the-esoteric-alpha-to-coverage-8b177335ae4f
+import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
 
 export default class Flower {
-    constructor(params, materials, assets) {
+    constructor(params, materials, assets, birdType) {
         this.assets = assets;
         this.materials = materials;
+        this.birdType = birdType;
         this.objects = [];
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
@@ -38,6 +37,16 @@ export default class Flower {
         } else {
             this.phyllotaxisWrong = true;
         }
+    }
+
+    switchToWrong(){
+        let params = getWrongPhylloParamsForBird(this.birdType);
+        this.setParams(params);
+    }
+
+    switchToRight(){
+        let params = getRightPhylloParamsForBird(this.birdType);
+        this.setParams(params);
     }
 
 

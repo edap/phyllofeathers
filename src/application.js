@@ -87,7 +87,7 @@ function init(assets){
         bufferScene.add( light );
     });
 
-    flower = new Flower(gui.params, materials, assets);
+    flower = new Flower(gui.params, materials, assets, ParrotType);
     flower.group.name = 'flower';
     flower.group.rotateY(Math.PI/2);
     bufferScene.add(flower.group);
