@@ -5,6 +5,7 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
+import flowers from './json/flowers.json';
 
 import Animator from './animator.js';
 import * as THREE from 'three';

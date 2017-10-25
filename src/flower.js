@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {phyllotaxisWrong, phyllotaxisConical} from './phyllotaxis.js';
 import Strategy from './strategy.js';
+import {getWrongPhylloParamsForBird} from './store.js';
 
 //https://medium.com/@bgolus/anti-aliased-alpha-test-the-esoteric-alpha-to-coverage-8b177335ae4f
 
@@ -17,6 +18,8 @@ export default class Flower {
         } else {
             this.phyllotaxisWrong = true;
         }
+        getWrongPhylloParamsForBird('blue-fronted-parrot');
+        console.log(params);
         this.generate(params, 1);
     }
 
