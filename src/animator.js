@@ -74,7 +74,6 @@ export default class Animator extends EventEmitter{
                 flower.regenerate(flower.getParams(), Math.ceil(current.x * flower.getParams().num));
             })
             .onComplete(function(){
-                this.emit("init_the_game");
                 if(options.callback){
                     options.callback();
                 }
