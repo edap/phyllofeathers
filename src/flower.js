@@ -161,7 +161,7 @@ export default class Flower {
         let yrot = (iter/params.angle_open) * params.petals_from;
         let y_angle = params.angle_open * scaleRatio;
         if (!wrongPhyllo) {
-            object.rotateZ( (params.starting_angle_open + y_angle + iter * 90/params.num ) * PItoDeg );
+            object.rotateX( (params.starting_angle_open + y_angle + iter * 90/params.num ) * PItoDeg );
         } else {
             object.rotateX(Math.PI/2);
         }
