@@ -184,7 +184,7 @@ function buffer_texture_setup(){
     quad = new THREE.Mesh( plane, finalMaterial );
     quad.name = 'quad';
     //quad.rotateY(Math.PI/2);
-    scene.add(quad);
+    //scene.add(quad);
 }
 
 let regenerate = () => {
