@@ -47,16 +47,14 @@ export default class Animator extends EventEmitter{
         let decWrongPhyllo = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
                                                                            callback: () => {flower.switchToRight();}});
 
-        // flip.chain(turnTable);
-        // turnTable.chain(slide);
-        // slide.chain(fadePlaneOut);
-        // fadePlaneOut.chain(dec);
-        // flip.start();
-
         // TODO, testing memory allocation with grow and shrink
         incFlower.chain(decFlower);
         decFlower.chain(incWrongPhyllo);
-        incWrongPhyllo.chain(decWrongPhyllo);
+        incWrongPhyllo.chain(flip);
+        flip.chain(turnTable);
+        turnTable.chain(slide);
+        slide.chain(fadePlaneOut);
+        fadePlaneOut.chain(decWrongPhyllo);
         decWrongPhyllo.chain(incFlower);
         incFlower.start();
     }
@@ -76,6 +74,7 @@ export default class Animator extends EventEmitter{
                 flower.regenerate(flower.getParams(), Math.ceil(current.x * flower.getParams().num));
             })
             .onComplete(function(){
+                this.emit("init_the_game");
                 if(options.callback){
                     options.callback();
                 }
@@ -107,8 +106,6 @@ export default class Animator extends EventEmitter{
                 }
             });
         return tweenOpacity;
-        //https://marmelab.com/blog/2017/06/15/animate-you-world-with-threejs-and-tweenjs.html
-        // https://medium.com/@lachlantweedie/animation-in-three-js-using-tween-js-with-examples-c598a19b1263
     }
 
     _moveObj(object, stepVector, duration, easyType, delayMs){
