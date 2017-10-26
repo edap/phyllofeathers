@@ -31,9 +31,10 @@ export default class Animator {
                                   new THREE.Vector2(0.00, -0.001),
                                   {duration: 1000*SPEED});
         let fadePlaneOut = this._fadeObj(plane,'out', {delay: 100000*SPEED});
-        let decFlower = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000, callback: () => {flower.switchToRight();}});
+        let decFlower = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000,
+                                                                           callback: () => {flower.switchToRight();}});
         //let decFlower = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000, callback: () => {flower.switchToWrong();}});
-        let incFlower = this._incOrDecFlower(flower, petalsFactor, {x:1}, {duration:2000};
+        let incFlower = this._incOrDecFlower(flower, petalsFactor, {x:1}, {duration:2000});
         // flip.chain(turnTable);
         // turnTable.chain(slide);
         // slide.chain(fadePlaneOut);
@@ -42,6 +43,7 @@ export default class Animator {
 
         // TODO, testing memory allocation with grow and shrink
         incFlower.chain(decFlower);
+        decFlower.chain(incFlower);
         incFlower.start();
     }
 
