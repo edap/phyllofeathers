@@ -1,15 +1,16 @@
 import DAT from 'dat-gui';
 import {RepeatWrapping, NearestFilter, LinearFilter, LinearMipMapLinearFilter, Color, Fog} from 'three';
-import json from './json/revolving.json';
+import wrongPhylloParams from './json/revolving.json';
+import rightPhylloParams from './json/flowers.json';
 
 export default class Gui extends DAT.GUI{
-    constructor(regenerateCallbak, materials, textures, max_anisotropy, parrot_type, debug = false){
+    constructor(regenerateCallbak, materials, textures, max_anisotropy, parrot_type, debug = false, wrongPhyllo = false){
         let config;
+        let loadedJson;
         if (debug) {
             config = {load:JSON};
         } else {
-            let loadedJson = json;
-            loadedJson.preset = parrot_type;
+            loadedJson = wrongPhyllo ? wrongPhylloParams: rightPhylloParams;
             config = {load: loadedJson};
         }
         console.log(config);
@@ -161,12 +162,12 @@ export default class Gui extends DAT.GUI{
         this._addStandardMaterial(materials["petal_four"], 'petal_four_mat');
 
         if (!debug) {
-            this._addTexturesToMaterial(materials, parrot_type, json, textures);
+            this._addTexturesToMaterial(materials, loadedJson["remembered"][parrot_type][0], textures);
         }
     }
 
-    _addTexturesToMaterial(materials, bird, json, textures){
-        let preset = json["remembered"][bird][0];
+    _addTexturesToMaterial(materials, preset, textures){
+        console.error(preset);
         for (var mat in materials) {
             let par = this._getMatParameter(preset, mat);
             materials[mat].color = new Color().setHex( par.color );

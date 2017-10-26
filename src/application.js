@@ -5,6 +5,9 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
+const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
+// in Non debug mode, the flower should be init with the right params
+
 import flowers from './json/flowers.json';
 
 import Animator from './animator.js';
@@ -63,7 +66,7 @@ function init(assets){
     //scene.background = assets.bg;
     // stats
     //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-    gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug);
+    gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
 
     window.addEventListener('resize', function() {
         var WIDTH = window.innerWidth,
@@ -86,8 +89,8 @@ function init(assets){
     PointLights(600, 1.0).map((light) => {
         bufferScene.add( light );
     });
-
     flower = new Flower(gui.params, materials, assets, ParrotType);
+
     flower.group.name = 'flower';
     flower.group.rotateY(Math.PI/2);
     bufferScene.add(flower.group);
