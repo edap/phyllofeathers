@@ -1,15 +1,20 @@
 import {Vector3, Geometry, Line, LineBasicMaterial } from 'three';
 import {createPath} from './path.js';
 import * as THREE from 'three';
+import EventEmitter from './eventEmitter.js';
 
 import wrongPhyllo from './json/revolving.json';
 import rightPhyllo from './json/flowers.json';
+
 
 const TWEEN = require('@tweenjs/tween.js');
 const SPEED = 0.2;
 let flying = false;
 
-export default class Animator {
+export default class Animator extends EventEmitter{
+    constructor(){
+        super();
+    }
     update(){
         TWEEN.update();
     }
