@@ -71,7 +71,7 @@ export function positionPetalsWrongPhyllotaxis(i, params, object, angleInRadians
 
 // petals can belong to the crown, be the petals shortly after or be the last petals
 export function createPetalMesh(opt) {
-    const {i, angleInRadians, params, crownGeom, petalGeom, secPetalGeom, geometry, material } = opt;
+    const {params, crownGeom, geometry, material } = opt;
     let object = new Mesh(geometry, material);
     geometry.dispose();
     material.dispose();

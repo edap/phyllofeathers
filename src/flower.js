@@ -85,12 +85,7 @@ export default class Flower {
             let angle = params.angle;
             let strategy = this.strategy.get(i, angle, params, crownGeom, petalGeom, secPetalGeom);
             let opt = {
-                i: i,
-                angle: angle,
                 params: params,
-                crownGeom: crownGeom,
-                petalGeom: petalGeom,
-                secPetalGeom: secPetalGeom,
                 geometry: strategy.geometry,
                 material: strategy.mat
             };
