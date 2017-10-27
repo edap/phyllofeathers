@@ -15,13 +15,13 @@ import * as THREE from 'three';
 import Gui from './gui.js';
 import Stats from 'stats.js';
 import CollectionMaterials from './materials.js';
-import {loadBird} from './assets.js';
+import { loadBird } from './assets.js';
 import Flower from './flower.js';
-import {PointLights} from './pointLights.js';
-import {removeEntityByName, limitControls} from './utils.js';
-import wrongPhylloParams from './json/revolving.json';
-import rightPhylloParams from './json/flowers.json';
+import { PointLights } from './pointLights.js';
+import { limitControls } from './utils.js';
+import Scenographer from './scenographer.js';
 const scene = new THREE.Scene();
+let scenographer;
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
@@ -79,6 +79,7 @@ function init(assets){
     });
 
     buffer_texture_setup();
+    scenographer = new Scenographer(scene, bufferScene);
     // ambient lights. TODO, use them or not?
     //let ambientLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
     //let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
@@ -106,7 +107,7 @@ function init(assets){
         gui.hide();
     }
     var axisHelper = new THREE.AxisHelper( 50 );
-    scene.add( axisHelper );
+    scenographer.add(axisHelper);
 
 
     controls = new OrbitControls(camera, renderer.domElement);
@@ -147,13 +148,13 @@ function maybeSpacebarPressed(e){
 
 function toggleTrails(){
     if (trailsOn === true) {
-        removeEntityByName('flower', bufferScene);
+        scenographer.removeFromBufferSceneByName('flower');
         //removeEntityByName('quad', scene);
-        scene.add(flower.group);
+        scenographer.add(flower.group);
         trailsOn = false;
     } else {
-        removeEntityByName('flower', scene);
-        bufferScene.add(flower.group);
+        scenographer.removeFromSceneByName('flower');
+        scenografer.addToBufferScene(flower.group);
         //scene.add(quad);
         trailsOn = true;
     }
