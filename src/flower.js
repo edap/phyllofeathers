@@ -22,20 +22,7 @@ export default class Flower {
         } else {
             this.phyllotaxisWrong = true;
         }
-        this._addListeners();
-        getWrongPhylloParamsForBird('blue-fronted-parrot');
-        console.log(params);
         this.generate(params, 1);
-        
-    }
-
-    _addListeners(){
-        // this.emitter.addListener("crash", (data) => this._onCrash(data));
-        // this.emitter.addListener("reset", (data) => this._onReset(data));
-        // this.emitter.addListener("init_the_game", (data) => this._onInitTheGame(data));
-        // this.emitter.addListener("goal_reached", (data) => this._onGoalReached(data));
-        // this.emitter.addListener("not_enough_instructions", () => this._onNotEnough());
-        // this.emitter.addListener("too_many_instructions", () => this._tooManyInstructions());
     }
 
     get(){

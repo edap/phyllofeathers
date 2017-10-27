@@ -7,7 +7,7 @@ import rightPhyllo from './json/flowers.json';
 
 
 const TWEEN = require('@tweenjs/tween.js');
-const SPEED = 0.2;
+const SPEED = 1.0;
 let flying = false;
 
 export default class Animator{
@@ -43,14 +43,14 @@ export default class Animator{
         let decWrongPhyllo = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
                                                                            callback: () => {flower.switchToRight();}});
 
-        // TODO, testing memory allocation with grow and shrink
         incFlower.chain(decFlower);
         decFlower.chain(incWrongPhyllo);
-        incWrongPhyllo.chain(flip);
-        flip.chain(turnTable);
-        turnTable.chain(slide);
-        slide.chain(fadePlaneOut);
-        fadePlaneOut.chain(decWrongPhyllo);
+        incWrongPhyllo.chain(decWrongPhyllo);
+        //incWrongPhyllo.chain(flip);
+        // flip.chain(turnTable);
+        // turnTable.chain(slide);
+        // slide.chain(fadePlaneOut);
+        // fadePlaneOut.chain(decWrongPhyllo);
         decWrongPhyllo.chain(incFlower);
         incFlower.start();
     }

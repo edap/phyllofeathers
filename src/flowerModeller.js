@@ -43,15 +43,15 @@ export function positionPetalsPhyllotaxis(i, params, object, angleInRadians) {
     if (i <= params.petals_from) {
         coord = phyllotaxisConical(i, angleInRadians, params.crown_spread, params.crown_growth);
         object.position.set(coord.x, coord.y, coord.z + params.crown_z);
-        this.positionPetal(object, i, angleInRadians, params, "crown", false);
+        positionPetal(object, i, angleInRadians, params, "crown", false);
     } else if(i > params.petals_from && i <= (params.sec_petals_from + params.petals_from)) {
         coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
         object.position.set(coord.x, coord.y, coord.z);
-        this.positionPetal(object, i, angleInRadians, params, "petals", false);
+        positionPetal(object, i, angleInRadians, params, "petals", false);
     } else {
         coord = phyllotaxisConical(i, angleInRadians, params.spread, params.growth);
         object.position.set(coord.x, coord.y, coord.z);
-        this.positionPetal(object, i, angleInRadians, params, "sec_petals", false);
+        positionPetal(object, i, angleInRadians, params, "sec_petals", false);
     }
 }
 
@@ -97,19 +97,19 @@ export function makePetalGeom(params, suffix){
     return geometry;
 }
 export function disposeTextures(material){
-    if(material.map !== undefined){
+    if(material.map !== null){
         material.map.dispose();
     }
 
-    if(material.alphaMap !== undefined){
+    if(material.alphaMap !== null){
         material.alphaMap.dispose();
     }
 
-    if(material.normalMap !== undefined){
+    if(material.normalMap !== null){
         material.normalMap.dispose();
     }
 
-    if(material.specularMap !== undefined){
+    if(material.specularMap !== null){
         material.specularMap.dispose();
     }
 }

@@ -3,6 +3,7 @@ import {RepeatWrapping, NearestFilter, LinearFilter, LinearMipMapLinearFilter, C
 import wrongPhylloParams from './json/revolving.json';
 import rightPhylloParams from './json/flowers.json';
 
+
 export default class Gui extends DAT.GUI{
     constructor(regenerateCallbak, materials, textures, max_anisotropy, parrot_type, debug = false, wrongPhyllo = false){
         let config;
@@ -19,90 +20,7 @@ export default class Gui extends DAT.GUI{
         this.maxAnis = max_anisotropy;
         this.materials = materials;
         this.regenerate = regenerateCallbak;
-        this.params = {
-            material: "crown",
-            angle:128,
-            //angle:131.75,
-            num:800,
-            spread: 0.1,
-            growth: 0.13,
-            growth_regular: false,
-            angle_open: 36.17438258159361,
-            starting_angle_open: 47,
-            strategy: "radius",
-
-            background: 0xFF0000,
-            crown_segment: 10,
-            crown_segment_length: 2,
-            crown_length: 20,
-            crown_phistart: 1.0,
-            crown_philength: 1.1,
-            crown_amplitude: 0.9,
-            crown_freq: 0.2,
-            crown_xoffset: 1.6,
-            crown_yoffset: 1.6,
-
-            crown_mat_color: 0xFF0000,
-            crown_mat_emissive: 0x00FF00,
-            crown_mat_shininess: 0.2,
-            crown_mat_map: "none",
-            crown_mat_alpha: 0.35,
-
-            petals_from: 10,
-            petals_scale:0.6,
-            petals_segment: 10,
-            petals_segment_length: 2,
-            petals_length: 20,
-            petals_phistart: 1.0,
-            petals_philength: 1.1,
-            petals_amplitude: 0.9,
-            petals_freq: 0.2,
-            petals_xoffset: 1.6,
-            petals_yoffset: 1.6,
-
-            sec_petals_from: 25,
-            sec_petals_scale:1.0,
-            sec_petals_segment: 10,
-            sec_petals_segment_length: 2,
-            sec_petals_length: 20,
-            sec_petals_phistart: 1.0,
-            sec_petals_philength: 1.1,
-            sec_petals_amplitude: 0.9,
-            sec_petals_freq: 0.2,
-            sec_petals_xoffset: 1.6,
-            sec_petals_yoffset: 1.6,
-
-            petal_one_mat_color: 0xFF0000,
-            petal_one_mat_emissive: 0x00FF00,
-            petal_one_mat_shininess: 0.8,
-            petal_one_mat_map: "none",
-            petal_one_mat_alpha: 0.35,
-
-            petal_two_mat_color: 0xFF0000,
-            petal_two_mat_emissive: 0x00FF00,
-            petal_two_mat_shininess: 0.8,
-            petal_two_mat_map: "none",
-            petal_two_mat_alpha: 0.35,
-
-            petal_three_mat_color: 0xFF0000,
-            petal_three_mat_emissive: 0x00FF00,
-            petal_three_mat_shininess: 0.8,
-            petal_three_mat_map: "none",
-            petal_three_mat_alpha: 0.35,
-
-            petal_four_mat_color: 0xFF0000,
-            petal_four_mat_emissive: 0x00FF00,
-            petal_four_mat_shininess: 0.8,
-            petal_four_mat_map: "none",
-            petal_four_mat_alpha: 0.35,
-
-            petal_five_mat_color: 0xFF0000,
-            petal_five_mat_emissive: 0x00FF00,
-            petal_five_mat_shininess: 0.8,
-            petal_five_mat_map: "none",
-            petal_five_mat_alpha: 0.35
-
-        };
+        this.params = getParameters(debug, parrot_type, loadedJson);
         this.remember(this.params);
 
         let generalFolder = this.addFolder("General");
@@ -289,3 +207,95 @@ export default class Gui extends DAT.GUI{
 	      return keys;
     }
 }
+
+const getParameters = (debug, ParrotType, loadedJson) => {
+        if (debug) {
+            return {
+                material: "crown",
+                angle:128,
+                //angle:131.75,
+                num:800,
+                spread: 0.1,
+                growth: 0.13,
+                growth_regular: false,
+                angle_open: 36.17438258159361,
+                starting_angle_open: 47,
+                strategy: "radius",
+
+                background: 0xFF0000,
+                crown_segment: 10,
+                crown_segment_length: 2,
+                crown_length: 20,
+                crown_phistart: 1.0,
+                crown_philength: 1.1,
+                crown_amplitude: 0.9,
+                crown_freq: 0.2,
+                crown_xoffset: 1.6,
+                crown_yoffset: 1.6,
+
+                crown_mat_color: 0xFF0000,
+                crown_mat_emissive: 0x00FF00,
+                crown_mat_shininess: 0.2,
+                crown_mat_map: "none",
+                crown_mat_alpha: 0.35,
+
+                petals_from: 10,
+                petals_scale:0.6,
+                petals_segment: 10,
+                petals_segment_length: 2,
+                petals_length: 20,
+                petals_phistart: 1.0,
+                petals_philength: 1.1,
+                petals_amplitude: 0.9,
+                petals_freq: 0.2,
+                petals_xoffset: 1.6,
+                petals_yoffset: 1.6,
+
+                sec_petals_from: 25,
+                sec_petals_scale:1.0,
+                sec_petals_segment: 10,
+                sec_petals_segment_length: 2,
+                sec_petals_length: 20,
+                sec_petals_phistart: 1.0,
+                sec_petals_philength: 1.1,
+                sec_petals_amplitude: 0.9,
+                sec_petals_freq: 0.2,
+                sec_petals_xoffset: 1.6,
+                sec_petals_yoffset: 1.6,
+
+                petal_one_mat_color: 0xFF0000,
+                petal_one_mat_emissive: 0x00FF00,
+                petal_one_mat_shininess: 0.8,
+                petal_one_mat_map: "none",
+                petal_one_mat_alpha: 0.35,
+
+                petal_two_mat_color: 0xFF0000,
+                petal_two_mat_emissive: 0x00FF00,
+                petal_two_mat_shininess: 0.8,
+                petal_two_mat_map: "none",
+                petal_two_mat_alpha: 0.35,
+
+                petal_three_mat_color: 0xFF0000,
+                petal_three_mat_emissive: 0x00FF00,
+                petal_three_mat_shininess: 0.8,
+                petal_three_mat_map: "none",
+                petal_three_mat_alpha: 0.35,
+
+                petal_four_mat_color: 0xFF0000,
+                petal_four_mat_emissive: 0x00FF00,
+                petal_four_mat_shininess: 0.8,
+                petal_four_mat_map: "none",
+                petal_four_mat_alpha: 0.35,
+
+                petal_five_mat_color: 0xFF0000,
+                petal_five_mat_emissive: 0x00FF00,
+                petal_five_mat_shininess: 0.8,
+                petal_five_mat_map: "none",
+                petal_five_mat_alpha: 0.35
+
+            };
+        } else {
+            return loadedJson.remembered[ParrotType][0];
+        }
+    }
+

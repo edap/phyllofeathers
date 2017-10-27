@@ -4,7 +4,7 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = false;
+const debug = true;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 // in Non debug mode, the flower should be init with the right params
 
@@ -19,6 +19,8 @@ import {loadBird} from './assets.js';
 import Flower from './flower.js';
 import {PointLights} from './pointLights.js';
 import {removeEntityByName, limitControls} from './utils.js';
+import wrongPhylloParams from './json/revolving.json';
+import rightPhylloParams from './json/flowers.json';
 const scene = new THREE.Scene();
 const OrbitControls = require('three-orbit-controls')(THREE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -119,7 +121,7 @@ function render(){
     let time = clock.getElapsedTime();
     stats.begin();
     requestAnimationFrame(render);
-    animator.update();
+    if (!debug) animator.update();
 
     if (trailsOn) {
         var t = textureA;
@@ -184,11 +186,11 @@ function buffer_texture_setup(){
     quad = new THREE.Mesh( plane, finalMaterial );
     quad.name = 'quad';
     //quad.rotateY(Math.PI/2);
-    scene.add(quad);
+    //scene.add(quad);
 }
 
 let regenerate = () => {
-    flower.regenerate(gui.params);
+    flower.regenerate(gui.params, gui.number);
 }
 
 function removeSpinner(){
