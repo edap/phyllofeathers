@@ -1,4 +1,4 @@
-import {MeshStandardMaterial,MeshBasicMaterial,MeshPhongMaterial,MeshLambertMaterial } from 'three';
+import {MeshPhongMaterial } from 'three';
 
 export default class CollectionMaterials {
     constructor(){
