@@ -5,8 +5,8 @@ import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.
 import {positionPetalsWrongPhyllotaxis,
         positionPetalsPhyllotaxis,
         createPetalMesh,
-        makePetalGeom,
-        disposeTextures} from './flowerModeller.js';
+        makePetalGeom
+       } from './flowerModeller.js';
 
 const isPhyllotaxisWrong = (params) => {
     return (!params.hasOwnProperty("crown_z"));

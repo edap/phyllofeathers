@@ -19,6 +19,7 @@ import { loadBird } from './assets.js';
 import Flower from './flower.js';
 import { PointLights } from './pointLights.js';
 import { limitControls } from './utils.js';
+import { getPlaneShader } from './shaders.js';
 import Scenographer from './scenographer.js';
 const scene = new THREE.Scene();
 let scenographer;
@@ -42,18 +43,8 @@ let bufferObject;
 let finalMaterial;
 let slideDirection = new THREE.Vector2(1.0, 1.0);
 let quad;
-let glsl = require('glslify');
-let fragShader = glsl`
-		uniform vec2 res;//The width and height of our screen
-		uniform vec2 slideDirection;// in which direction the texture will slide
-		uniform sampler2D bufferTexture;//Our input texture
-		void main() {
-			vec2 st = gl_FragCoord.xy / res;
-			vec2 uv = st;
-			uv *= slideDirection;
-			gl_FragColor = texture2D(bufferTexture, uv);
-}
-`;
+let fragShader = getPlaneShader();
+
 const clock = new THREE.Clock();
 const stats = new Stats();
 const materials = new CollectionMaterials();
