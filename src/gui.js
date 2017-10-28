@@ -90,6 +90,7 @@ export default class Gui extends DAT.GUI{
             materials[mat].color = new Color().setHex( par.color );
             materials[mat].emissive = new Color().setHex( par.emissive );
             materials[mat].shininess = par.shininess;
+            materials[mat].alphaTest = par.alphaTest;
             this._setTexture(par.map, materials[mat], "map", textures);
         }
     }
@@ -101,6 +102,7 @@ export default class Gui extends DAT.GUI{
             emissive: (typeof emissive === "string") ? emissive.replace('#', '0x') : emissive,
             color: (typeof color === "string") ? color.replace('#', '0x') : color,
             shininess:json[`${mat_string}_mat_shininess`],
+            alphaTest:json[`${mat_string}_mat_alpha`],
             map:json[`${mat_string}_mat_map`]
         };
     }
@@ -183,7 +185,7 @@ export default class Gui extends DAT.GUI{
             material[materialKey].magFilter = LinearFilter;
             material[materialKey].minFilter = LinearMipMapLinearFilter;
             material[materialKey].anisotropy = this.maxAnis;
-            material.alphaTest = 0.50;
+            //material.alphaTest = 0.50;
             material.alphaMap = textures[key+'_alpha'];
             material.normalMap = textures[key+'_NRM'];
             material.specularMap = textures[key+'_SPEC'];
