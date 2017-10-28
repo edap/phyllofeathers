@@ -51,12 +51,12 @@
         "petal_one_mat_color": 16777215,
         "petal_one_mat_emissive": 0,
         "petal_one_mat_shininess": 0.8,
-        "petal_one_mat_map": "second",
+        "petal_one_mat_map": "fourth",
         "petal_one_mat_alpha": 0.35,
         "petal_two_mat_color": 10197401,
         "petal_two_mat_emissive": 0,
         "petal_two_mat_shininess": 0.8,
-        "petal_two_mat_map": "fourth",
+        "petal_two_mat_map": "first",
         "petal_two_mat_alpha": 0.35,
         "petal_three_mat_color": 10329501,
         "petal_three_mat_emissive": 0,
@@ -66,7 +66,7 @@
         "petal_four_mat_color": 11513261,
         "petal_four_mat_emissive": 1118481,
         "petal_four_mat_shininess": 0.8,
-        "petal_four_mat_map": "first",
+        "petal_four_mat_map": "second",
         "petal_four_mat_alpha": 0.35
       }
     },
