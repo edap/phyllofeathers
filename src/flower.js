@@ -102,6 +102,8 @@ export default class Flower {
         // UNCOMMENTED JUST FOR SKETCH PURPOSTE
         if(!wrongPhyllo){
             this.group.rotateY(Math.PI/2);
+        } else {
+            this.group.rotateY(-Math.PI/2);
         }
     }
 
