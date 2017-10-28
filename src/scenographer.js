@@ -8,8 +8,8 @@ export default class Scenographer {
     }
 
     turnLightOn(){
-        let distance = 60;
-        let power = 1.0;
+        let distance = 120;
+        let power = 1.2;
         PointLights(distance, power).map((light) => {
             this.scene.add( light );
         });

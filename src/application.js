@@ -49,14 +49,14 @@ let gui;
 let controls;
 let flower;
 
+
 function init(assets){
     document.body.appendChild(renderer.domElement);
-    camera.position.z = 500;
+    camera.position.z = 100;
     camera.position.y = 105;
     //scene.background = assets.bg;
     // stats
     stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-    gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
 
     window.addEventListener('resize', function() {
         var WIDTH = window.innerWidth,
