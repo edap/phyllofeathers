@@ -8,7 +8,7 @@ const SPEED = 1.0;
 let flying = false;
 
 const states = ["DEBUG", "FLOWERS", "COMPLETE"];
-const currentState = states[0];
+const currentState = states[1];
 
 export default class Animator{
     update(){
@@ -44,13 +44,8 @@ export default class Animator{
         case "FLOWERS":
             incFlower.chain(decFlower);
             decFlower.chain(incWrongPhyllo);
-            incWrongPhyllo.chain(decWrongPhyllo);
-            //incWrongPhyllo.chain(flip);
-            // flip.chain(turnTable);
-            // turnTable.chain(slide);
-            // slide.chain(fadePlaneOut);
-            // fadePlaneOut.chain(decWrongPhyllo);
-            decWrongPhyllo.chain(incFlower);
+            // incWrongPhyllo.chain(decWrongPhyllo);
+            // decWrongPhyllo.chain(incFlower);
             incFlower.start();
             break;
         case "COMPLETE":

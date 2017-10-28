@@ -4,7 +4,7 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = false;
+const debug = true;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 // in Non debug mode, the flower should be init with the right params
 
