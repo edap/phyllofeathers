@@ -8,7 +8,7 @@ const SPEED = 1.0;
 let flying = false;
 
 const states = ["DEBUG", "FLOWERS", "COMPLETE"];
-const currentState = states[1];
+const currentState = states[0];
 
 export default class Animator{
     update(){

@@ -1,9 +1,21 @@
 import { removeEntityByName } from './utils.js';
+import { PointLights } from './pointLights.js';
 
 export default class Scenographer {
     constructor(scene, bufferScene){
         this.scene = scene;
         this.bufferScene = bufferScene;
+    }
+
+    turnLightOn(){
+        let distance = 60;
+        let power = 1.0;
+        PointLights(distance, power).map((light) => {
+            this.scene.add( light );
+        });
+        PointLights(distance, power).map((light) => {
+            this.bufferScene.add( light );
+        });
     }
 
     add(obj){

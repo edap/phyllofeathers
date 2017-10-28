@@ -8,8 +8,6 @@ const debug = false;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 // in Non debug mode, the flower should be init with the right params
 
-import flowers from './json/flowers.json';
-
 import Animator from './animator.js';
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -17,7 +15,6 @@ import Stats from 'stats.js';
 import CollectionMaterials from './materials.js';
 import { loadBird } from './assets.js';
 import Flower from './flower.js';
-import { PointLights } from './pointLights.js';
 import { limitControls } from './utils.js';
 import { getPlaneShader } from './shaders.js';
 import Scenographer from './scenographer.js';
@@ -76,13 +73,8 @@ function init(assets){
     //let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
     //scene.add( ambientLight2 );
     //bufferScene.add(ambientLight);
+    scenographer.turnLightOn();
 
-    PointLights(600, 1.0).map((light) => {
-        scene.add( light );
-    });
-    PointLights(600, 1.0).map((light) => {
-        bufferScene.add( light );
-    });
     flower = new Flower(gui.params, materials, assets, ParrotType);
 
     flower.group.name = 'flower';
