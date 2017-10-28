@@ -75,6 +75,7 @@ function init(assets){
     //bufferScene.add(ambientLight);
     scenographer.turnLightOn();
 
+    gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
     flower = new Flower(gui.params, materials, assets, ParrotType);
 
     flower.group.name = 'flower';

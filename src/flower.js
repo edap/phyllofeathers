@@ -5,7 +5,8 @@ import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.
 import {positionPetalsWrongPhyllotaxis,
         positionPetalsPhyllotaxis,
         createPetalMesh,
-        makePetalGeom
+        makePetalGeom,
+        disposeTextures
        } from './flowerModeller.js';
 
 const isPhyllotaxisWrong = (params) => {
@@ -93,6 +94,7 @@ export default class Flower {
 
     reset(){
         for (var i = this.group.children.length - 1; i >= 0; i--) {
+            //disposeTextures(this.group.children[i].material);
             this.group.children[i].geometry.dispose();
             this.group.children[i].material.dispose();
             this.group.remove(this.group.children[i]);
