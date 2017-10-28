@@ -1,14 +1,14 @@
 import {Vector3, Geometry, Line, LineBasicMaterial } from 'three';
 import {createPath} from './path.js';
 import * as THREE from 'three';
-
 import wrongPhyllo from './json/revolving.json';
 import rightPhyllo from './json/flowers.json';
-
-
 const TWEEN = require('@tweenjs/tween.js');
 const SPEED = 1.0;
 let flying = false;
+
+const states = ["DEBUG", "FLOWERS", "COMPLETE"];
+const currentState = states[1];
 
 export default class Animator{
     update(){
@@ -16,9 +16,6 @@ export default class Animator{
     }
 
     init(flower, plane, slideDirection){
-        // let grow from 1 to 100
-        // grow from 100 to 1
-        // change phyllotaxis type
         let petalsFactor = {x:0};
         let flip = this._rotateObj(flower.group,
                                    {z: Math.PI/2},
@@ -40,21 +37,38 @@ export default class Animator{
         let decWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
                                                                            callback: () => {flower.switchToRight();}});
 
-        // incFlower.chain(decFlower);
-        // decFlower.chain(incWrongPhyllo);
-        // incWrongPhyllo.chain(decWrongPhyllo);
-
-
-        //incWrongPhyllo.chain(flip);
-        // flip.chain(turnTable);
-        // turnTable.chain(slide);
-        // slide.chain(fadePlaneOut);
-        // fadePlaneOut.chain(decWrongPhyllo);
-
-
-        decWrongPhyllo.chain(incFlower);
-        incFlower.start();
-
+        switch(currentState){
+        case "DEBUG":
+            incFlower.start();
+            break;
+        case "FLOWERS":
+            incFlower.chain(decFlower);
+            decFlower.chain(incWrongPhyllo);
+            incWrongPhyllo.chain(decWrongPhyllo);
+            //incWrongPhyllo.chain(flip);
+            // flip.chain(turnTable);
+            // turnTable.chain(slide);
+            // slide.chain(fadePlaneOut);
+            // fadePlaneOut.chain(decWrongPhyllo);
+            decWrongPhyllo.chain(incFlower);
+            incFlower.start();
+            break;
+        case "COMPLETE":
+            incFlower.chain(decFlower);
+            decFlower.chain(incWrongPhyllo);
+            incWrongPhyllo.chain(decWrongPhyllo);
+            //incWrongPhyllo.chain(flip);
+            // flip.chain(turnTable);
+            // turnTable.chain(slide);
+            // slide.chain(fadePlaneOut);
+            // fadePlaneOut.chain(decWrongPhyllo);
+            decWrongPhyllo.chain(incFlower);
+            incFlower.start();
+            break;
+        default:
+            incFlower.start();
+            break;
+        }
     }
 
     _fadeInOrOutFlower(flower, from, dest, options){
