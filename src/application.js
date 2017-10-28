@@ -4,8 +4,11 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = true;
+const debug = false;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
+
+import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
+import { addTexturesToMaterial, setTexture } from './materialHelper.js';
 // in Non debug mode, the flower should be init with the right params
 
 import Animator from './animator.js';
@@ -75,26 +78,26 @@ function init(assets){
     //bufferScene.add(ambientLight);
     scenographer.turnLightOn();
 
-    gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
-    flower = new Flower(gui.params, materials, assets, ParrotType);
+    if(debug){
+        gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
 
-    flower.group.name = 'flower';
-    flower.group.rotateY(Math.PI/2);
-    scenographer.addToBufferScene(flower.group);
-
-    //debug
-    if (debug) {
+        flower = new Flower(gui.params, materials, assets, ParrotType);
         document.body.appendChild(stats.domElement);
         var axisHelper = new THREE.AxisHelper( 50 );
         scenographer.add(axisHelper);
-    }else{
-        gui.hide();
+    } else {
+        let param;
+        if (wrongPhyllo) {
+            param = getWrongPhylloParamsForBird(ParrotType);
+        } else {
+            param = getRightPhylloParamsForBird(ParrotType);
+        }
+        addTexturesToMaterial(materials, param, assets.textures, maxAnisotropy);
+        flower = new Flower(param, materials, assets, ParrotType);
     }
-
-    document.body.appendChild(stats.domElement);
-    var axisHelper = new THREE.AxisHelper( 50 );
-    scenographer.add(axisHelper);
-
+    flower.group.name = 'flower';
+    flower.group.rotateY(Math.PI/2);
+    scenographer.addToBufferScene(flower.group);
 
     controls = new OrbitControls(camera, renderer.domElement);
     limitControls(controls);
@@ -176,8 +179,10 @@ function buffer_texture_setup(){
 }
 
 let regenerate = () => {
-    flower.regenerate(gui.params);
-}
+    if(debug){
+        flower.regenerate(gui.params);
+    }
+};
 
 function removeSpinner(){
     let elem = document.getElementsByClassName("loading")[0];

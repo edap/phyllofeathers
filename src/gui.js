@@ -2,7 +2,7 @@ import DAT from 'dat-gui';
 import { Color, Fog} from 'three';
 import wrongPhylloParams from './json/revolving.json';
 import rightPhylloParams from './json/flowers.json';
-import { addTexturesToMaterial, setTexture, getMatParameter } from './materialHelper.js';
+import { addTexturesToMaterial, setTexture } from './materialHelper.js';
 
 
 export default class Gui extends DAT.GUI{
@@ -154,7 +154,6 @@ export default class Gui extends DAT.GUI{
     }
 
     _updateTexture ( material, materialKey, textures, maxAnis ) {
-        console.log(textures);
 	      return ( key ) => {
             setTexture(key, material, materialKey, textures, maxAnis);
 	      };
