@@ -4,7 +4,7 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = true;
+const debug = false;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 // in Non debug mode, the flower should be init with the right params
 
@@ -67,7 +67,7 @@ function init(assets){
     camera.position.y = 105;
     //scene.background = assets.bg;
     // stats
-    //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
     gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
 
     window.addEventListener('resize', function() {
@@ -106,6 +106,8 @@ function init(assets){
     }else{
         gui.hide();
     }
+
+    document.body.appendChild(stats.domElement);
     var axisHelper = new THREE.AxisHelper( 50 );
     scenographer.add(axisHelper);
 
@@ -149,13 +151,12 @@ function maybeSpacebarPressed(e){
 function toggleTrails(){
     if (trailsOn === true) {
         scenographer.removeFromBufferSceneByName('flower');
-        //removeEntityByName('quad', scene);
         scenographer.add(flower.group);
         trailsOn = false;
     } else {
         scenographer.removeFromSceneByName('flower');
-        scenografer.addToBufferScene(flower.group);
-        //scene.add(quad);
+        scenographer.addToBufferScene(flower.group);
+        scenographer.add(quad);
         trailsOn = true;
     }
 }
@@ -191,7 +192,7 @@ function buffer_texture_setup(){
 }
 
 let regenerate = () => {
-    flower.regenerate(gui.params, gui.number);
+    flower.regenerate(gui.params);
 }
 
 function removeSpinner(){

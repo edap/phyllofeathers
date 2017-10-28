@@ -22,7 +22,7 @@ export default class Flower {
         } else {
             this.phyllotaxisWrong = true;
         }
-        this.generate(params, 1);
+        this.generate(params);
     }
 
     get(){
@@ -45,22 +45,31 @@ export default class Flower {
     switchToWrong(){
         let params = getWrongPhylloParamsForBird(this.birdType);
         this.setParams(params);
+        this.reset();
+        this.generate(params);
     }
 
     switchToRight(){
         let params = getRightPhylloParamsForBird(this.birdType);
         this.setParams(params);
-    }
-
-
-    regenerate(params, number){
         this.reset();
-        this.generate(params, number);
+        this.generate(params);
     }
 
-    generate(params, num){
+
+    regenerate(params){
+        this.generate(params);
+    }
+
+    makePetalsVisible(opacity){
+        for (var i = this.group.children.length - 1; i >= 0; i--) {
+            this.group.children[i].material.opacity = opacity;
+        }
+    }
+
+    generate(params){
         let wrongPhyllo = this.phyllotaxisWrong;
-        let tot_petals = num !== undefined ? num : params.num;
+        let tot_petals = params.num;
         let PItoDeg = (Math.PI/180.0);
         let angleInRadians = params.angle * PItoDeg;
 
@@ -84,18 +93,21 @@ export default class Flower {
             }
             object.castShadow = true;
             object.receiveShadow = true;
+            object.material.opacity = 0.0; // all the petals are invisible at the beginning
             this.objects.push(object);
             this.group.add(this.objects[i]);
         }
 
         // at the end, make the object looking up
         // UNCOMMENTED JUST FOR SKETCH PURPOSTE
-        //this.group.rotateX(-Math.PI/2);
+        if(!wrongPhyllo){
+            this.group.rotateY(Math.PI/2);
+        }
     }
 
     reset(){
         for (var i = this.group.children.length - 1; i >= 0; i--) {
-            disposeTextures(this.group.children[i].material);
+            //disposeTextures(this.group.children[i].material);
             this.group.children[i].geometry.dispose();
             this.group.children[i].material.dispose();
             this.group.remove(this.group.children[i]);

@@ -32,42 +32,43 @@ export default class Animator{
                                   new THREE.Vector2(0.00, -0.001),
                                   {duration: 1000*SPEED});
         let fadePlaneOut = this._fadeObj(plane,'out', {delay: 100000*SPEED});
-        //let decFlower = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000, callback: () => {flower.switchToWrong();}});
-        let incFlower = this._incOrDecFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
+        let incFlower = this._fadeInOrOutFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
+        let decFlower = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000, callback: () => {flower.switchToWrong();}});
 
-        let decFlower = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
-                                                                           callback: () => {flower.switchToWrong();}});
+        let incWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
 
-        let incWrongPhyllo = this._incOrDecFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
-
-        let decWrongPhyllo = this._incOrDecFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
+        let decWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
                                                                            callback: () => {flower.switchToRight();}});
 
-        incFlower.chain(decFlower);
-        decFlower.chain(incWrongPhyllo);
-        incWrongPhyllo.chain(decWrongPhyllo);
+        // incFlower.chain(decFlower);
+        // decFlower.chain(incWrongPhyllo);
+        // incWrongPhyllo.chain(decWrongPhyllo);
+
+
         //incWrongPhyllo.chain(flip);
         // flip.chain(turnTable);
         // turnTable.chain(slide);
         // slide.chain(fadePlaneOut);
         // fadePlaneOut.chain(decWrongPhyllo);
+
+
         decWrongPhyllo.chain(incFlower);
         incFlower.start();
+
     }
 
-    _incOrDecFlower(flower, from, dest, options){
+    _fadeInOrOutFlower(flower, from, dest, options){
         options = options || {};
-        let easing = options.easing || TWEEN.Easing.Quadratic.In;
+        let easing = options.easing || TWEEN.Easing.Linear.None;
         let duration = options.duration || 2000 * SPEED;
         let delay = options.delay || 1000 * SPEED;
 
-        let destination = {x: 1};
         let grow = new TWEEN.Tween(from)
             .to(dest, duration)
             .easing(easing)
             .delay(delay)
             .onUpdate((current) => {
-                flower.regenerate(flower.getParams(), Math.ceil(current.x * flower.getParams().num));
+                flower.makePetalsVisible(current.x);
             })
             .onComplete(function(){
                 if(options.callback){

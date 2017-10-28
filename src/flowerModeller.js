@@ -106,7 +106,7 @@ export function disposeTextures(material){
     }
 
     if(material.normalMap !== null){
-        material.normalMap.dispose();
+        material.normalsMap.dispose();
     }
 
     if(material.specularMap !== null){

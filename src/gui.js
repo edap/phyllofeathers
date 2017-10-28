@@ -85,7 +85,6 @@ export default class Gui extends DAT.GUI{
     }
 
     _addTexturesToMaterial(materials, preset, textures){
-        console.error(preset);
         for (var mat in materials) {
             let par = this._getMatParameter(preset, mat);
             materials[mat].color = new Color().setHex( par.color );
@@ -186,8 +185,8 @@ export default class Gui extends DAT.GUI{
             material[materialKey].anisotropy = this.maxAnis;
             material.alphaTest = 0.50;
             material.alphaMap = textures[key+'_alpha'];
-            material.normalMap = textures[key+'_nrm'];
-            material.specularMap = textures[key+'_spec'];
+            material.normalMap = textures[key+'_NRM'];
+            material.specularMap = textures[key+'_SPEC'];
             material.alphaMap.wrapT = RepeatWrapping;
             material.alphaMap.wrapS = RepeatWrapping;
             //material.alphaMap.repeat.y = 1;
