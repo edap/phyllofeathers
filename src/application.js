@@ -96,13 +96,13 @@ function init(assets){
 
     flower.group.name = 'flower';
     flower.group.rotateY(Math.PI/2);
-    bufferScene.add(flower.group);
+    scenographer.addToBufferScene(flower.group);
 
     //debug
     if (debug) {
         document.body.appendChild(stats.domElement);
         var axisHelper = new THREE.AxisHelper( 50 );
-        scene.add( axisHelper );
+        scenographer.add(axisHelper);
     }else{
         gui.hide();
     }
