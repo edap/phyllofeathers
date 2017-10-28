@@ -30,12 +30,12 @@ export default class Animator{
                                   {duration: 1000*SPEED});
         let fadePlaneOut = this._fadeObj(plane,'out', {delay: 100000*SPEED});
         let incFlower = this._fadeInOrOutFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
-        let decFlower = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000, callback: () => {flower.switchToWrong();}});
+        let decFlower = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000, callback: () => {flower.switchTo("wrong");}});
 
         let incWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
 
         let decWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
-                                                                           callback: () => {flower.switchToRight();}});
+                                                                           callback: () => {flower.switchTo("right");}});
 
         switch(currentState){
         case "DEBUG":

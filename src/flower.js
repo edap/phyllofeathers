@@ -8,6 +8,10 @@ import {positionPetalsWrongPhyllotaxis,
         makePetalGeom,
         disposeTextures} from './flowerModeller.js';
 
+const isPhyllotaxisWrong = (params) => {
+    return (!params.hasOwnProperty("crown_z"));
+};
+
 export default class Flower {
     constructor(params, materials, assets, birdType) {
         this.assets = assets;
@@ -17,45 +21,26 @@ export default class Flower {
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
         this._params = params;
-        if (params.hasOwnProperty("crown_z") && params.hasOwnProperty("crown_z")) {
-            this.phyllotaxisWrong = false;
-        } else {
-            this.phyllotaxisWrong = true;
-        }
+        this._phyllotaxisWrong = isPhyllotaxisWrong(params);
         this.generate(params);
-    }
-
-    get(){
-        return this.group;
-    }
-
-    getParams(){
-        return this._params;
     }
 
     setParams(params){
         this._params = params;
-        if (params.hasOwnProperty("crown_z") && params.hasOwnProperty("crown_z")) {
-            this.phyllotaxisWrong = false;
+        this._phyllotaxisWrong = isPhyllotaxisWrong(params);
+    }
+
+    switchTo(type){
+        let params;
+        if (type === "wrong") {
+            params = getWrongPhylloParamsForBird(this.birdType);
         } else {
-            this.phyllotaxisWrong = true;
+            params = getRightPhylloParamsForBird(this.birdType);
         }
-    }
-
-    switchToWrong(){
-        let params = getWrongPhylloParamsForBird(this.birdType);
         this.setParams(params);
         this.reset();
         this.generate(params);
     }
-
-    switchToRight(){
-        let params = getRightPhylloParamsForBird(this.birdType);
-        this.setParams(params);
-        this.reset();
-        this.generate(params);
-    }
-
 
     regenerate(params){
         this.generate(params);
@@ -68,7 +53,7 @@ export default class Flower {
     }
 
     generate(params){
-        let wrongPhyllo = this.phyllotaxisWrong;
+        let wrongPhyllo = this._phyllotaxisWrong;
         let tot_petals = params.num;
         let PItoDeg = (Math.PI/180.0);
         let angleInRadians = params.angle * PItoDeg;
@@ -97,9 +82,8 @@ export default class Flower {
             this.objects.push(object);
             this.group.add(this.objects[i]);
         }
-
-        // at the end, make the object looking up
-        // UNCOMMENTED JUST FOR SKETCH PURPOSTE
+        // this rotation make sense only in the animation,
+        // where the 2 phyllotaxis types alternate themselves
         if(!wrongPhyllo){
             this.group.rotateY(Math.PI/2);
         } else {
@@ -109,7 +93,6 @@ export default class Flower {
 
     reset(){
         for (var i = this.group.children.length - 1; i >= 0; i--) {
-            //disposeTextures(this.group.children[i].material);
             this.group.children[i].geometry.dispose();
             this.group.children[i].material.dispose();
             this.group.remove(this.group.children[i]);
