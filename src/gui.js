@@ -1,7 +1,8 @@
 import DAT from 'dat-gui';
-import {RepeatWrapping, NearestFilter, LinearFilter, LinearMipMapLinearFilter, Color, Fog} from 'three';
+import { Color, Fog} from 'three';
 import wrongPhylloParams from './json/revolving.json';
 import rightPhylloParams from './json/flowers.json';
+import { addTexturesToMaterial, setTexture, getMatParameter } from './materialHelper.js';
 
 
 export default class Gui extends DAT.GUI{
@@ -80,32 +81,10 @@ export default class Gui extends DAT.GUI{
         this._addStandardMaterial(materials["petal_four"], 'petal_four_mat');
 
         if (!debug) {
-            this._addTexturesToMaterial(materials, loadedJson["remembered"][parrot_type][0], textures);
+            addTexturesToMaterial(materials, loadedJson["remembered"][parrot_type][0], textures, this.maxAnis);
         }
     }
 
-    _addTexturesToMaterial(materials, preset, textures){
-        for (var mat in materials) {
-            let par = this._getMatParameter(preset, mat);
-            materials[mat].color = new Color().setHex( par.color );
-            materials[mat].emissive = new Color().setHex( par.emissive );
-            materials[mat].shininess = par.shininess;
-            materials[mat].alphaTest = par.alphaTest;
-            this._setTexture(par.map, materials[mat], "map", textures);
-        }
-    }
-
-    _getMatParameter(json, mat_string){
-        let emissive = json[`${mat_string}_mat_emissive`];
-        let color = json[`${mat_string}_mat_color`];
-        return {
-            emissive: (typeof emissive === "string") ? emissive.replace('#', '0x') : emissive,
-            color: (typeof color === "string") ? color.replace('#', '0x') : color,
-            shininess:json[`${mat_string}_mat_shininess`],
-            alphaTest:json[`${mat_string}_mat_alpha`],
-            map:json[`${mat_string}_mat_map`]
-        };
-    }
 
     hide(){
         DAT.GUI.toggleHide();
@@ -163,7 +142,9 @@ export default class Gui extends DAT.GUI{
         folder.addColor( this.params, emissive_field ).onChange( this._handleColorChange( material.emissive ) );
         folder.add( this.params, shininess_field, 0, 1).onChange( (val) => { material.shininess = val; } );
         //debugger
-        folder.add( this.params, map_field, this.textureMapKeys ).onChange( this._updateTexture( material, 'map', this.textureMaps ) );
+        folder.add( this.params, map_field, this.textureMapKeys ).onChange(
+            this._updateTexture( material, 'map', this.textureMaps, this.maxAnis )
+        );
         folder.add( this.params, alpha_field, 0, 1).onChange( (val) => {
             if (material.alphaMap != null) {
                 material.alphaTest = val;
@@ -172,30 +153,11 @@ export default class Gui extends DAT.GUI{
         });
     }
 
-    _updateTexture ( material, materialKey, textures ) {
+    _updateTexture ( material, materialKey, textures, maxAnis ) {
         console.log(textures);
 	      return ( key ) => {
-            this._setTexture(key, material, materialKey, textures);
+            setTexture(key, material, materialKey, textures, maxAnis);
 	      };
-    }
-
-    _setTexture(key, material, materialKey, textures){
-		    material[materialKey] = textures[key];
-        if( key!= "none") {
-            material[materialKey].magFilter = LinearFilter;
-            material[materialKey].minFilter = LinearMipMapLinearFilter;
-            material[materialKey].anisotropy = this.maxAnis;
-            //material.alphaTest = 0.50;
-            material.alphaMap = textures[key+'_alpha'];
-            material.normalMap = textures[key+'_NRM'];
-            material.specularMap = textures[key+'_SPEC'];
-            material.alphaMap.wrapT = RepeatWrapping;
-            material.alphaMap.wrapS = RepeatWrapping;
-            //material.alphaMap.repeat.y = 1;
-        } else {
-            material.alphaMap = null;
-        }
-		    material.needsUpdate = true;
     }
 
     _getObjectsKeys( obj ) {
