@@ -11,6 +11,7 @@ const states = ["DEBUG", "FLOWERS", "COMPLETE"];
 const currentState = states[2];
 
 export default class Animator{
+
     update(){
         TWEEN.update();
     }

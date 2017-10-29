@@ -5,12 +5,12 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
-const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
+const wrongPhyllo = true; // in debuge mode, this switch tells to the gui which params to use.
+const targetSize = 4096;
+let trailsOn = true;
 
 import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
 import { addTexturesToMaterial } from './materialHelper.js';
-// in Non debug mode, the flower should be init with the right params
-
 import Animator from './animator.js';
 import * as THREE from 'three';
 import Gui from './gui.js';
@@ -22,6 +22,7 @@ import { limitControls } from './utils.js';
 import { getPlaneShader } from './shaders.js';
 import Scenographer from './scenographer.js';
 import BufferManager from './buffersManager.js';
+
 //setup scene and camera
 const scene = new THREE.Scene();
 let scenographer;
@@ -31,28 +32,23 @@ const renderer = new THREE.WebGLRenderer({antialias:true, transparent:true});
 const animator = new Animator();
 renderer.setSize(window.innerWidth, window.innerHeight);
 const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+let controls;
 
-//BufferScene
-const targetSize = 4096;
+// init variables
 let buffers;
-let trailsOn = true;
-
 const clock = new THREE.Clock();
 const stats = new Stats();
 const materials = new CollectionMaterials();
 let gui;
-let controls;
 let flower;
-
 
 function init(assets){
     document.body.appendChild(renderer.domElement);
     camera.position.z = 100;
     camera.position.y = 105;
-    //scene.background = assets.bg;
+
     // stats
     stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-
     window.addEventListener('resize', function() {
         var WIDTH = window.innerWidth,
         HEIGHT = window.innerHeight;
@@ -60,24 +56,13 @@ function init(assets){
         camera.aspect = WIDTH / HEIGHT;
         camera.updateProjectionMatrix();
     });
-
-    buffers = new BufferManager(targetSize);
-    scenographer = new Scenographer(scene, buffers.bufferScene);
-    // ambient lights. TODO, use them or not?
-    //let ambientLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-    //let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-    //scene.add( ambientLight2 );
-    //bufferScene.add(ambientLight);
-    scenographer.turnLightOn();
-
     if (debug) {
         gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
         flower = new Flower(gui.params, materials, assets, ParrotType, maxAnisotropy);
         flower.makePetalsVisible(1.0);
         document.body.appendChild(stats.domElement);
         var axisHelper = new THREE.AxisHelper( 50 );
-        scenographer.add(axisHelper);
-
+        scene.add(axisHelper);
     } else {
         let param;
         if (wrongPhyllo) {
@@ -90,13 +75,23 @@ function init(assets){
     }
     flower.group.name = 'flower';
     flower.group.rotateY(Math.PI/2);
+
+    buffers = new BufferManager(targetSize);
+    animator.init(flower, buffers.getPlane(), buffers.getSlideDirection());
+
+    scenographer = new Scenographer(scene, buffers.getBufferScene());
+    // ambient lights. TODO, use them or not?
+    //let ambientLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    //let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    //scene.add( ambientLight2 );
+    //bufferScene.add(ambientLight);
+    scenographer.turnLightOn();
     scenographer.addToBufferScene(flower.group);
 
     controls = new OrbitControls(camera, renderer.domElement);
     limitControls(controls);
 
     document.body.addEventListener("keypress", maybeSpacebarPressed);
-    animator.init(flower, buffers.quad, buffers.slideDirection);
     render();
 }
 
@@ -108,7 +103,7 @@ function render(){
 
     if (trailsOn) {
         buffers.update();
-        renderer.render(buffers.bufferScene, camera, buffers.textureB, true);
+        renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
     }
     renderer.render(scene, camera);
     stats.end();
@@ -129,7 +124,7 @@ function toggleTrails(){
     } else {
         scenographer.removeFromSceneByName('flower');
         scenographer.addToBufferScene(flower.group);
-        scenographer.add(buffers.quad);
+        scenographer.add(buffers.getPlane());
         trailsOn = true;
     }
 }
