@@ -4,11 +4,11 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = true;
+const debug = false;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 
 import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
-import { addTexturesToMaterial, setTexture } from './materialHelper.js';
+import { addTexturesToMaterial } from './materialHelper.js';
 // in Non debug mode, the flower should be init with the right params
 
 import Animator from './animator.js';
@@ -80,8 +80,7 @@ function init(assets){
 
     if(debug){
         gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
-
-        flower = new Flower(gui.params, materials, assets, ParrotType);
+        flower = new Flower(gui.params, materials, assets, ParrotType, maxAnisotropy);
         flower.makePetalsVisible(1.0);
         document.body.appendChild(stats.domElement);
         var axisHelper = new THREE.AxisHelper( 50 );
@@ -95,7 +94,7 @@ function init(assets){
             param = getRightPhylloParamsForBird(ParrotType);
         }
         addTexturesToMaterial(materials, param, assets.textures, maxAnisotropy);
-        flower = new Flower(param, materials, assets, ParrotType);
+        flower = new Flower(param, materials, assets, ParrotType, maxAnisotropy);
     }
     flower.group.name = 'flower';
     flower.group.rotateY(Math.PI/2);

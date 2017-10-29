@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {phyllotaxisWrong, phyllotaxisConical} from './phyllotaxis.js';
 import Strategy from './strategy.js';
-import { addTexturesToMaterial, setTexture } from './materialHelper.js';
+import { addTexturesToMaterial } from './materialHelper.js';
 import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
 import {positionPetalsWrongPhyllotaxis,
         positionPetalsPhyllotaxis,
@@ -15,10 +15,11 @@ const isPhyllotaxisWrong = (params) => {
 };
 
 export default class Flower {
-    constructor(params, materials, assets, birdType) {
+    constructor(params, materials, assets, birdType, maxAnisotropy) {
         this.assets = assets;
         this.materials = materials;
         this.birdType = birdType;
+        this.maxAnisotropy = maxAnisotropy;
         this.objects = [];
         this.group = new THREE.Group();
         this.strategy = new Strategy(materials);
@@ -41,6 +42,9 @@ export default class Flower {
         }
         this.setParams(params);
         this.reset();
+        // in the two diffents configuration, each material can have a different texture
+        // that's why you have to recreate them
+        addTexturesToMaterial(this.materials, params, this.assets.textures, this.maxAnisotropy);
         this.generate(params);
     }
 
@@ -97,7 +101,7 @@ export default class Flower {
 
     reset(){
         for (var i = this.group.children.length - 1; i >= 0; i--) {
-            //disposeTextures(this.group.children[i].material);
+            disposeTextures(this.group.children[i].material);
             this.group.children[i].geometry.dispose();
             this.group.children[i].material.dispose();
             this.group.remove(this.group.children[i]);
