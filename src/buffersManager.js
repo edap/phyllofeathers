@@ -37,10 +37,14 @@ export default class BuffersManager {
     }
 
     update(){
-        if (this.updateBuffer) {
-            let t = this._textureA;
+        // this is hacky, but save resources. If there are more than 4 elements
+        // (3 PointLight and the buffer object are already there),
+        // it means that there is flower in the buffer scene, and if there is the flower, update it!
+        // otherwhise, do not nothing
+        if (this._bufferScene.children.length > 4) {
+            let temp = this._textureA;
             this._textureA = this._textureB;
-            this._textureB = t;
+            this._textureB = temp;
             this._quad.material.map = this._textureB.texture;
             this._bufferMaterial.uniforms.bufferTexture.value = this._textureA.texture;
             this._bufferMaterial.uniforms.slideDirection.value = this._slideDirection;
