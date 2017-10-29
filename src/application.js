@@ -44,7 +44,7 @@ let flower;
 function init(assets){
     document.body.appendChild(renderer.domElement);
     camera.position.z = 100;
-    camera.position.y = 105;
+    camera.position.y = -50;
 
     // stats
     stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom

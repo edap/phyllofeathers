@@ -9,7 +9,7 @@ const SPEED = 1.0;
 let flying = false;
 
 const states = ["DEBUG", "FLOWERS", "COMPLETE"];
-const currentState = states[2];
+const currentState = states[1];
 
 export default class Animator extends EventEmitter{
     constructor(){
@@ -27,16 +27,22 @@ export default class Animator extends EventEmitter{
                                    {duration: 15000*SPEED,
                                     easing: TWEEN.Easing.Elastic.Out});
         let incFlower = this._fadeInOrOutFlower(flower,
-                                                petalsFactor, {x:1}, {duration:2000*SPEED});
+                                                petalsFactor, {x:1},
+                                                {duration:2000*SPEED});
         let decFlower = this._fadeInOrOutFlower(flower,
                                                 petalsFactor, {x:0},
-                                                {duration:2000, callback: () => {flower.switchTo("wrong");}});
+                                                {duration:2000*SPEED,
+                                                 delay:8000*SPEED,
+                                                 callback: () => {flower.switchTo("wrong");}});
         let incWrongPhyllo = this._fadeInOrOutFlower(flower,
                                                      petalsFactor,
-                                                     {x:1}, {duration:2000*SPEED});
+                                                     {x:1},
+                                                     {duration:2000*SPEED});
         let decWrongPhyllo = this._fadeInOrOutFlower(flower,
                                                      petalsFactor, {x:0},
-                                                     {duration:2000*SPEED, callback: () => {flower.switchTo("right");}});
+                                                     {duration:2000*SPEED,
+                                                      delay:8000*SPEED,
+                                                      callback: () => {flower.switchTo("right");}});
         // Plane Animations
         let turnTable = this._rotateObj(plane,
                                         {x: Math.PI/2},
@@ -60,8 +66,8 @@ export default class Animator extends EventEmitter{
         case "FLOWERS":
             incFlower.chain(decFlower);
             decFlower.chain(incWrongPhyllo);
-            // incWrongPhyllo.chain(decWrongPhyllo);
-            // decWrongPhyllo.chain(incFlower);
+            incWrongPhyllo.chain(decWrongPhyllo);
+            decWrongPhyllo.chain(incFlower);
             incFlower.start();
             break;
         case "COMPLETE":
@@ -87,7 +93,7 @@ export default class Animator extends EventEmitter{
         options = options || {};
         let easing = options.easing || TWEEN.Easing.Linear.None;
         let duration = options.duration || 2000 * SPEED;
-        let delay = options.delay || 1000 * SPEED;
+        let delay = options.delay || 100 * SPEED;
 
         let grow = new TWEEN.Tween(from)
             .to(dest, duration)
@@ -109,7 +115,7 @@ export default class Animator extends EventEmitter{
         options = options || {};
         let easing = options.easing || TWEEN.Easing.Linear.None;
         let duration = options.duration || 2000 * SPEED;
-        let delay = options.delay || 1000 * SPEED;
+        let delay = options.delay || 100 * SPEED;
 
         var current = { percentage : direction == "in" ? 0 : 1 };
         let meshes = object.type === "Group" ? object.children : [object];
