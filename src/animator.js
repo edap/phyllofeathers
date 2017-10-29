@@ -1,4 +1,5 @@
 import {Vector3, Geometry, Line, LineBasicMaterial } from 'three';
+import EventEmitter from './eventEmitter.js';
 import {createPath} from './path.js';
 import * as THREE from 'three';
 import wrongPhyllo from './json/revolving.json';
@@ -10,18 +11,33 @@ let flying = false;
 const states = ["DEBUG", "FLOWERS", "COMPLETE"];
 const currentState = states[2];
 
-export default class Animator{
+export default class Animator extends EventEmitter{
+    constructor(){
+        super();
+    }
 
     update(){
         TWEEN.update();
     }
-
     init(flower, plane, slideDirection){
         let petalsFactor = {x:0};
+        //Flower Animations
         let flip = this._rotateObj(flower.group,
                                    {z: Math.PI/2},
                                    {duration: 15000*SPEED,
                                     easing: TWEEN.Easing.Elastic.Out});
+        let incFlower = this._fadeInOrOutFlower(flower,
+                                                petalsFactor, {x:1}, {duration:2000*SPEED});
+        let decFlower = this._fadeInOrOutFlower(flower,
+                                                petalsFactor, {x:0},
+                                                {duration:2000, callback: () => {flower.switchTo("wrong");}});
+        let incWrongPhyllo = this._fadeInOrOutFlower(flower,
+                                                     petalsFactor,
+                                                     {x:1}, {duration:2000*SPEED});
+        let decWrongPhyllo = this._fadeInOrOutFlower(flower,
+                                                     petalsFactor, {x:0},
+                                                     {duration:2000*SPEED, callback: () => {flower.switchTo("right");}});
+        // Plane Animations
         let turnTable = this._rotateObj(plane,
                                         {x: Math.PI/2},
                                         {duration: 3000*SPEED,
@@ -29,14 +45,13 @@ export default class Animator{
         let slide = this._moveVec(slideDirection,
                                   new THREE.Vector2(0.00, -0.001),
                                   {duration: 1000*SPEED});
-        let fadePlaneOut = this._fadeObj(plane,'out', {delay: 100000*SPEED});
-        let incFlower = this._fadeInOrOutFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
-        let decFlower = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000, callback: () => {flower.switchTo("wrong");}});
+        let fadePlaneOut = this._fadeObj(plane, 'out', {delay: 1000*SPEED,
+                                                       completeCallback : () => {this.removePlane();}});
 
-        let incWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, {x:1}, {duration:2000*SPEED});
+        let fadePlaneIn = this._fadeObj(plane, 'in', {delay: 1000*SPEED,
+                                                      startCallback : () => {this.addPlane();}});
+        this.emit('WTF');
 
-        let decWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, {x:0}, {duration:2000*SPEED,
-                                                                           callback: () => {flower.switchTo("right");}});
 
         switch(currentState){
         case "DEBUG":
@@ -52,10 +67,11 @@ export default class Animator{
         case "COMPLETE":
             incFlower.chain(decFlower);
             decFlower.chain(incWrongPhyllo);
-            incWrongPhyllo.chain(decWrongPhyllo);
             incWrongPhyllo.chain(flip);
-            flip.chain(turnTable);
-            turnTable.chain(slide);
+            // flip.chain(turnTable);
+            // turnTable.chain(slide);
+            flip.chain(fadePlaneIn);
+            fadePlaneIn.chain(slide);
             slide.chain(fadePlaneOut);
             fadePlaneOut.chain(decWrongPhyllo);
             decWrongPhyllo.chain(incFlower);
@@ -106,9 +122,14 @@ export default class Animator{
                 }
             })
             .delay(delay)
+            .onStart(function(){
+                if(options.startCallback){
+                    options.startCallback();
+                }
+            })
             .onComplete(function(){
-                if(options.callback){
-                    options.callback();
+                if(options.completeCallback){
+                    options.completeCallback();
                 }
             });
         return tweenOpacity;
@@ -168,5 +189,17 @@ export default class Animator{
             let object = objects[index];
             object.rotateOnAxis(new Vector3(0, 0 ,1), angle);
         }
+    }
+
+    removePlane(){
+        this.emit("ADD-FLOWER-TO-SCENE");
+        this.emit("REMOVE-PLANE-FROM-SCENE");
+        this.emit("REMOVE-FLOWER-FROM-BUFFERSCENE");
+    }
+
+    addPlane(){
+        this.emit("REMOVE-FLOWER-FROM-SCENE");
+        this.emit("ADD-FLOWER-TO-BUFFERSCENE");
+        this.emit("ADD-PLANE-TO-SCENE");
     }
 }

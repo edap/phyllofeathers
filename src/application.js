@@ -5,9 +5,8 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
-const wrongPhyllo = true; // in debuge mode, this switch tells to the gui which params to use.
+const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 const targetSize = 4096;
-let trailsOn = true;
 
 import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
 import { addTexturesToMaterial } from './materialHelper.js';
@@ -64,6 +63,10 @@ function init(assets){
         var axisHelper = new THREE.AxisHelper( 50 );
         scene.add(axisHelper);
     } else {
+        document.body.appendChild(stats.domElement);
+        var axisHelper = new THREE.AxisHelper( 50 );
+        scene.add(axisHelper);
+
         let param;
         if (wrongPhyllo) {
             param = getWrongPhylloParamsForBird(ParrotType);
@@ -79,7 +82,7 @@ function init(assets){
     buffers = new BufferManager(targetSize);
     animator.init(flower, buffers.getPlane(), buffers.getSlideDirection());
 
-    scenographer = new Scenographer(scene, buffers.getBufferScene());
+    scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, animator);
     // ambient lights. TODO, use them or not?
     //let ambientLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
     //let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
@@ -87,11 +90,11 @@ function init(assets){
     //bufferScene.add(ambientLight);
     scenographer.turnLightOn();
     scenographer.addToBufferScene(flower.group);
+    scenographer.add(flower.group);
 
     controls = new OrbitControls(camera, renderer.domElement);
     limitControls(controls);
 
-    document.body.addEventListener("keypress", maybeSpacebarPressed);
     render();
 }
 
@@ -101,32 +104,11 @@ function render(){
     requestAnimationFrame(render);
     if (!debug) animator.update();
 
-    if (trailsOn) {
-        buffers.update();
-        renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
-    }
+    buffers.update();
+    renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
+
     renderer.render(scene, camera);
     stats.end();
-}
-
-function maybeSpacebarPressed(e){
-    if (e.keyCode === 0 || e.keyCode === 32) {
-        e.preventDefault();
-        toggleTrails();
-    }
-}
-
-function toggleTrails(){
-    if (trailsOn === true) {
-        scenographer.removeFromBufferSceneByName('flower');
-        scenographer.add(flower.group);
-        trailsOn = false;
-    } else {
-        scenographer.removeFromSceneByName('flower');
-        scenographer.addToBufferScene(flower.group);
-        scenographer.add(buffers.getPlane());
-        trailsOn = true;
-    }
 }
 
 let regenerate = () => {
