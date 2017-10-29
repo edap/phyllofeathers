@@ -4,7 +4,7 @@ const ParrotType = 'blue-fronted-parrot';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
-const debug = false;
+const debug = true;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 
 import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
@@ -82,9 +82,11 @@ function init(assets){
         gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
 
         flower = new Flower(gui.params, materials, assets, ParrotType);
+        flower.makePetalsVisible(1.0);
         document.body.appendChild(stats.domElement);
         var axisHelper = new THREE.AxisHelper( 50 );
         scenographer.add(axisHelper);
+
     } else {
         let param;
         if (wrongPhyllo) {
@@ -180,7 +182,7 @@ function buffer_texture_setup(){
 
 let regenerate = () => {
     if(debug){
-        flower.regenerate(gui.params);
+        flower.regenerate(gui.params, debug);
     }
 };
 

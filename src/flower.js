@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {phyllotaxisWrong, phyllotaxisConical} from './phyllotaxis.js';
 import Strategy from './strategy.js';
+import { addTexturesToMaterial, setTexture } from './materialHelper.js';
 import {getWrongPhylloParamsForBird, getRightPhylloParamsForBird} from './store.js';
 import {positionPetalsWrongPhyllotaxis,
         positionPetalsPhyllotaxis,
@@ -43,8 +44,8 @@ export default class Flower {
         this.generate(params);
     }
 
-    regenerate(params){
-        this.generate(params);
+    regenerate(params, debug = false){
+        this.generate(params, debug);
     }
 
     makePetalsVisible(opacity){
@@ -53,7 +54,7 @@ export default class Flower {
         }
     }
 
-    generate(params){
+    generate(params, debug = false){
         let wrongPhyllo = this._phyllotaxisWrong;
         let tot_petals = params.num;
         let PItoDeg = (Math.PI/180.0);
@@ -79,7 +80,9 @@ export default class Flower {
             }
             object.castShadow = true;
             object.receiveShadow = true;
-            object.material.opacity = 0.0; // all the petals are invisible at the beginning
+            if (!debug) {
+                object.material.opacity = 0.0; // all the petals are invisible at the beginning
+            }
             this.objects.push(object);
             this.group.add(this.objects[i]);
         }
