@@ -7,6 +7,7 @@ const ParrotType = 'blue-fronted-parrot';
 const debug = false;
 const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 const targetSize = 4096;
+//const targetSize = 2048;
 
 import { getWrongPhylloParamsForBird, getRightPhylloParamsForBird } from './store.js';
 import { addTexturesToMaterial } from './materialHelper.js';
@@ -81,11 +82,12 @@ function init(assets){
 	flower.group.rotateY(Math.PI / 2);
 
 	buffers = new BufferManager(targetSize);
-	animator.init(flower, buffers.getPlane(), buffers.getSlideDirection());
 
 	scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, animator);
 	scenographer.turnLightOn();
 	scenographer.add(flower.group);
+
+	animator.init(flower, scenographer.getBufferFlower(), buffers.getPlane(), buffers.getSlideDirection());
 
 	controls = new OrbitControls(camera, renderer.domElement);
 	limitControls(controls);
@@ -101,8 +103,10 @@ function render(){
 		animator.update();
 	}
 
-	buffers.update();
-	renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
+	if (buffers.areUsed()){
+		buffers.update();
+		renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
+	}
 
 	renderer.render(scene, camera);
 	stats.end();

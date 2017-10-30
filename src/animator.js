@@ -19,10 +19,10 @@ export default class Animator extends EventEmitter {
 	update(){
 		TWEEN.update();
 	}
-	init(flower, plane, slideDirection){
+	init(flower, bufferFlower, plane, slideDirection){
 		const petalsFactor = { x: 0 };
 		//Flower Animations
-		const flip = this._rotateObj(
+		const flipFlower = this._rotateObj(
 			flower.group,
 			{ z: Math.PI / 2 },
 			{
@@ -30,6 +30,15 @@ export default class Animator extends EventEmitter {
 				easing: TWEEN.Easing.Elastic.Out
 			}
 		);
+		const flipBufferFlower = this._rotateObj(
+			bufferFlower,
+			{ z: Math.PI / 2 },
+			{
+				duration: 15000 * SPEED,
+				easing: TWEEN.Easing.Elastic.Out
+			}
+		);
+
 		const incFlower = this._fadeInOrOutFlower(flower, petalsFactor, { x: 1 }, { duration: 2000 * SPEED });
 		const decFlower = this._fadeInOrOutFlower(
 			flower,
@@ -40,7 +49,7 @@ export default class Animator extends EventEmitter {
 				//delay:8000*SPEED,
 				callback: () => {
 					flower.switchTo('wrong');
-					this.emit('COPY-FLOWER');
+					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
 				}
 			}
 		);
@@ -54,7 +63,7 @@ export default class Animator extends EventEmitter {
 				//delay:8000*SPEED,
 				callback: () => {
 					flower.switchTo('right');
-					this.emit('COPY-FLOWER');
+					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
 				}
 			}
 		);
@@ -100,8 +109,8 @@ export default class Animator extends EventEmitter {
 				incFlower.chain(decFlower);
 				decFlower.chain(incWrongPhyllo);
 				incWrongPhyllo.chain(fadePlaneIn);
-				fadePlaneIn.chain(flip);
-				flip.chain(turnTable);
+				fadePlaneIn.chain(flipFlower);
+				flipFlower.chain(turnTable);
 				turnTable.chain(slide);
 				slide.chain(fadePlaneOut);
 				fadePlaneOut.chain(decWrongPhyllo);
@@ -113,11 +122,11 @@ export default class Animator extends EventEmitter {
 				fadePlaneIn.chain(slide);
 				slide.chain(decFlower);
 				decFlower.chain(incWrongPhyllo);
-				incWrongPhyllo.chain(flip);
-				flip.chain(fadePlaneOut);
-				// slide.chain(fadePlaneOut);
-				// fadePlaneOut.chain(decFlower);
-				// decFlower.chain(incFlower);
+				incWrongPhyllo.chain(flipBufferFlower);
+				flipBufferFlower.chain(fadePlaneOut);
+				fadePlaneOut.chain(flipFlower);
+				flipFlower.chain(decWrongPhyllo);
+				decWrongPhyllo.chain(incFlower);
 				incFlower.start();
 			default:
 				incFlower.start();

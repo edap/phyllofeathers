@@ -20,7 +20,7 @@ export default class Scenographer {
 		this._emitter.addListener('REMOVE-FLOWER-FROM-SCENE', () => this.remove(this._flowerGroup));
 		this._emitter.addListener('ADD-FLOWER-TO-BUFFERSCENE', () => this.addToBufferScene(this._bufferFlowerGroup));
 		this._emitter.addListener('REMOVE-FLOWER-FROM-BUFFERSCENE', () => this.removeFromBufferScene(this._bufferFlowerGroup));
-		this._emitter.addListener('COPY-FLOWER', () => this.copyFlowerToBufferFlower());
+		this._emitter.addListener('COPY-FLOWER-TO-BUFFERFLOWER', () => this.copyFlowerToBufferFlower());
 	}
 
 	turnLightOn(){
@@ -29,7 +29,7 @@ export default class Scenographer {
 		//let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 		//scene.add( ambientLight2 );
 		//bufferScene.add(ambientLight);
-		const distance = 220;
+		const distance = 320;
 		const power = 0.9;
 		PointLights(distance, power).map(light => {
 			this._scene.add(light);
@@ -57,5 +57,9 @@ export default class Scenographer {
 
 	removeFromBufferScene(obj){
 		this._bufferScene.remove(obj);
+	}
+
+	getBufferFlower(){
+		return this._bufferFlowerGroup;
 	}
 }
