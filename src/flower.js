@@ -93,21 +93,22 @@ export default class Flower {
 		}
 		// this rotation make sense only in the animation,
 		// where the 2 phyllotaxis types alternate themselves
+
 		if (!wrongPhyllo){
-			this.group.rotateY(Math.PI / 2);
+			this.group.rotateY(Math.PI);
 		} else {
 			this.group.rotateY(-Math.PI / 2);
 		}
 	}
 
 	reset(){
+		this._resetRotations(this.group);
 		for (let i = this.group.children.length - 1; i >= 0; i--){
 			disposeTextures(this.group.children[i].material);
 			this.group.children[i].geometry.dispose();
 			this.group.children[i].material.dispose();
 			this.group.remove(this.group.children[i]);
 		}
-		this._resetRotations(this.group);
 
 		this.objects = [];
 	}

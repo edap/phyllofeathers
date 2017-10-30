@@ -45,7 +45,7 @@ let bufferFlower;
 
 function init(assets){
 	document.body.appendChild(renderer.domElement);
-	camera.position.z = 100;
+	camera.position.z = 150;
 	camera.position.y = -50;
 
 	// stats
@@ -79,7 +79,7 @@ function init(assets){
 		flower = new Flower(param, materials, assets, ParrotType, maxAnisotropy);
 	}
 	flower.group.name = 'flower';
-	flower.group.rotateY(Math.PI / 2);
+	//flower.group.rotateY(Math.PI / 2);
 
 	buffers = new BufferManager(targetSize);
 

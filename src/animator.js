@@ -6,10 +6,11 @@ import wrongPhyllo from './json/revolving.json';
 import rightPhyllo from './json/flowers.json';
 const TWEEN = require('@tweenjs/tween.js');
 const SPEED = 1.0;
+const FADE_ANIM_TIME = 3000;
 const flying = false;
 
-const states = ['DEBUG', 'FLOWERS', 'COMPLETE', 'PLANE'];
-const currentState = states[3];
+const states = ['DEBUG', 'FLOWERS', 'COMPLETE'];
+const currentState = states[2];
 
 export default class Animator extends EventEmitter {
 	constructor(){
@@ -39,27 +40,37 @@ export default class Animator extends EventEmitter {
 			}
 		);
 
-		const incFlower = this._fadeInOrOutFlower(flower, petalsFactor, { x: 1 }, { duration: 2000 * SPEED });
+		const incFlower = this._fadeInOrOutFlower(
+			flower,
+			petalsFactor,
+			{ x: 1 },
+			{ duration: FADE_ANIM_TIME * SPEED, easing: TWEEN.Easing.Sinusoidal.In }
+		);
 		const decFlower = this._fadeInOrOutFlower(
 			flower,
 			petalsFactor,
 			{ x: 0 },
 			{
-				duration: 2000 * SPEED,
-				//delay:8000*SPEED,
+				duration: FADE_ANIM_TIME * SPEED,
+				delay: FADE_ANIM_TIME * SPEED,
 				callback: () => {
 					flower.switchTo('wrong');
 					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
 				}
 			}
 		);
-		const incWrongPhyllo = this._fadeInOrOutFlower(flower, petalsFactor, { x: 1 }, { duration: 2000 * SPEED });
+		const incWrongPhyllo = this._fadeInOrOutFlower(
+			flower,
+			petalsFactor,
+			{ x: 1 },
+			{ duration: FADE_ANIM_TIME * SPEED, easing: TWEEN.Easing.Sinusoidal.In }
+		);
 		const decWrongPhyllo = this._fadeInOrOutFlower(
 			flower,
 			petalsFactor,
 			{ x: 0 },
 			{
-				duration: 2000 * SPEED,
+				duration: FADE_ANIM_TIME * SPEED,
 				//delay:8000*SPEED,
 				callback: () => {
 					flower.switchTo('right');
@@ -68,27 +79,19 @@ export default class Animator extends EventEmitter {
 			}
 		);
 		// Plane Animations
-		const turnTable = this._rotateObj(
-			plane,
-			{ x: Math.PI / 1.2 },
-			{
-				duration: 3000 * SPEED,
-				easing: TWEEN.Easing.Sinusoidal.Out
-			}
-		);
 		const slide = this._moveVec(slideDirection, new THREE.Vector2(-0.002, -0.001), {
 			easing: TWEEN.Easing.Sinusoidal.Out,
-			duration: 4000 * SPEED
+			duration: FADE_ANIM_TIME * SPEED
 		});
 		const fadePlaneOut = this._fadeObj(plane, 'out', {
-			delay: 8000 * SPEED,
+			delay: FADE_ANIM_TIME * SPEED,
 			completeCallback: () => {
 				this.removePlane();
 			}
 		});
 
 		const fadePlaneIn = this._fadeObj(plane, 'in', {
-			delay: 1000 * SPEED,
+			delay: FADE_ANIM_TIME * SPEED,
 			startCallback: () => {
 				this.addPlane();
 			}
@@ -106,18 +109,6 @@ export default class Animator extends EventEmitter {
 				incFlower.start();
 				break;
 			case 'COMPLETE':
-				incFlower.chain(decFlower);
-				decFlower.chain(incWrongPhyllo);
-				incWrongPhyllo.chain(fadePlaneIn);
-				fadePlaneIn.chain(flipFlower);
-				flipFlower.chain(turnTable);
-				turnTable.chain(slide);
-				slide.chain(fadePlaneOut);
-				fadePlaneOut.chain(decWrongPhyllo);
-				decWrongPhyllo.chain(incFlower);
-				incFlower.start();
-				break;
-			case 'PLANE':
 				incFlower.chain(fadePlaneIn);
 				fadePlaneIn.chain(slide);
 				slide.chain(decFlower);
@@ -138,7 +129,7 @@ export default class Animator extends EventEmitter {
 		options = options || {};
 		const easing = options.easing || TWEEN.Easing.Linear.None;
 		const duration = options.duration || 2000 * SPEED;
-		const delay = options.delay || 100 * SPEED;
+		const delay = options.delay || 0;
 
 		const grow = new TWEEN.Tween(from)
 			.to(dest, duration)
@@ -159,7 +150,7 @@ export default class Animator extends EventEmitter {
 		options = options || {};
 		const easing = options.easing || TWEEN.Easing.Linear.None;
 		const duration = options.duration || 2000 * SPEED;
-		const delay = options.delay || 100 * SPEED;
+		const delay = options.delay || 0;
 
 		const current = { percentage: direction == 'in' ? 0 : 1 };
 		const meshes = object.type === 'Group' ? object.children : [object];
@@ -192,7 +183,7 @@ export default class Animator extends EventEmitter {
 		options = options || {};
 		const easing = options.easing || TWEEN.Easing.Quadratic.In;
 		const duration = options.duration || 2000 * SPEED;
-		const delay = options.delay || 1000 * SPEED;
+		const delay = options.delay || 0;
 
 		const destination = new THREE.Vector2().addVectors(vec, stepVector);
 		const moveVec = new TWEEN.Tween(vec)
@@ -219,7 +210,7 @@ export default class Animator extends EventEmitter {
 		options = options || {};
 		const easing = options.easing || TWEEN.Easing.Quadratic.In;
 		const duration = options.duration || 2000 * SPEED;
-		const delay = options.delay || 1000 * SPEED;
+		const delay = options.delay || 0;
 
 		const rotation = new TWEEN.Tween(object.rotation)
 			.to(Object.assign({}, destination), duration)

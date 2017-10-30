@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { getPlaneShader } from './shaders.js';
 
-const distanceOnZAxis = -100;
+const distanceOnZAxis = -200;
 const distanceOnYAxis = 0;
 
 /*
