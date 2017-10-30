@@ -206,8 +206,7 @@ export default class Animator extends EventEmitter {
 		const angle = Math.sin((current.y - 0.5) * frequency) * amplitude;
 		for (const index in objects){
 			const object = objects[index];
-
-			object.rotateOnAxis(new Vector3(0, 0, 1), angle);
+			object.rotateZ(angle);
 		}
 	}
 
@@ -239,8 +238,6 @@ export default class Animator extends EventEmitter {
 			});
 		return tweenOpacity;
 	}
-
-	_moveObj(object, stepVector, duration, easyType, delayMs){}
 
 	_moveVec(vec, stepVector, options){
 		//_moveVec(vec, stepVector, duration, easyType, delayMs){
@@ -286,15 +283,6 @@ export default class Animator extends EventEmitter {
 			})
 			.delay(delay);
 		return rotation;
-	}
-
-	// not used yet
-	_flip(objects, current, frequency, amplitude){
-		const angle = Math.sin((current.y - 0.5) * frequency) * amplitude;
-		for (const index in objects){
-			const object = objects[index];
-			object.rotateOnAxis(new Vector3(0, 0, 1), angle);
-		}
 	}
 
 	removePlane(){
