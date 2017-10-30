@@ -83,9 +83,8 @@ function init(assets){
 	buffers = new BufferManager(targetSize);
 	animator.init(flower, buffers.getPlane(), buffers.getSlideDirection());
 
-	scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, flower.bufferFlower, animator);
+	scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, animator);
 	scenographer.turnLightOn();
-	//scenographer.addToBufferScene(flower.group);
 	scenographer.add(flower.group);
 
 	controls = new OrbitControls(camera, renderer.domElement);

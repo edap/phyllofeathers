@@ -1,13 +1,14 @@
 import { removeEntityByName } from './utils.js';
 import { PointLights } from './pointLights.js';
+import { Object3D } from 'three';
 
 export default class Scenographer {
-	constructor(scene, bufferScene, bufferPlane, flowerGroup, bufferFlowerGroup, emitter){
+	constructor(scene, bufferScene, bufferPlane, flowerGroup, emitter){
 		this._scene = scene;
 		this._bufferScene = bufferScene;
 		this._bufferPlane = bufferPlane;
 		this._flowerGroup = flowerGroup;
-		this._bufferFlowerGroup = bufferFlowerGroup;
+		this._bufferFlowerGroup = new Object3D().copy(flowerGroup);
 		this._emitter = emitter;
 		this._addListeners();
 	}
@@ -19,6 +20,9 @@ export default class Scenographer {
 		this._emitter.addListener('REMOVE-FLOWER-FROM-SCENE', () => this.remove(this._flowerGroup));
 		this._emitter.addListener('ADD-FLOWER-TO-BUFFERSCENE', () => this.addToBufferScene(this._bufferFlowerGroup));
 		this._emitter.addListener('REMOVE-FLOWER-FROM-BUFFERSCENE', () => this.removeFromBufferScene(this._bufferFlowerGroup));
+		this._emitter.addListener('COPY-FLOWER', () => {
+			this.copyFlowerToBufferFlower();
+		});
 	}
 
 	turnLightOn(){
@@ -35,6 +39,10 @@ export default class Scenographer {
 		PointLights(distance, power).map(light => {
 			this._bufferScene.add(light);
 		});
+	}
+
+	copyFlowerToBufferFlower(){
+		this._bufferFlowerGroup.copy(this._flowerGroup);
 	}
 
 	add(obj){

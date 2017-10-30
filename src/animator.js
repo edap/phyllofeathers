@@ -40,6 +40,7 @@ export default class Animator extends EventEmitter {
 				//delay:8000*SPEED,
 				callback: () => {
 					flower.switchTo('wrong');
+					this.emit('COPY-FLOWER');
 				}
 			}
 		);
@@ -53,6 +54,7 @@ export default class Animator extends EventEmitter {
 				//delay:8000*SPEED,
 				callback: () => {
 					flower.switchTo('right');
+					this.emit('COPY-FLOWER');
 				}
 			}
 		);

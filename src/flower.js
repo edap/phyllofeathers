@@ -25,9 +25,9 @@ export default class Flower {
 		this.strategy = new Strategy(materials);
 		this._params = params;
 		this._phyllotaxisWrong = isPhyllotaxisWrong(params);
-		this.generate(params);
 		this.bufferFlower; // this variable store a copy of the Group
 		// it will be updated everytime the flower is updated
+		this.generate(params);
 	}
 
 	setParams(params){
@@ -100,6 +100,7 @@ export default class Flower {
 		} else {
 			this.group.rotateY(-Math.PI / 2);
 		}
+		//this.bufferFlower = new THREE.Object3D().copy(this.group);
 		this.bufferFlower = this.group.clone();
 	}
 
