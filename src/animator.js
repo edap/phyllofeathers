@@ -6,7 +6,10 @@ import wrongPhyllo from './json/revolving.json';
 import rightPhyllo from './json/flowers.json';
 const TWEEN = require('@tweenjs/tween.js');
 const SPEED = 1.0;
-const FADE_ANIM_TIME = 3000;
+const FADE_FLOWER_TIME = 6000;
+const FADE_PLANE_TIME = 6000;
+const ROTATION_TIME = 12000;
+const DELAY = 1000; //this decides how much every scene will last
 const flying = false;
 
 const states = ['DEBUG', 'FLOWERS', 'COMPLETE'];
@@ -25,17 +28,19 @@ export default class Animator extends EventEmitter {
 		//Flower Animations
 		const flipFlower = this._rotateObj(
 			flower.group,
-			{ z: Math.PI / 2 },
+			{ z: Math.PI },
 			{
-				duration: 15000 * SPEED,
+				duration: ROTATION_TIME * SPEED,
+				delay: DELAY * SPEED,
 				easing: TWEEN.Easing.Elastic.Out
 			}
 		);
 		const flipBufferFlower = this._rotateObj(
 			bufferFlower,
-			{ z: Math.PI / 2 },
+			{ z: Math.PI },
 			{
-				duration: 15000 * SPEED,
+				duration: ROTATION_TIME * SPEED,
+				delay: DELAY * SPEED,
 				easing: TWEEN.Easing.Elastic.Out
 			}
 		);
@@ -44,15 +49,18 @@ export default class Animator extends EventEmitter {
 			flower,
 			petalsFactor,
 			{ x: 1 },
-			{ duration: FADE_ANIM_TIME * SPEED, easing: TWEEN.Easing.Sinusoidal.In }
+			{
+				duration: FADE_FLOWER_TIME * SPEED + DELAY,
+				easing: TWEEN.Easing.Sinusoidal.In
+			}
 		);
 		const decFlower = this._fadeInOrOutFlower(
 			flower,
 			petalsFactor,
 			{ x: 0 },
 			{
-				duration: FADE_ANIM_TIME * SPEED,
-				delay: FADE_ANIM_TIME * SPEED,
+				duration: FADE_FLOWER_TIME * SPEED,
+				delay: DELAY * SPEED,
 				callback: () => {
 					flower.switchTo('wrong');
 					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
@@ -63,15 +71,19 @@ export default class Animator extends EventEmitter {
 			flower,
 			petalsFactor,
 			{ x: 1 },
-			{ duration: FADE_ANIM_TIME * SPEED, easing: TWEEN.Easing.Sinusoidal.In }
+			{
+				duration: FADE_FLOWER_TIME * SPEED,
+				delay: DELAY * SPEED,
+				easing: TWEEN.Easing.Sinusoidal.In
+			}
 		);
 		const decWrongPhyllo = this._fadeInOrOutFlower(
 			flower,
 			petalsFactor,
 			{ x: 0 },
 			{
-				duration: FADE_ANIM_TIME * SPEED,
-				//delay:8000*SPEED,
+				duration: FADE_FLOWER_TIME * SPEED,
+				delay: DELAY * SPEED,
 				callback: () => {
 					flower.switchTo('right');
 					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
@@ -79,19 +91,22 @@ export default class Animator extends EventEmitter {
 			}
 		);
 		// Plane Animations
-		const slide = this._moveVec(slideDirection, new THREE.Vector2(-0.002, -0.001), {
+		const slide = this._moveVec(slideDirection, new THREE.Vector2(0.001, 0.001), {
 			easing: TWEEN.Easing.Sinusoidal.Out,
-			duration: FADE_ANIM_TIME * SPEED
+			duration: FADE_FLOWER_TIME * SPEED,
+			delay: DELAY * SPEED
 		});
 		const fadePlaneOut = this._fadeObj(plane, 'out', {
-			delay: FADE_ANIM_TIME * SPEED,
+			duration: FADE_PLANE_TIME * SPEED,
+			delay: DELAY * SPEED,
 			completeCallback: () => {
 				this.removePlane();
 			}
 		});
 
 		const fadePlaneIn = this._fadeObj(plane, 'in', {
-			delay: FADE_ANIM_TIME * SPEED,
+			duration: FADE_PLANE_TIME * SPEED,
+			delay: DELAY * SPEED,
 			startCallback: () => {
 				this.addPlane();
 			}
