@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import wrongPhyllo from './json/revolving.json';
 import rightPhyllo from './json/flowers.json';
 const TWEEN = require('@tweenjs/tween.js');
-const SPEED = 1.0;
+const SPEED = 0.1;
 const FADE_FLOWER_TIME = 6000;
 const FADE_PLANE_TIME = 6000;
 const ROTATION_TIME = 12000;
@@ -25,6 +25,7 @@ export default class Animator extends EventEmitter {
 	}
 	init(flower, bufferFlower, plane, slideDirection){
 		const petalsFactor = { x: 0 };
+		const planeFactor = { x: 0 };
 		//Flower Animations
 		const flipFlower = this._rotateObj(
 			flower.group,
@@ -96,21 +97,31 @@ export default class Animator extends EventEmitter {
 			duration: FADE_FLOWER_TIME * SPEED,
 			delay: DELAY * SPEED
 		});
-		const fadePlaneOut = this._fadeObj(plane, 'out', {
-			duration: FADE_PLANE_TIME * SPEED,
-			delay: DELAY * SPEED,
-			completeCallback: () => {
-				this.removePlane();
+		const fadePlaneOut = this._fadeObj(
+			plane,
+			planeFactor,
+			{ x: 0 },
+			{
+				duration: FADE_PLANE_TIME * SPEED,
+				delay: DELAY * SPEED,
+				completeCallback: () => {
+					this.removePlane();
+				}
 			}
-		});
+		);
 
-		const fadePlaneIn = this._fadeObj(plane, 'in', {
-			duration: FADE_PLANE_TIME * SPEED,
-			delay: DELAY * SPEED,
-			startCallback: () => {
-				this.addPlane();
+		const fadePlaneIn = this._fadeObj(
+			plane,
+			planeFactor,
+			{ x: 1 },
+			{
+				duration: FADE_PLANE_TIME * SPEED,
+				delay: DELAY * SPEED,
+				startCallback: () => {
+					this.addPlane();
+				}
 			}
-		});
+		);
 
 		switch (currentState){
 			case 'DEBUG':
@@ -161,20 +172,19 @@ export default class Animator extends EventEmitter {
 		return grow;
 	}
 
-	_fadeObj(object, direction, options){
+	_fadeObj(object, from, to, options){
 		options = options || {};
 		const easing = options.easing || TWEEN.Easing.Linear.None;
 		const duration = options.duration || 2000 * SPEED;
 		const delay = options.delay || 0;
 
-		const current = { percentage: direction == 'in' ? 0 : 1 };
 		const meshes = object.type === 'Group' ? object.children : [object];
-		const tweenOpacity = new TWEEN.Tween(current)
-			.to({ percentage: direction == 'in' ? 1 : 0 }, duration)
+		const tweenOpacity = new TWEEN.Tween(from)
+			.to(to, duration)
 			.easing(easing)
-			.onUpdate(() => {
+			.onUpdate(current => {
 				for (let i = 0; i < meshes.length; i++){
-					meshes[i].material.opacity = current.percentage;
+					meshes[i].material.opacity = current.x;
 				}
 			})
 			.delay(delay)
