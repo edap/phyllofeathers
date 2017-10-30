@@ -25,8 +25,7 @@ export default class Flower {
 		this.strategy = new Strategy(materials);
 		this._params = params;
 		this._phyllotaxisWrong = isPhyllotaxisWrong(params);
-		this.bufferFlower; // this variable store a copy of the Group
-		// it will be updated everytime the flower is updated
+
 		this.generate(params);
 	}
 
@@ -57,7 +56,6 @@ export default class Flower {
 	makePetalsVisible(opacity){
 		for (let i = this.group.children.length - 1; i >= 0; i--){
 			this.group.children[i].material.opacity = opacity;
-			this.bufferFlower.children[i].material.opacity = opacity;
 		}
 	}
 
@@ -100,8 +98,6 @@ export default class Flower {
 		} else {
 			this.group.rotateY(-Math.PI / 2);
 		}
-		//this.bufferFlower = new THREE.Object3D().copy(this.group);
-		this.bufferFlower = this.group.clone();
 	}
 
 	reset(){
@@ -112,14 +108,6 @@ export default class Flower {
 			this.group.remove(this.group.children[i]);
 		}
 		this._resetRotations(this.group);
-
-		for (let i = this.bufferFlower.children.length - 1; i >= 0; i--){
-			disposeTextures(this.bufferFlower.children[i].material);
-			this.bufferFlower.children[i].geometry.dispose();
-			this.bufferFlower.children[i].material.dispose();
-			this.bufferFlower.remove(this.bufferFlower.children[i]);
-		}
-		this._resetRotations(this.bufferFlower);
 
 		this.objects = [];
 	}

@@ -20,9 +20,7 @@ export default class Scenographer {
 		this._emitter.addListener('REMOVE-FLOWER-FROM-SCENE', () => this.remove(this._flowerGroup));
 		this._emitter.addListener('ADD-FLOWER-TO-BUFFERSCENE', () => this.addToBufferScene(this._bufferFlowerGroup));
 		this._emitter.addListener('REMOVE-FLOWER-FROM-BUFFERSCENE', () => this.removeFromBufferScene(this._bufferFlowerGroup));
-		this._emitter.addListener('COPY-FLOWER', () => {
-			this.copyFlowerToBufferFlower();
-		});
+		this._emitter.addListener('COPY-FLOWER', () => this.copyFlowerToBufferFlower());
 	}
 
 	turnLightOn(){
