@@ -16,6 +16,7 @@ const isPhyllotaxisWrong = (params) => {
 
 export default class Flower {
     constructor(params, materials, assets, birdType, maxAnisotropy) {
+        this.originalRotation = new THREE.Object3D();
         this.assets = assets;
         this.materials = materials;
         this.birdType = birdType;
@@ -106,6 +107,13 @@ export default class Flower {
             this.group.children[i].material.dispose();
             this.group.remove(this.group.children[i]);
         }
+        this._resetRotations(this.group);
+
         this.objects = [];
+    }
+
+    _resetRotations(objectToReset){
+        let startRotation = new THREE.Euler().copy(this.originalRotation.rotation);
+        objectToReset.rotation.copy(startRotation);
     }
 }

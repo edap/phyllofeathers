@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { getPlaneShader } from './shaders.js';
 
+const distanceOnZAxis = -500;
+const distanceOnYAxis = 400;
+
 /*
   This class handles the 2 frame buffers object, initializating them, updateing them
   and providing a PlaneBufferGeometry testured with the result of the ping pong buffers
@@ -34,6 +37,7 @@ export default class BuffersManager {
         finalMaterial.side = THREE.DoubleSide; //just in case you are rotating the plane
         this._quad = new THREE.Mesh( plane, finalMaterial );
         this._quad.name = 'quad';
+        this._quad.position.set(0, distanceOnYAxis, distanceOnZAxis);
     }
 
     update(){
