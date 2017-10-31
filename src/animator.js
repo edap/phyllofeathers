@@ -10,10 +10,10 @@ const FADE_FLOWER_TIME = 6000;
 const FADE_PLANE_TIME = 6000;
 const ROTATION_TIME = 12000;
 const DELAY = 1000; //this decides how much every scene will last
-const flying = false;
+const FLY_TIME = 6000;
 
 const states = ['DEBUG', 'FLOWERS', 'COMPLETE'];
-const currentState = states[0];
+const currentState = states[2];
 
 export default class Animator extends EventEmitter {
 	constructor(){
@@ -28,12 +28,16 @@ export default class Animator extends EventEmitter {
 		const planeFactor = { x: 0 };
 
 		// Fly animation
-		const schedule = { x: 0, y: 0 };
-		const destination = { x: 1.0, y: 1 };
-		const flyDurationMill = 16000;
+		const schedule = { y: 0 };
 		const frequency = 44;
 		const amplitude = 0.0035;
+
 		//Flower Animations
+		const flyFlower = this._flyAway(flower.group, { y: 0 }, { y: 1 }, frequency, amplitude, {
+			duration: FLY_TIME * SPEED,
+			easing: TWEEN.Easing.Sinusoidal.In
+		});
+
 		const flipFlower = this._rotateObj(
 			flower.group,
 			{ z: Math.PI },
@@ -62,11 +66,6 @@ export default class Animator extends EventEmitter {
 				easing: TWEEN.Easing.Sinusoidal.In
 			}
 		);
-
-		const flyFlower = this._flyAway(flower.group, schedule, destination, flyDurationMill, frequency, amplitude, {
-			duration: FADE_FLOWER_TIME * SPEED + DELAY,
-			easing: TWEEN.Easing.Sinusoidal.In
-		});
 
 		const decFlower = this._fadeInOrOutFlower(
 			flower,
@@ -149,7 +148,8 @@ export default class Animator extends EventEmitter {
 				incFlower.start();
 				break;
 			case 'COMPLETE':
-				//incFlower.chain(fadePlaneIn);
+				incFlower.chain(flyFlower);
+				flyFlower.chain(fadePlaneIn);
 				fadePlaneIn.chain(slide);
 				slide.chain(decFlower);
 				decFlower.chain(incWrongPhyllo);
@@ -163,6 +163,25 @@ export default class Animator extends EventEmitter {
 				incFlower.start();
 				break;
 		}
+	}
+
+	_flyAway(object, from, to, frequency, amplitude, options){
+		const easing = options.easing || TWEEN.Easing.Linear.None;
+		const duration = options.duration || 2000 * SPEED;
+		const delay = options.delay || 0;
+		const meshes = object.type === 'Group' ? object.children : [object];
+		const flyAround = new TWEEN.Tween(from)
+			.to(to, duration)
+			//.easing(TWEEN.Easing.Cubic.InOut)// this was messing up, a lot, the rotations
+			.easing(TWEEN.Easing.Sinusoidal.InOut) // this was messing up, a lot, the rotations
+			.onComplete(() => {
+				from.y = 0;
+			})
+			.onUpdate(current => {
+				console.log(current);
+				this._fly(meshes, current, frequency, amplitude);
+			});
+		return flyAround;
 	}
 
 	_fadeInOrOutFlower(flower, from, dest, options){
@@ -184,22 +203,6 @@ export default class Animator extends EventEmitter {
 				}
 			});
 		return grow;
-	}
-
-	_flyAway(object, schedule, destination, flyDurationMill, frequency, amplitude, options){
-		const easing = options.easing || TWEEN.Easing.Linear.None;
-		const duration = options.duration || 2000 * SPEED;
-		const delay = options.delay || 0;
-		const meshes = object.type === 'Group' ? object.children : [object];
-		const flyAround = new TWEEN.Tween(schedule)
-			.to(Object.assign({}, destination), flyDurationMill)
-			//.easing(TWEEN.Easing.Cubic.InOut)// this was messing up, a lot, the rotations
-			.easing(TWEEN.Easing.Sinusoidal.InOut) // this was messing up, a lot, the rotations
-			.onUpdate(current => {
-				//console.log(current);
-				this._fly(meshes, current, frequency, amplitude);
-			});
-		return flyAround;
 	}
 
 	_fly(objects, current, frequency, amplitude){

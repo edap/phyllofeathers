@@ -79,7 +79,6 @@ function init(assets){
 		flower = new Flower(param, materials, assets, ParrotType, maxAnisotropy);
 	}
 	flower.group.name = 'flower';
-	//flower.group.rotateY(Math.PI / 2);
 
 	buffers = new BufferManager(targetSize);
 
