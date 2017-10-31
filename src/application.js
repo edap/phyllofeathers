@@ -62,12 +62,12 @@ function init(assets){
 		flower = new Flower(gui.params, materials, assets, ParrotType, maxAnisotropy);
 		flower.makePetalsVisible(1.0);
 		document.body.appendChild(stats.domElement);
-		var axisHelper = new THREE.AxisHelper(50);
+		const axisHelper = new THREE.AxisHelper(50);
 		scene.add(axisHelper);
 	} else {
-		document.body.appendChild(stats.domElement);
-		var axisHelper = new THREE.AxisHelper(50);
-		scene.add(axisHelper);
+		// document.body.appendChild(stats.domElement);
+		// var axisHelper = new THREE.AxisHelper(50);
+		// scene.add(axisHelper);
 
 		let param;
 		if (wrongPhyllo){

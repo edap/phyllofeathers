@@ -7,10 +7,12 @@ import rightPhyllo from './json/flowers.json';
 const TWEEN = require('@tweenjs/tween.js');
 const SPEED = 0.8;
 const FADE_FLOWER_TIME = 6000;
-const FADE_PLANE_TIME = 6000;
-const ROTATION_TIME = 12000;
+const FADE_PLANE_IN_TIME = 1000;
+const FADE_PLANE_OUT_TIME = 3000;
 const DELAY = 1000; //this decides how much every scene will last
 const FLY_TIME = 6000;
+const FLY_FREQUENCY = 24;
+const FLY_AMPLITUDE = 0.0095;
 
 const states = ['DEBUG', 'FLOWERS', 'COMPLETE'];
 const currentState = states[2];
@@ -27,13 +29,8 @@ export default class Animator extends EventEmitter {
 		const petalsFactor = { x: 0 };
 		const planeFactor = { x: 0 };
 
-		// Fly animation
-		const schedule = { y: 0 };
-		const frequency = 44;
-		const amplitude = 0.0035;
-
 		//Flower Animations
-		const flyFlower = this._flyAway(flower.group, { y: 0 }, { y: 1 }, frequency, amplitude, {
+		const flyFlower = this._flyAway(flower.group, { y: 0 }, { y: 1 }, FLY_FREQUENCY, FLY_AMPLITUDE, {
 			duration: FLY_TIME * SPEED,
 			easing: TWEEN.Easing.Sinusoidal.In
 		});
@@ -42,17 +39,17 @@ export default class Animator extends EventEmitter {
 			flower.group,
 			{ z: Math.PI },
 			{
-				duration: ROTATION_TIME * SPEED,
-				delay: DELAY * SPEED,
-				easing: TWEEN.Easing.Elastic.Out
+				duration: FLY_TIME * SPEED,
+				//delay: DELAY * SPEED,
+				easing: TWEEN.Easing.Circular.Out
 			}
 		);
 		const flipBufferFlower = this._rotateObj(
 			bufferFlower,
 			{ z: Math.PI },
 			{
-				duration: ROTATION_TIME * SPEED,
-				delay: DELAY * SPEED,
+				duration: FLY_TIME * SPEED,
+				//delay: DELAY * SPEED,
 				easing: TWEEN.Easing.Elastic.Out
 			}
 		);
@@ -62,8 +59,9 @@ export default class Animator extends EventEmitter {
 			petalsFactor,
 			{ x: 1 },
 			{
-				duration: FADE_FLOWER_TIME * SPEED + DELAY,
-				easing: TWEEN.Easing.Sinusoidal.In
+				duration: FADE_FLOWER_TIME * SPEED,
+				//easing: TWEEN.Easing.Sinusoidal.In
+				easing: TWEEN.Easing.Circular.In
 			}
 		);
 
@@ -73,7 +71,7 @@ export default class Animator extends EventEmitter {
 			{ x: 0 },
 			{
 				duration: FADE_FLOWER_TIME * SPEED,
-				delay: DELAY * SPEED,
+				//delay: DELAY * SPEED,
 				callback: () => {
 					flower.switchTo('wrong');
 					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
@@ -86,7 +84,7 @@ export default class Animator extends EventEmitter {
 			{ x: 1 },
 			{
 				duration: FADE_FLOWER_TIME * SPEED,
-				delay: DELAY * SPEED,
+				//delay: DELAY * SPEED,
 				easing: TWEEN.Easing.Sinusoidal.In
 			}
 		);
@@ -96,7 +94,7 @@ export default class Animator extends EventEmitter {
 			{ x: 0 },
 			{
 				duration: FADE_FLOWER_TIME * SPEED,
-				delay: DELAY * SPEED,
+				//delay: DELAY * SPEED,
 				callback: () => {
 					flower.switchTo('right');
 					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
@@ -105,17 +103,17 @@ export default class Animator extends EventEmitter {
 		);
 		// Plane Animations
 		const slide = this._moveVec(slideDirection, new THREE.Vector2(0.001, 0.001), {
-			easing: TWEEN.Easing.Sinusoidal.Out,
-			duration: FADE_FLOWER_TIME * SPEED,
-			delay: DELAY * SPEED
+			easing: TWEEN.Easing.Linear.None,
+			duration: FADE_FLOWER_TIME * SPEED
+			//delay: DELAY * SPEED
 		});
 		const fadePlaneOut = this._fadeObj(
 			plane,
 			planeFactor,
 			{ x: 0 },
 			{
-				duration: FADE_PLANE_TIME * SPEED,
-				delay: DELAY * SPEED,
+				duration: FADE_PLANE_OUT_TIME * SPEED,
+				//delay: DELAY * SPEED,
 				completeCallback: () => {
 					this.removePlane();
 				}
@@ -127,8 +125,8 @@ export default class Animator extends EventEmitter {
 			planeFactor,
 			{ x: 1 },
 			{
-				duration: FADE_PLANE_TIME * SPEED,
-				delay: DELAY * SPEED,
+				duration: FADE_PLANE_IN_TIME * SPEED,
+				//delay: DELAY * SPEED,
 				startCallback: () => {
 					this.addPlane();
 				}
@@ -264,13 +262,7 @@ export default class Animator extends EventEmitter {
 		return moveVec;
 	}
 
-	// http://tweenjs.github.io/tween.js/examples/03_graphs.html
-	//.easing(TWEEN.Easing.Cubic.InOut)
-	//.easing(TWEEN.Easing.Elastic.Out)
-	//.easing(TWEEN.Easing.Quartic.InOut)
-	//.easing(TWEEN.Easing.Sinusoidal.InOut)
 	_rotateObj(object, destination, options){
-		// TODO, deve supportare anche i gruppi
 		options = options || {};
 		const easing = options.easing || TWEEN.Easing.Quadratic.In;
 		const duration = options.duration || 2000 * SPEED;

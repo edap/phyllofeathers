@@ -3,6 +3,7 @@ import { getPlaneShader } from './shaders.js';
 
 const distanceOnZAxis = -200;
 const distanceOnYAxis = 0;
+const paddingRight = 0;
 
 /*
   This class handles the 2 frame buffers object, initializating them, updateing them
@@ -37,7 +38,7 @@ export default class BuffersManager {
 		finalMaterial.side = THREE.DoubleSide; //just in case you are rotating the plane
 		this._quad = new THREE.Mesh(plane, finalMaterial);
 		this._quad.name = 'quad';
-		this._quad.position.set(0, distanceOnYAxis, distanceOnZAxis);
+		this._quad.position.set(-paddingRight, distanceOnYAxis, distanceOnZAxis);
 		this._quad.rotateX(-Math.PI);
 	}
 
