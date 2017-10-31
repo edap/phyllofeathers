@@ -176,7 +176,6 @@ export default class Animator extends EventEmitter {
 				from.y = 0;
 			})
 			.onUpdate(current => {
-				console.log(current);
 				this._fly(meshes, current, frequency, amplitude);
 			});
 		return flyAround;
