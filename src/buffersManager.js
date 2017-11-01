@@ -17,8 +17,14 @@ export default class BuffersManager {
 		//Create buffer scene
 		this._bufferScene = new THREE.Scene();
 		//Create 2 buffer textures
-		this._textureA = new THREE.WebGLRenderTarget(targetSize, targetSize, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter });
-		this._textureB = new THREE.WebGLRenderTarget(targetSize, targetSize, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter });
+		const bufferOptions = {
+			minFilter: THREE.LinearFilter,
+			magFilter: THREE.NearestFilter,
+			depthBuffer: false,
+			stencilBuffer: false
+		};
+		this._textureA = new THREE.WebGLRenderTarget(targetSize, targetSize, bufferOptions);
+		this._textureB = new THREE.WebGLRenderTarget(targetSize, targetSize, bufferOptions);
 		//Pass textureA to shader
 		this._slideDirection = new THREE.Vector2(1.0, 1.0);
 		this._bufferMaterial = new THREE.ShaderMaterial({
