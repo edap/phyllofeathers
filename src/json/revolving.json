@@ -72,8 +72,8 @@
     },
     "ring-necked-parakeet": {
       "0": {
-        "num": 1985,
-        "spread": 5.300000000000001,
+        "num": 985,
+        "spread": 2.000000000000001,
         "angle": 130.21,
         "growth": 0.14,
         "angle_open": 14.999134241148573,
@@ -100,7 +100,7 @@
         "petals_segment": 7.448214937593673,
         "petals_segment_length": 1.451024959221103,
         "petals_length": 11.933307893625253,
-        "sec_petals_from": 1150.5306553911205,
+        "sec_petals_from": 650.5306553911205,
         "sec_petals_scale": 0.6479915433403806,
         "sec_petals_phistart": 2.2881089951793214,
         "sec_petals_philength": 2.4932442134773827,
@@ -140,8 +140,8 @@
     },
     "eastern-rosella": {
       "0": {
-        "num": 1302,
-        "spread": 8.9,
+        "num": 1002,
+        "spread": 4.9,
         "angle": 131.64000000000001,
         "growth": 0.24,
         "angle_open": 14.999134241148573,
