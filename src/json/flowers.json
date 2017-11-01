@@ -199,7 +199,7 @@
         "petal_one_mat_color": 11776942,
         "petal_one_mat_emissive": "#0c0c0c",
         "petal_one_mat_shininess": 0.8,
-        "petal_one_mat_map": "second",
+        "petal_one_mat_map": "fifth",
         "petal_one_mat_alpha": 0.35,
         "petal_two_mat_color": 16777215,
         "petal_two_mat_emissive": "#000000",
@@ -209,12 +209,12 @@
         "petal_three_mat_color": 14274254,
         "petal_three_mat_emissive": "#000000",
         "petal_three_mat_shininess": 0.8,
-        "petal_three_mat_map": "third",
+        "petal_three_mat_map": "second",
         "petal_three_mat_alpha": 0.35,
         "petal_four_mat_color": 12836863,
         "petal_four_mat_emissive": "#000000",
         "petal_four_mat_shininess": 0.8,
-        "petal_four_mat_map": "second",
+        "petal_four_mat_map": "third",
         "petal_four_mat_alpha": 0.35
       }
     },
