@@ -19,7 +19,7 @@
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.24.1",
     "json-loader": "^0.5.7",
-    "three": "^0.87.0",
+    "three": "git://github.com/mrdoob/three.js/#5cd32066c4ee2d26b4dbd76a92a4e2badf610ee9",
     "webpack": "^2.2.0-rc.1",
     "webpack-dev-server": "^2.2.0-rc.0"
   },
