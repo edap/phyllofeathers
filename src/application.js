@@ -1,7 +1,7 @@
 /* eslint-env browser */
 //const ParrotType = 'blue-fronted-parrot';
-//const ParrotType = 'budgeridgar';
-const ParrotType = 'eastern-rosella';
+const ParrotType = 'budgeridgar';
+//const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
 //const ParrotType = 'fischers-lovebird';
 const debug = false;
@@ -65,9 +65,9 @@ function init(assets){
 		const axisHelper = new THREE.AxisHelper(50);
 		scene.add(axisHelper);
 	} else {
-		// document.body.appendChild(stats.domElement);
-		// var axisHelper = new THREE.AxisHelper(50);
-		// scene.add(axisHelper);
+		document.body.appendChild(stats.domElement);
+		const axisHelper = new THREE.AxisHelper(50);
+		scene.add(axisHelper);
 
 		let param;
 		if (wrongPhyllo){
