@@ -20,6 +20,7 @@ export function loadBird(birdName){
 		promises.push(loadTexture(`${folder}${name}_NRM.jpg`));
 		promises.push(loadTexture(`${folder}${name}_SPEC.jpg`));
 	});
+	promises.push(loadTexture(`./textures/black.jpg`));
 	return Promise.all(promises).then(
 		tex => {
 			for (let i = 0; i < tex.length; i++){
@@ -36,8 +37,10 @@ export function loadBird(birdName){
 				texIndex += 4;
 			});
 			const assets = {
-				textures: bird
+				textures: bird,
+				black: tex[20]
 			};
+			console.log(assets);
 			return assets;
 		},
 		err => {

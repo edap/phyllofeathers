@@ -80,9 +80,9 @@ function init(assets){
 	}
 	flower.group.name = 'flower';
 
-	buffers = new BufferManager(targetSize);
+	buffers = new BufferManager(targetSize, assets.black);
 
-	scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, animator);
+	scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, buffers, animator);
 	scenographer.turnLightOn();
 	scenographer.add(flower.group);
 
@@ -106,8 +106,8 @@ function render(){
 		buffers.update();
 		renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
 	}
-
 	renderer.render(scene, camera);
+
 	stats.end();
 }
 

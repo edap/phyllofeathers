@@ -3,8 +3,9 @@ import { PointLights } from './pointLights.js';
 import { Object3D } from 'three';
 
 export default class Scenographer {
-	constructor(scene, bufferScene, bufferPlane, flowerGroup, emitter){
+	constructor(scene, bufferScene, bufferPlane, flowerGroup, buffers, emitter){
 		this._scene = scene;
+		this.buffers = buffers;
 		this._bufferScene = bufferScene;
 		this._bufferPlane = bufferPlane;
 		this._flowerGroup = flowerGroup;
@@ -57,6 +58,7 @@ export default class Scenographer {
 
 	removeFromBufferScene(obj){
 		this._bufferScene.remove(obj);
+		this.buffers.dispose();
 	}
 
 	getBufferFlower(){

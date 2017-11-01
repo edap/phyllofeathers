@@ -11,7 +11,7 @@ const paddingRight = 0;
   */
 
 export default class BuffersManager {
-	constructor(targetSize){
+	constructor(targetSize, black){
 		this.updateBuffer = true;
 		this._fragmentShader = getPlaneShader();
 		//Create buffer scene
@@ -46,6 +46,8 @@ export default class BuffersManager {
 		this._quad.name = 'quad';
 		this._quad.position.set(-paddingRight, distanceOnYAxis, distanceOnZAxis);
 		this._quad.rotateX(-Math.PI);
+
+		this.black = black;
 	}
 
 	update(){
@@ -55,6 +57,13 @@ export default class BuffersManager {
 		this._quad.material.map = this._textureB.texture;
 		this._bufferMaterial.uniforms.bufferTexture.value = this._textureA.texture;
 		this._bufferMaterial.uniforms.slideDirection.value = this._slideDirection;
+	}
+
+	dispose(){
+		// TODO, find a way to clean the texture
+		//this._textureA.texture = this.black;
+		//this._textureB.texture = this.black;
+		//this._quad.material.map.dispose();
 	}
 
 	areUsed(){
