@@ -48,7 +48,7 @@ export default class Scenographer {
 	}
 
 	copyFlowerToBufferFlower(){
-		this._bufferFlowerGroup.copy(this._flowerGroup);
+		//this._bufferFlowerGroup.copy(this._flowerGroup);
 	}
 
 	add(obj){
