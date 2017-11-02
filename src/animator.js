@@ -282,12 +282,12 @@ export default class Animator extends EventEmitter {
 	removePlane(){
 		//this.emit('ADD-FLOWER-TO-SCENE');
 		this.emit('REMOVE-PLANE-FROM-SCENE');
-		this.emit('REMOVE-FLOWER-FROM-BUFFERSCENE');
+		//this.emit('REMOVE-FLOWER-FROM-BUFFERSCENE');
 	}
 
 	addPlane(){
 		//this.emit('REMOVE-FLOWER-FROM-SCENE');
-		this.emit('ADD-FLOWER-TO-BUFFERSCENE');
+		//this.emit('ADD-FLOWER-TO-BUFFERSCENE');
 		this.emit('ADD-PLANE-TO-SCENE');
 	}
 }

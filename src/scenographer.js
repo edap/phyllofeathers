@@ -8,19 +8,27 @@ export default class Scenographer {
 		this._bufferScene = bufferScene;
 		this._bufferPlane = bufferPlane;
 		this._flowerGroup = flowerGroup;
-		this._bufferFlowerGroup = new Object3D().copy(flowerGroup);
+		//this._bufferFlowerGroup = new Object3D().copy(flowerGroup);
+		this._bufferFlowerGroup = flowerGroup.clone();
 		this._emitter = emitter;
 		this._addListeners();
 	}
 
 	_addListeners(){
-		this._emitter.addListener('ADD-PLANE-TO-SCENE', () => this.add(this._bufferPlane));
-		this._emitter.addListener('REMOVE-PLANE-FROM-SCENE', () => this.remove(this._bufferPlane));
-		this._emitter.addListener('ADD-FLOWER-TO-SCENE', () => this.add(this._flowerGroup));
-		this._emitter.addListener('REMOVE-FLOWER-FROM-SCENE', () => this.remove(this._flowerGroup));
-		this._emitter.addListener('ADD-FLOWER-TO-BUFFERSCENE', () => this.addToBufferScene(this._bufferFlowerGroup));
-		this._emitter.addListener('REMOVE-FLOWER-FROM-BUFFERSCENE', () => this.removeFromBufferScene(this._bufferFlowerGroup));
+		this._emitter.addListener('ADD-PLANE-TO-SCENE', () => this._onAddPlaneToScene());
+		this._emitter.addListener('REMOVE-PLANE-FROM-SCENE', () => this._onRemovePlaneFromScene());
+
 		this._emitter.addListener('COPY-FLOWER-TO-BUFFERFLOWER', () => this.copyFlowerToBufferFlower());
+	}
+
+	_onRemovePlaneFromScene(){
+		this.removeFromBufferScene(this._bufferFlowerGroup);
+		this.remove(this._bufferPlane);
+	}
+
+	_onAddPlaneToScene(){
+		this.addToBufferScene(this._bufferFlowerGroup);
+		this.add(this._bufferPlane);
 	}
 
 	turnLightOn(){
