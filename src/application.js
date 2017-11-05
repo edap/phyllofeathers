@@ -86,7 +86,8 @@ function render(){
 	animator.update();
 
 	if (buffers.areUsed()){
-		buffers.update();
+		//console.log(time);
+		buffers.update(time);
 		renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
 	}
 	renderer.render(scene, camera);

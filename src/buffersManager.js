@@ -29,6 +29,7 @@ export default class BuffersManager {
 		this._bufferMaterial = new THREE.ShaderMaterial({
 			uniforms: {
 				bufferTexture: { type: 't', value: this._textureA.texture },
+				time: { type: 'f', value: 0 },
 				res: { type: 'v2', value: new THREE.Vector2(targetSize, targetSize) } //Keeps the resolution
 			},
 			fragmentShader: this._fragmentShader
@@ -50,12 +51,13 @@ export default class BuffersManager {
 		this._quad.rotateX(-Math.PI);
 	}
 
-	update(){
+	update(time){
 		const temp = this._textureA;
 		this._textureA = this._textureB;
 		this._textureB = temp;
 		this._quad.material.map = this._textureB.texture;
 		this._bufferMaterial.uniforms.bufferTexture.value = this._textureA.texture;
+		this._bufferMaterial.uniforms.time.value = time;
 	}
 
 	areUsed(){
