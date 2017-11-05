@@ -1,27 +1,23 @@
 /* eslint-env browser */
 //const ParrotType = 'blue-fronted-parrot';
-const ParrotType = 'budgeridgar';
+//const ParrotType = 'budgeridgar';
 //const ParrotType = 'eastern-rosella';
 //const ParrotType = 'ring-necked-parakeet';
-//const ParrotType = 'fischers-lovebird';
+const ParrotType = 'fischers-lovebird';
 const debug = false;
-const wrongPhyllo = false; // in debuge mode, this switch tells to the gui which params to use.
 const targetSize = 4096;
-//const targetSize = 2048;
 
-import { getWrongPhylloParamsForBird, getRightPhylloParamsForBird } from './store.js';
-import { addTexturesToMaterial } from './materialHelper.js';
 import Animator from './animator.js';
 import * as THREE from 'three';
-import Gui from './gui.js';
 import Stats from 'stats.js';
-import CollectionMaterials from './materials.js';
 import { loadBird } from './assets.js';
-import Flower from './flower.js';
+
 import { limitControls } from './utils.js';
 import { getPlaneShader } from './shaders.js';
 import Scenographer from './scenographer.js';
 import BufferManager from './buffersManager.js';
+
+import { createFlowerAndRevolver } from './flowers/factory';
 
 //setup scene and camera
 const scene = new THREE.Scene();
@@ -38,10 +34,6 @@ let controls;
 let buffers;
 const clock = new THREE.Clock();
 const stats = new Stats();
-const materials = new CollectionMaterials();
-let gui;
-let flower;
-let bufferFlower;
 
 function init(assets){
 	document.body.appendChild(renderer.domElement);
@@ -57,36 +49,29 @@ function init(assets){
 		camera.aspect = WIDTH / HEIGHT;
 		camera.updateProjectionMatrix();
 	});
-	if (debug){
-		gui = new Gui(regenerate, materials, assets.textures, maxAnisotropy, ParrotType, debug, wrongPhyllo);
-		flower = new Flower(gui.params, materials, assets, ParrotType, maxAnisotropy);
-		flower.makePetalsVisible(1.0);
-		document.body.appendChild(stats.domElement);
-		const axisHelper = new THREE.AxisHelper(50);
-		scene.add(axisHelper);
-	} else {
-		document.body.appendChild(stats.domElement);
-		const axisHelper = new THREE.AxisHelper(50);
-		scene.add(axisHelper);
 
-		let param;
-		if (wrongPhyllo){
-			param = getWrongPhylloParamsForBird(ParrotType);
-		} else {
-			param = getRightPhylloParamsForBird(ParrotType);
-		}
-		addTexturesToMaterial(materials, param, assets.textures, maxAnisotropy);
-		flower = new Flower(param, materials, assets, ParrotType, maxAnisotropy);
+	if (debug){
+		document.body.appendChild(stats.domElement);
+		const axisHelper = new THREE.AxesHelper(50);
+		scene.add(axisHelper);
 	}
-	flower.group.name = 'flower';
+
+	const { flower, revolver } = createFlowerAndRevolver(ParrotType, assets, maxAnisotropy);
 
 	buffers = new BufferManager(targetSize);
 
-	scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, animator);
+	scenographer = new Scenographer(scene, buffers.getBufferScene(), buffers.getPlane(), flower.group, revolver.group, animator);
 	scenographer.turnLightOn();
 	scenographer.add(flower.group);
 
-	animator.init(flower, scenographer.getBufferFlower(), buffers.getPlane(), buffers.getSlideDirection());
+	const objectsToAnimate = {
+		revolver,
+		flower,
+		bufferRevolver: scenographer.getBufferRevolver(),
+		bufferFlower: scenographer.getBufferFlower(),
+		plane: buffers.getPlane()
+	};
+	animator.init(objectsToAnimate);
 
 	controls = new OrbitControls(camera, renderer.domElement);
 	limitControls(controls);
@@ -98,24 +83,15 @@ function render(){
 	const time = clock.getElapsedTime();
 	stats.begin();
 	requestAnimationFrame(render);
-	if (!debug){
-		animator.update();
-	}
+	animator.update();
 
 	if (buffers.areUsed()){
 		buffers.update();
 		renderer.render(buffers.getBufferScene(), camera, buffers.getTextureB(), true);
 	}
-
 	renderer.render(scene, camera);
 	stats.end();
 }
-
-const regenerate = () => {
-	if (debug){
-		flower.regenerate(gui.params, debug);
-	}
-};
 
 function removeSpinner(){
 	const elem = document.getElementsByClassName('loading')[0];

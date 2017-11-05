@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import { phyllotaxisWrong, phyllotaxisConical } from './phyllotaxis.js';
 import Strategy from './strategy.js';
-import { addTexturesToMaterial } from './materialHelper.js';
-import { getWrongPhylloParamsForBird, getRightPhylloParamsForBird } from './store.js';
 import {
 	positionPetalsWrongPhyllotaxis,
 	positionPetalsPhyllotaxis,
@@ -27,30 +25,6 @@ export default class Flower {
 		this._phyllotaxisWrong = isPhyllotaxisWrong(params);
 
 		this.generate(params);
-	}
-
-	setParams(params){
-		this._params = params;
-		this._phyllotaxisWrong = isPhyllotaxisWrong(params);
-	}
-
-	switchTo(type){
-		let params;
-		if (type === 'wrong'){
-			params = getWrongPhylloParamsForBird(this.birdType);
-		} else {
-			params = getRightPhylloParamsForBird(this.birdType);
-		}
-		this.setParams(params);
-		this.reset();
-		// in the two diffents configuration, each material can have a different texture
-		// that's why you have to recreate them
-		addTexturesToMaterial(this.materials, params, this.assets.textures, this.maxAnisotropy);
-		this.generate(params);
-	}
-
-	regenerate(params, debug = false){
-		this.generate(params, debug);
 	}
 
 	makePetalsVisible(opacity){

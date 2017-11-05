@@ -7,8 +7,8 @@ export function PointLights(distanceFromCenter = 10, intensity = 1){
 	lights[1] = new PointLight(0xffffff, intensity, 0);
 	lights[2] = new PointLight(0xffffff, intensity, 0);
 
-	lights[0].position.set(0, distanceFromCenter, 0);
-	lights[1].position.set(distanceFromCenter, 0, distanceFromCenter);
-	lights[2].position.set(0, distanceFromCenter, distanceFromCenter);
+	lights[0].position.set(0, 0, distanceFromCenter * 6);
+	lights[1].position.set(distanceFromCenter, distanceFromCenter, -distanceFromCenter);
+	lights[2].position.set(distanceFromCenter, distanceFromCenter, distanceFromCenter);
 	return lights;
 }

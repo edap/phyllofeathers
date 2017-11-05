@@ -2,16 +2,14 @@ import { Vector3, Geometry, Line, LineBasicMaterial } from 'three';
 import EventEmitter from './eventEmitter.js';
 import { createPath } from './path.js';
 import * as THREE from 'three';
-import wrongPhyllo from './json/revolving.json';
-import rightPhyllo from './json/flowers.json';
 const TWEEN = require('@tweenjs/tween.js');
-const SPEED = 0.8;
+const SPEED = 1.2;
 const FADE_FLOWER_TIME = 6000;
 const FADE_PLANE_IN_TIME = 1000;
 const FADE_PLANE_OUT_TIME = 3000;
 const DELAY = 1000; //this decides how much every scene will last
 const FLY_TIME = 6000;
-const FLY_FREQUENCY = 24;
+const FLY_FREQUENCY = 14;
 const FLY_AMPLITUDE = 0.0095;
 
 const states = ['DEBUG', 'FLOWERS', 'COMPLETE'];
@@ -25,7 +23,8 @@ export default class Animator extends EventEmitter {
 	update(){
 		TWEEN.update();
 	}
-	init(flower, bufferFlower, plane, slideDirection){
+	init(opt){
+		const { revolver, flower, bufferRevolver, bufferFlower, plane } = opt;
 		const petalsFactor = { x: 0 };
 		const planeFactor = { x: 0 };
 
@@ -36,17 +35,16 @@ export default class Animator extends EventEmitter {
 		});
 
 		const flipFlower = this._rotateObj(
-			flower.group,
-			{ z: Math.PI },
+			revolver.group,
+			{ z: -Math.PI },
 			{
 				duration: FLY_TIME * SPEED,
-				//delay: DELAY * SPEED,
 				easing: TWEEN.Easing.Circular.Out
 			}
 		);
 		const flipBufferFlower = this._rotateObj(
-			bufferFlower,
-			{ z: Math.PI },
+			bufferRevolver,
+			{ z: -Math.PI },
 			{
 				duration: FLY_TIME * SPEED,
 				//delay: DELAY * SPEED,
@@ -70,16 +68,15 @@ export default class Animator extends EventEmitter {
 			petalsFactor,
 			{ x: 0 },
 			{
+				delay: FADE_FLOWER_TIME * SPEED,
 				duration: FADE_FLOWER_TIME * SPEED,
-				//delay: DELAY * SPEED,
 				callback: () => {
-					flower.switchTo('wrong');
-					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
+					this.emit('ENTER-REVOLVER');
 				}
 			}
 		);
 		const incWrongPhyllo = this._fadeInOrOutFlower(
-			flower,
+			revolver,
 			petalsFactor,
 			{ x: 1 },
 			{
@@ -89,24 +86,17 @@ export default class Animator extends EventEmitter {
 			}
 		);
 		const decWrongPhyllo = this._fadeInOrOutFlower(
-			flower,
+			revolver,
 			petalsFactor,
 			{ x: 0 },
 			{
 				duration: FADE_FLOWER_TIME * SPEED,
-				//delay: DELAY * SPEED,
 				callback: () => {
-					flower.switchTo('right');
-					this.emit('COPY-FLOWER-TO-BUFFERFLOWER');
+					this.emit('ENTER-FLOWER');
 				}
 			}
 		);
-		// Plane Animations
-		const slide = this._moveVec(slideDirection, new THREE.Vector2(0.001, 0.001), {
-			easing: TWEEN.Easing.Linear.None,
-			duration: FADE_FLOWER_TIME * SPEED
-			//delay: DELAY * SPEED
-		});
+
 		const fadePlaneOut = this._fadeObj(
 			plane,
 			planeFactor,
@@ -135,21 +125,20 @@ export default class Animator extends EventEmitter {
 
 		switch (currentState){
 			case 'DEBUG':
-				incFlower.chain(flyFlower);
+				//incFlower.chain(flyFlower);
 				incFlower.start();
 				break;
 			case 'FLOWERS':
 				incFlower.chain(decFlower);
 				decFlower.chain(incWrongPhyllo);
-				incWrongPhyllo.chain(decWrongPhyllo);
-				decWrongPhyllo.chain(incFlower);
+				//incWrongPhyllo.chain(decWrongPhyllo);
+				//decWrongPhyllo.chain(incFlower);
 				incFlower.start();
 				break;
 			case 'COMPLETE':
 				incFlower.chain(flyFlower);
 				flyFlower.chain(fadePlaneIn);
-				fadePlaneIn.chain(slide);
-				slide.chain(decFlower);
+				fadePlaneIn.chain(decFlower);
 				decFlower.chain(incWrongPhyllo);
 				incWrongPhyllo.chain(flipBufferFlower);
 				flipBufferFlower.chain(fadePlaneOut);
@@ -271,6 +260,9 @@ export default class Animator extends EventEmitter {
 			.to(Object.assign({}, destination), duration)
 			.easing(easing)
 			.onComplete(() => {
+				destination.z = 0;
+				// the reset of the rotation is done in the Scenographer
+				//object.setRotationFromEuler(originalRotation);
 				if (options.callback){
 					options.callback();
 				}
@@ -280,14 +272,10 @@ export default class Animator extends EventEmitter {
 	}
 
 	removePlane(){
-		//this.emit('ADD-FLOWER-TO-SCENE');
 		this.emit('REMOVE-PLANE-FROM-SCENE');
-		//this.emit('REMOVE-FLOWER-FROM-BUFFERSCENE');
 	}
 
 	addPlane(){
-		//this.emit('REMOVE-FLOWER-FROM-SCENE');
-		//this.emit('ADD-FLOWER-TO-BUFFERSCENE');
 		this.emit('ADD-PLANE-TO-SCENE');
 	}
 }

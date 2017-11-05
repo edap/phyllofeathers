@@ -26,11 +26,9 @@ export default class BuffersManager {
 		this._textureA = new THREE.WebGLRenderTarget(targetSize, targetSize, bufferOptions);
 		this._textureB = new THREE.WebGLRenderTarget(targetSize, targetSize, bufferOptions);
 		//Pass textureA to shader
-		this._slideDirection = new THREE.Vector2(1.0, 1.0);
 		this._bufferMaterial = new THREE.ShaderMaterial({
 			uniforms: {
 				bufferTexture: { type: 't', value: this._textureA.texture },
-				slideDirection: { type: 'v2', value: this._slideDirection },
 				res: { type: 'v2', value: new THREE.Vector2(targetSize, targetSize) } //Keeps the resolution
 			},
 			fragmentShader: this._fragmentShader
@@ -40,7 +38,11 @@ export default class BuffersManager {
 		this._bufferScene.add(bufferObject);
 
 		//Draw textureB to screen
-		const finalMaterial = new THREE.MeshBasicMaterial({ map: this._textureB.texture, transparent: true });
+		const finalMaterial = new THREE.MeshBasicMaterial({
+			map: this._textureB.texture,
+			transparent: true
+			//color: 0xff0000
+		});
 		finalMaterial.side = THREE.DoubleSide; //just in case you are rotating the plane
 		this._quad = new THREE.Mesh(plane, finalMaterial);
 		this._quad.name = 'quad';
@@ -54,7 +56,6 @@ export default class BuffersManager {
 		this._textureB = temp;
 		this._quad.material.map = this._textureB.texture;
 		this._bufferMaterial.uniforms.bufferTexture.value = this._textureA.texture;
-		this._bufferMaterial.uniforms.slideDirection.value = this._slideDirection;
 	}
 
 	areUsed(){
@@ -62,15 +63,12 @@ export default class BuffersManager {
 		// (3 PointLight and the buffer object are already there),
 		// it means that there is flower in the buffer scene, and if there is the flower, update it!
 		// otherwhise, do not nothing
+		//console.log(this._bufferScene.children.length);
 		return this._bufferScene.children.length > 4;
 	}
 
 	getBufferScene(){
 		return this._bufferScene;
-	}
-
-	getSlideDirection(){
-		return this._slideDirection;
 	}
 
 	getPlane(){

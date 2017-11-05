@@ -17,6 +17,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
     "file-loader": "^0.11.2",
+    "glsl-noise": "0.0.0",
     "html-webpack-plugin": "^2.24.1",
     "json-loader": "^0.5.7",
     "three": "git://github.com/mrdoob/three.js/#5cd32066c4ee2d26b4dbd76a92a4e2badf610ee9",

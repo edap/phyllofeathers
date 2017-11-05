@@ -1,15 +1,17 @@
 import { removeEntityByName } from './utils.js';
 import { PointLights } from './pointLights.js';
-import { Object3D } from 'three';
+import { Object3D, Euler } from 'three';
 
 export default class Scenographer {
-	constructor(scene, bufferScene, bufferPlane, flowerGroup, emitter){
+	constructor(scene, bufferScene, bufferPlane, flowerGroup, revolverGroup, emitter){
 		this._scene = scene;
 		this._bufferScene = bufferScene;
 		this._bufferPlane = bufferPlane;
 		this._flowerGroup = flowerGroup;
+		this._revolverGroup = revolverGroup;
 		//this._bufferFlowerGroup = new Object3D().copy(flowerGroup);
 		this._bufferFlowerGroup = flowerGroup.clone();
+		this._bufferRevolverGroup = revolverGroup.clone();
 		this._emitter = emitter;
 		this._addListeners();
 	}
@@ -17,18 +19,42 @@ export default class Scenographer {
 	_addListeners(){
 		this._emitter.addListener('ADD-PLANE-TO-SCENE', () => this._onAddPlaneToScene());
 		this._emitter.addListener('REMOVE-PLANE-FROM-SCENE', () => this._onRemovePlaneFromScene());
-
-		this._emitter.addListener('COPY-FLOWER-TO-BUFFERFLOWER', () => this.copyFlowerToBufferFlower());
+		this._emitter.addListener('ENTER-REVOLVER', () => this._onEnterRevolver());
+		this._emitter.addListener('ENTER-FLOWER', () => this._onEnterFlower());
 	}
 
 	_onRemovePlaneFromScene(){
-		this.removeFromBufferScene(this._bufferFlowerGroup);
+		//console.log('received REMOVE-PLANE-FROM-SCENE');
+		this.removeFromBufferScene(this._bufferRevolverGroup);
 		this.remove(this._bufferPlane);
+
+		this._resetRevolverRotation();
 	}
 
 	_onAddPlaneToScene(){
+		//console.log('received ADD-PLANE-TO-SCENE');
 		this.addToBufferScene(this._bufferFlowerGroup);
 		this.add(this._bufferPlane);
+	}
+
+	_onEnterRevolver(){
+		this.remove(this._flowerGroup);
+		this.add(this._revolverGroup);
+
+		this.removeFromBufferScene(this._bufferFlowerGroup);
+		this.addToBufferScene(this._bufferRevolverGroup);
+	}
+
+	_onEnterFlower(){
+		this.add(this._flowerGroup);
+		this.remove(this._revolverGroup);
+	}
+
+	// hacky, but needed. If I put the reset of the rotation in the animator
+	// there is a small jump at the end of the animation
+	_resetRevolverRotation(){
+		this._bufferRevolverGroup.setRotationFromEuler(new Euler(0, -1.5707963267948966, 0));
+		this._revolverGroup.setRotationFromEuler(new Euler(0, -1.5707963267948966, 0));
 	}
 
 	turnLightOn(){
@@ -37,7 +63,7 @@ export default class Scenographer {
 		//let ambientLight2 = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 		//scene.add( ambientLight2 );
 		//bufferScene.add(ambientLight);
-		const distance = 320;
+		const distance = 220;
 		const power = 0.9;
 		PointLights(distance, power).map(light => {
 			this._scene.add(light);
@@ -45,10 +71,6 @@ export default class Scenographer {
 		PointLights(distance, power).map(light => {
 			this._bufferScene.add(light);
 		});
-	}
-
-	copyFlowerToBufferFlower(){
-		//this._bufferFlowerGroup.copy(this._flowerGroup);
 	}
 
 	add(obj){
@@ -69,5 +91,9 @@ export default class Scenographer {
 
 	getBufferFlower(){
 		return this._bufferFlowerGroup;
+	}
+
+	getBufferRevolver(){
+		return this._bufferRevolverGroup;
 	}
 }
