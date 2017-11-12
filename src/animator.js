@@ -9,8 +9,8 @@ const FADE_PLANE_IN_TIME = 1000;
 const FADE_PLANE_OUT_TIME = 1000;
 const DELAY = 1000; //this decides how much every scene will last
 const FLY_TIME = 6000;
-const FLY_FREQUENCY = 14;
-const FLY_AMPLITUDE = 0.0095;
+const FLY_FREQUENCY = 24;
+const FLY_AMPLITUDE = 0.0035;
 
 const states = ['DEBUG', 'FLOWERS', 'COMPLETE'];
 const currentState = states[2];
