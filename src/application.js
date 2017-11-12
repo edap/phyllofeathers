@@ -27,6 +27,9 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ antialias: true, transparent: true });
 const animator = new Animator();
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+const gl = renderer.getContext();
+gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
 const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 let controls;
 

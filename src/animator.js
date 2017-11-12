@@ -3,10 +3,10 @@ import EventEmitter from './eventEmitter.js';
 import { createPath } from './path.js';
 import * as THREE from 'three';
 const TWEEN = require('@tweenjs/tween.js');
-const SPEED = 1.2;
-const FADE_FLOWER_TIME = 6000;
+const SPEED = 1.0;
+const FADE_FLOWER_TIME = 600;
 const FADE_PLANE_IN_TIME = 1000;
-const FADE_PLANE_OUT_TIME = 3000;
+const FADE_PLANE_OUT_TIME = 1000;
 const DELAY = 1000; //this decides how much every scene will last
 const FLY_TIME = 6000;
 const FLY_FREQUENCY = 14;
@@ -31,7 +31,7 @@ export default class Animator extends EventEmitter {
 		//Flower Animations
 		const flyFlower = this._flyAway(flower.group, { y: 0 }, { y: 1 }, FLY_FREQUENCY, FLY_AMPLITUDE, {
 			duration: FLY_TIME * SPEED,
-			easing: TWEEN.Easing.Sinusoidal.In
+			easing: TWEEN.Easing.Sinusoidal.InOut
 		});
 
 		const flipFlower = this._rotateObj(
@@ -68,7 +68,7 @@ export default class Animator extends EventEmitter {
 			petalsFactor,
 			{ x: 0 },
 			{
-				delay: FADE_FLOWER_TIME * SPEED,
+				delay: FLY_TIME * SPEED,
 				duration: FADE_FLOWER_TIME * SPEED,
 				callback: () => {
 					this.emit('ENTER-REVOLVER');
@@ -81,7 +81,7 @@ export default class Animator extends EventEmitter {
 			{ x: 1 },
 			{
 				duration: FADE_FLOWER_TIME * SPEED,
-				//delay: DELAY * SPEED,
+				delay: DELAY * SPEED,
 				easing: TWEEN.Easing.Sinusoidal.In
 			}
 		);
@@ -91,6 +91,7 @@ export default class Animator extends EventEmitter {
 			{ x: 0 },
 			{
 				duration: FADE_FLOWER_TIME * SPEED,
+				//delay: DELAY * SPEED,
 				callback: () => {
 					this.emit('ENTER-FLOWER');
 				}
