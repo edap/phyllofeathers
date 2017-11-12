@@ -6,8 +6,8 @@ export function removeEntityByName(name, scene){
 }
 
 export function limitControls(controls){
-	controls.minPolarAngle = Math.PI / 4.5;
-	controls.maxPolarAngle = Math.PI / 1.4;
+	controls.minPolarAngle = Math.PI / 3.5;
+	controls.maxPolarAngle = Math.PI / 1.6;
 	controls.minAzimuthAngle = -Math.PI / 4;
 	controls.maxAzimuthAngle = Math.PI / 4;
 	controls.minDistance = 100;
