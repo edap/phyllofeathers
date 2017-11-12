@@ -32,7 +32,7 @@ module.exports = {
 	devtool: 'source-map',
 	entry: {
 		bundle: './src/application.js',
-		'bundle.min': './src/application.js'
+		//'bundle.min': './src/application.js'
 	},
 
 	output: {
