@@ -20,10 +20,9 @@ export function getPlaneShader(){
 		vec2 nuv = st;
 		float mag_time = time * 0.8;
 		float rx =  nuv.x*= (0.99 + (fnoise(mag_time) * 0.02));
-		float ry =  nuv.y*= (0.99 + (fnoise(mag_time+2.0) * 0.02));
+		float ry =  nuv.y*= (0.99 + (fnoise(mag_time+0.5) * 0.02));
 		vec4 col = texture2D(bufferTexture, vec2(rx,ry));
 		col.a*= 0.97;
 		gl_FragColor = col;
-		//gl_FragColor = vec4(rx,rx,rx,1.0);
 	}`;
 }
